@@ -16,7 +16,22 @@ import {
 import { GoogleButton } from "../components/GoogleButton";
 import { GithubButton } from "../components/GithubIcon";
 
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+
 export function LoginPage(props) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [errorMessage, setErrorMessage] = useState(undefined);
+
+  const navigate = useNavigate();
+
+  const handleEmail = (e) => setEmail(e.target.value);
+  const handlePassword = (e) => setPassword(e.target.value);
+  const handleName = (e) => setName(e.target.value);
+
   const [type, toggle] = useToggle(["login", "register"]);
   const form = useForm({
     initialValues: {
@@ -34,6 +49,54 @@ export function LoginPage(props) {
           : null,
     },
   });
+
+  // Function to handle form submission
+  const handleSignupSubmit = (event) => {
+    event.preventDefault();
+    console.log("Signing up...");
+    console.log("Loging in...");
+    console.log("email:", email);
+    console.log("Password:", password);
+
+    const requestBody = { email, password, name };
+
+    // Make an axios request to the API
+    // If the POST request is a successful redirect to the login page
+    // If the request resolves with an error, set the error message in the state
+    axios
+      .post(`${import.meta.env.VITE_API_URL}/auth/signup`, requestBody)
+      .then((response) => {
+        console.log(response);
+        navigate("/login");
+      })
+      .catch((error) => {
+        const errorDescription = error.response.data.message;
+        setErrorMessage(errorDescription);
+      });
+  };
+
+  const handleLoginSubmit = (event) => {
+    event.preventDefault();
+    console.log("Loging in...");
+    console.log("email:", email);
+    console.log("Password:", password);
+
+    const requestBody = { email, password };
+
+    axios
+      .post(`${import.meta.env.VITE_API_URL}/auth/login`, requestBody)
+      .then((response) => {
+        // Request to the server's endpoint `/auth/login` returns a response
+        // with the JWT string ->  response.data.authToken
+        console.log("JWT token", response.data.authToken);
+
+        navigate("/");
+      })
+      .catch((error) => {
+        const errorDescription = error.response.data.message;
+        setErrorMessage(errorDescription);
+      });
+  };
 
   return (
     <div
@@ -54,7 +117,7 @@ export function LoginPage(props) {
           {...props}
         >
           <Text size="lg" fw={500}>
-            Welcome to Mantine, {type} with
+            Welcome to BrainBash, {type} with
           </Text>
 
           <Group grow mb="md" mt="md">
@@ -68,16 +131,18 @@ export function LoginPage(props) {
             my="lg"
           />
 
-          <form onSubmit={form.onSubmit(() => {})}>
+          <form
+            onSubmit={
+              type === "register" ? handleSignupSubmit : handleLoginSubmit
+            }
+          >
             <Stack>
               {type === "register" && (
                 <TextInput
                   label="Name"
                   placeholder="Your name"
-                  value={form.values.name}
-                  onChange={(event) =>
-                    form.setFieldValue("name", event.currentTarget.value)
-                  }
+                  value={name}
+                  onChange={handleName}
                   radius="md"
                 />
               )}
@@ -85,11 +150,9 @@ export function LoginPage(props) {
               <TextInput
                 required
                 label="Email"
-                placeholder="hello@mantine.dev"
-                value={form.values.email}
-                onChange={(event) =>
-                  form.setFieldValue("email", event.currentTarget.value)
-                }
+                placeholder="hello@brainbash.com"
+                value={email}
+                onChange={handleEmail}
                 error={form.errors.email && "Invalid email"}
                 radius="md"
               />
@@ -98,10 +161,8 @@ export function LoginPage(props) {
                 required
                 label="Password"
                 placeholder="Your password"
-                value={form.values.password}
-                onChange={(event) =>
-                  form.setFieldValue("password", event.currentTarget.value)
-                }
+                value={password}
+                onChange={handlePassword}
                 error={
                   form.errors.password &&
                   "Password should include at least 6 characters"
@@ -131,6 +192,15 @@ export function LoginPage(props) {
                 {type === "register"
                   ? "Already have an account? Login"
                   : "Don't have an account? Register"}
+              </Anchor>
+              <Anchor
+                component="button"
+                type="button"
+                c="dimmed"
+                onClick={() => {}}
+                size="xs"
+              >
+                {"Forgot your password?"}
               </Anchor>
               <Button type="submit" radius="xl">
                 {upperFirst(type)}
