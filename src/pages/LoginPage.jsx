@@ -23,14 +23,16 @@ import axios from "axios";
 export function LoginPage(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [errorMessage, setErrorMessage] = useState(undefined);
 
   const navigate = useNavigate();
 
   const handleEmail = (e) => setEmail(e.target.value);
   const handlePassword = (e) => setPassword(e.target.value);
-  const handleName = (e) => setName(e.target.value);
+  const handleFirstName = (e) => setFirstName(e.target.value);
+  const handleLastName = (e) => setLastName(e.target.value);
 
   const [type, toggle] = useToggle(["login", "register"]);
   const form = useForm({
@@ -57,8 +59,10 @@ export function LoginPage(props) {
     console.log("Loging in...");
     console.log("email:", email);
     console.log("Password:", password);
+    console.log("Fist Name:", firstName);
+    console.log("Last Name:", lastName);
 
-    const requestBody = { email, password, name };
+    const requestBody = { email, password, firstName, lastName };
 
     // Make an axios request to the API
     // If the POST request is a successful redirect to the login page
@@ -67,7 +71,8 @@ export function LoginPage(props) {
       .post(`${import.meta.env.VITE_API_URL}/auth/signup`, requestBody)
       .then((response) => {
         console.log(response);
-        navigate("/login");
+        //navigate("/login");
+        toggle();
       })
       .catch((error) => {
         const errorDescription = error.response.data.message;
@@ -138,13 +143,23 @@ export function LoginPage(props) {
           >
             <Stack>
               {type === "register" && (
-                <TextInput
-                  label="Name"
-                  placeholder="Your name"
-                  value={name}
-                  onChange={handleName}
-                  radius="md"
-                />
+                <>
+                  <TextInput
+                    label="First Name"
+                    placeholder="Your first name"
+                    value={firstName}
+                    onChange={handleFirstName}
+                    radius="md"
+                  />
+
+                  <TextInput
+                    label="Last Name"
+                    placeholder="Your last name"
+                    value={lastName}
+                    onChange={handleLastName}
+                    radius="md"
+                  />
+                </>
               )}
 
               <TextInput
