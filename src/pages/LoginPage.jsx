@@ -92,43 +92,41 @@ export function LoginPage(props) {
 
   // Function to handle form submission
   const handleSubmit = (event) => {
+    // Depending if user is on register or login
     if (type === "register") {
       event.preventDefault();
 
+      // Check for errors in the form
       const errors = form.validate();
 
+      // If no errors, then proceed to communicate with server
       if (!errors.hasErrors) {
         const requestBody = { email, password, firstName, lastName };
-
         // Make an axios request to the API
         // If the POST request is a successful redirect to the login page
         // If the request resolves with an error, set the error message in the state
-
-        console.log(requestBody);
-
         axios
           .post(`${import.meta.env.VITE_API_URL}/auth/signup`, requestBody)
           .then((response) => {
-            console.log(response);
-            notifications.clean();
-            setErrorMessage("");
-            navigate("/account/login");
+            //console.log("User succesfully created", response);
+            navigateToLogin();
           })
           .catch((error) => {
             setErrorMessage(error.response.data.message);
-            console.log(errorMessage);
+            //console.log(errorMessage);
             setTimeout(() => showError(type, error.response.data.message), 200);
           });
       }
     } else if (type === "login") {
-      console.log("type", type);
       event.preventDefault();
 
+      // Check for errors in the form
       const errors = form.validate();
 
       if (!errors.hasErrors) {
         const requestBody = { email, password };
 
+        // If login is successfull, navigate to main page
         axios
           .post(`${import.meta.env.VITE_API_URL}/auth/login`, requestBody)
           .then((response) => {
@@ -141,15 +139,14 @@ export function LoginPage(props) {
           })
           .catch((error) => {
             setErrorMessage(error.response.data.message);
-            console.log(errorMessage);
+            console.log(error);
             setTimeout(() => showError(type, error.response.data.message), 200);
           });
-      } else {
-        console.log("Form has errors", errors);
       }
     }
   };
 
+  // Functions to navigate to Login or Register, clearing notifications and error messages
   const navigateToLogin = () => {
     setType("login");
     notifications.clean();
@@ -288,7 +285,9 @@ export function LoginPage(props) {
                 component="button"
                 type="button"
                 c="dimmed"
-                onClick={() => {}}
+                onClick={() => {
+                  navigate("/forgot-password");
+                }}
                 size="xs"
               >
                 {"Forgot your password?"}
