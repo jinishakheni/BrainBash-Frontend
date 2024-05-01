@@ -40,8 +40,8 @@ export function LoginPage(props) {
   const navigate = useNavigate();
 
   // Function to show error notifications
-  const showError = (type) => {
-    console.log(errorMessage);
+  const showError = (type, message) => {
+    console.log(message);
     if (errorMessage === undefined) {
       const id = notifications.show({
         loading: true,
@@ -56,7 +56,7 @@ export function LoginPage(props) {
         notifications.update({
           id,
           title: type.toUpperCase() + " ERROR: ",
-          message: errorMessage,
+          message: message,
           loading: false,
           autoClose: 2000,
           color: "red",
@@ -65,7 +65,7 @@ export function LoginPage(props) {
     } else {
       notifications.show({
         title: type.toUpperCase() + " ERROR: ",
-        message: errorMessage,
+        message: message,
         color: "red", // Set the notification color to red
       });
     }
@@ -140,7 +140,7 @@ export function LoginPage(props) {
           .catch((error) => {
             setErrorMessage(error.response.data.message);
             console.log(errorMessage);
-            setTimeout(() => showError(type), 200);
+            setTimeout(() => showError(type, error.response.data.message), 200);
           });
       }
     } else if (type === "login") {
@@ -165,7 +165,7 @@ export function LoginPage(props) {
           .catch((error) => {
             setErrorMessage(error.response.data.message);
             console.log(errorMessage);
-            setTimeout(() => showError(type), 200);
+            setTimeout(() => showError(type, error.response.data.message), 200);
           });
       } else {
         console.log("Form has errors", errors);
