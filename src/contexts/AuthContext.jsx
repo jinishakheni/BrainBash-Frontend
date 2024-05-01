@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext } from "react";
 
-const AuthContext = React.createContext();
+const AuthContext = createContext();
 
 function AuthProviderWrapper(props) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -59,7 +59,7 @@ function AuthProviderWrapper(props) {
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, isLoading, user, storeToken, logOutUser }}
+      value={{ isLoggedIn, isLoading, user, storeToken, logOutUser, verifyToken }}
     >
       {props.children}
     </AuthContext.Provider>
