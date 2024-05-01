@@ -1,10 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { MantineProvider } from "@mantine/core";
-import { Notifications } from "@mantine/notifications";
-
 import App from "./App.jsx";
-import "@mantine/notifications/styles.css";
 
 // Import styles of packages that you've installed.
 // All packages except `@mantine/hooks` require styles imports
