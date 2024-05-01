@@ -30,7 +30,7 @@ export function LoginPage(props) {
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  //const [errorMessage, setErrorMessage] = useState(undefined);
+  const [errorMessage, setErrorMessage] = useState(undefined);
 
   // Getting the route parameter (login or register) and storing in a hook
   const { typeParam } = useParams();
