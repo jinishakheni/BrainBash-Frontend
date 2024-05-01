@@ -1,6 +1,7 @@
-import { useToggle, upperFirst } from "@mantine/hooks";
+import { upperFirst } from "@mantine/hooks";
 import { useParams } from "react-router-dom";
 import { useForm } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
 import {
   TextInput,
   PasswordInput,
@@ -17,11 +18,12 @@ import {
 import { GoogleButton } from "../components/GoogleButton";
 import { GithubButton } from "../components/GithubIcon";
 
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export function LoginPage(props) {
+  // Setting up hooks for form data
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -30,12 +32,46 @@ export function LoginPage(props) {
   const [lastName, setLastName] = useState("");
   const [errorMessage, setErrorMessage] = useState(undefined);
 
-  //const [type, toggle] = useToggle(["login", "register"]);
+  // Getting the route parameter (login or register) and storing in a hook
   const { typeParam } = useParams();
   const [type, setType] = useState(typeParam);
 
+  // Navigate hook
   const navigate = useNavigate();
 
+  // Function to show error notifications
+  const showError = (type) => {
+    console.log(errorMessage);
+    if (errorMessage === undefined) {
+      const id = notifications.show({
+        loading: true,
+        title: "LOADING: ",
+        message: "Retrieving information from Server...",
+        autoClose: false,
+        withCloseButton: false,
+        color: "red",
+      });
+
+      setTimeout(() => {
+        notifications.update({
+          id,
+          title: type.toUpperCase() + " ERROR: ",
+          message: errorMessage,
+          loading: false,
+          autoClose: 2000,
+          color: "red",
+        });
+      }, 3000);
+    } else {
+      notifications.show({
+        title: type.toUpperCase() + " ERROR: ",
+        message: errorMessage,
+        color: "red", // Set the notification color to red
+      });
+    }
+  };
+
+  // Functions to handle changes in the form
   const handleEmail = (e) => {
     setEmail(e.target.value);
     form.setFieldValue("email", e.target.value);
@@ -54,6 +90,7 @@ export function LoginPage(props) {
   const handleFirstName = (e) => setFirstName(e.target.value);
   const handleLastName = (e) => setLastName(e.target.value);
 
+  // Setting up form component from Mantine
   const form = useForm({
     initialValues: {
       email: "",
@@ -62,82 +99,90 @@ export function LoginPage(props) {
       terms: false,
     },
 
+    // Validating functions for each input
     validate: {
       email: (value) =>
         /^\S+@\S+$/.test(value) ? null : "Invalid email address",
       password: (value) =>
         value.length >= 6 ? null : "Password must have at least 6 characters",
       confirmPassword: (value, values) =>
-        value === values.password ? null : "Passwords must match",
-      terms: (value) => value !== true,
+        type !== "register" || value === values.password
+          ? null
+          : "Passwords must match",
+      terms: (value) => type === "register" && value !== true,
     },
   });
 
-  /* useEffect(() => {
-    if (type !== typeParam) {
-      toggle();
-      console.log(typeParam);
-      console.log(type);
-    }
-  }, []);*/
-
   // Function to handle form submission
-  const handleSignupSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = (event) => {
+    if (type === "register") {
+      event.preventDefault();
 
-    const errors = form.validate();
+      const errors = form.validate();
 
-    if (!errors.hasErrors) {
-      const requestBody = { email, password, firstName, lastName };
+      if (!errors.hasErrors) {
+        const requestBody = { email, password, firstName, lastName };
 
-      // Make an axios request to the API
-      // If the POST request is a successful redirect to the login page
-      // If the request resolves with an error, set the error message in the state
-      axios
-        .post(`${import.meta.env.VITE_API_URL}/auth/signup`, requestBody)
-        .then((response) => {
-          console.log(response);
-          //navigate("/login");
-          navigate("/account/login");
-        })
-        .catch((error) => {
-          const errorDescription = error.response.data.message;
-          setErrorMessage(errorDescription);
-        });
-    }
-  };
+        // Make an axios request to the API
+        // If the POST request is a successful redirect to the login page
+        // If the request resolves with an error, set the error message in the state
 
-  const handleLoginSubmit = (event) => {
-    event.preventDefault();
+        console.log(requestBody);
 
-    const errors = form.validate();
+        axios
+          .post(`${import.meta.env.VITE_API_URL}/auth/signup`, requestBody)
+          .then((response) => {
+            console.log(response);
+            notifications.clean();
+            setErrorMessage("");
+            navigate("/account/login");
+          })
+          .catch((error) => {
+            setErrorMessage(error.response.data.message);
+            console.log(errorMessage);
+            setTimeout(() => showError(type), 200);
+          });
+      }
+    } else if (type === "login") {
+      console.log("type", type);
+      event.preventDefault();
 
-    if (!errors.hasErrors) {
-      const requestBody = { email, password };
+      const errors = form.validate();
 
-      axios
-        .post(`${import.meta.env.VITE_API_URL}/auth/login`, requestBody)
-        .then((response) => {
-          // Request to the server's endpoint `/auth/login` returns a response
-          // with the JWT string ->  response.data.authToken
-          console.log("JWT token", response.data.authToken);
+      if (!errors.hasErrors) {
+        const requestBody = { email, password };
 
-          navigate("/");
-        })
-        .catch((error) => {
-          const errorDescription = error.response.data.message;
-          setErrorMessage(errorDescription);
-          console.log(errorMessage);
-        });
+        axios
+          .post(`${import.meta.env.VITE_API_URL}/auth/login`, requestBody)
+          .then((response) => {
+            // Request to the server's endpoint `/auth/login` returns a response
+            // with the JWT string ->  response.data.authToken
+            console.log("JWT token", response.data.authToken);
+            notifications.clean();
+            setErrorMessage("");
+            navigate("/");
+          })
+          .catch((error) => {
+            setErrorMessage(error.response.data.message);
+            console.log(errorMessage);
+            setTimeout(() => showError(type), 200);
+          });
+      } else {
+        console.log("Form has errors", errors);
+      }
     }
   };
 
   const navigateToLogin = () => {
     setType("login");
+    notifications.clean();
+    setErrorMessage("");
     navigate("/account/login");
   };
   const navigateToRegister = () => {
     setType("register");
+    notifications.clean();
+    setErrorMessage("");
     navigate("/account/register");
   };
 
@@ -174,11 +219,7 @@ export function LoginPage(props) {
             my="lg"
           />
 
-          <form
-            onSubmit={
-              type === "register" ? handleSignupSubmit : handleLoginSubmit
-            }
-          >
+          <form onSubmit={handleSubmit}>
             <Stack>
               {type === "register" && (
                 <>
