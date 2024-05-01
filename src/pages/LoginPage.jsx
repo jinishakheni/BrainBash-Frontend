@@ -41,13 +41,11 @@ export function LoginPage(props) {
 
   // Function to show error notifications
   const showError = (type, message) => {
-
-      notifications.show({
-        title: type.toUpperCase() + " ERROR: ",
-        message: message,
-        color: "red", // Set the notification color to red
-      });
-    
+    notifications.show({
+      title: type.toUpperCase() + " ERROR: ",
+      message: message,
+      color: "red", // Set the notification color to red
+    });
   };
 
   // Functions to handle changes in the form
