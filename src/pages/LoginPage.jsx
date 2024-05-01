@@ -41,34 +41,13 @@ export function LoginPage(props) {
 
   // Function to show error notifications
   const showError = (type, message) => {
-    console.log(message);
-    if (errorMessage === undefined) {
-      const id = notifications.show({
-        loading: true,
-        title: "LOADING: ",
-        message: "Retrieving information from Server...",
-        autoClose: false,
-        withCloseButton: false,
-        color: "red",
-      });
 
-      setTimeout(() => {
-        notifications.update({
-          id,
-          title: type.toUpperCase() + " ERROR: ",
-          message: message,
-          loading: false,
-          autoClose: 2000,
-          color: "red",
-        });
-      }, 3000);
-    } else {
       notifications.show({
         title: type.toUpperCase() + " ERROR: ",
         message: message,
         color: "red", // Set the notification color to red
       });
-    }
+    
   };
 
   // Functions to handle changes in the form
