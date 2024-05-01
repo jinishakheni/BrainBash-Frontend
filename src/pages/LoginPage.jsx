@@ -1,4 +1,5 @@
 import { useToggle, upperFirst } from "@mantine/hooks";
+import { useParams } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import {
   TextInput,
@@ -16,91 +17,128 @@ import {
 import { GoogleButton } from "../components/GoogleButton";
 import { GithubButton } from "../components/GithubIcon";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export function LoginPage(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [errorMessage, setErrorMessage] = useState(undefined);
 
+  //const [type, toggle] = useToggle(["login", "register"]);
+  const { typeParam } = useParams();
+  const [type, setType] = useState(typeParam);
+
   const navigate = useNavigate();
 
-  const handleEmail = (e) => setEmail(e.target.value);
-  const handlePassword = (e) => setPassword(e.target.value);
+  const handleEmail = (e) => {
+    setEmail(e.target.value);
+    form.setFieldValue("email", e.target.value);
+    form.errors.email = false;
+  };
+  const handlePassword = (e) => {
+    setPassword(e.target.value);
+    form.setFieldValue("password", e.target.value);
+    form.setFieldError("password", null);
+  };
+  const handleConfirmPassword = (e) => {
+    setConfirmPassword(e.target.value);
+    form.setFieldValue("confirmPassword", e.target.value);
+    form.errors.confirmPassword = false;
+  };
   const handleFirstName = (e) => setFirstName(e.target.value);
   const handleLastName = (e) => setLastName(e.target.value);
 
-  const [type, toggle] = useToggle(["login", "register"]);
   const form = useForm({
     initialValues: {
       email: "",
       name: "",
       password: "",
-      terms: true,
+      terms: false,
     },
 
     validate: {
-      email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
-      password: (val) =>
-        val.length <= 6
-          ? "Password should include at least 6 characters"
-          : null,
+      email: (value) =>
+        /^\S+@\S+$/.test(value) ? null : "Invalid email address",
+      password: (value) =>
+        value.length >= 6 ? null : "Password must have at least 6 characters",
+      confirmPassword: (value, values) =>
+        value === values.password ? null : "Passwords must match",
+      terms: (value) => value !== true,
     },
   });
+
+  /* useEffect(() => {
+    if (type !== typeParam) {
+      toggle();
+      console.log(typeParam);
+      console.log(type);
+    }
+  }, []);*/
 
   // Function to handle form submission
   const handleSignupSubmit = (event) => {
     event.preventDefault();
-    console.log("Signing up...");
-    console.log("Loging in...");
-    console.log("email:", email);
-    console.log("Password:", password);
-    console.log("Fist Name:", firstName);
-    console.log("Last Name:", lastName);
 
-    const requestBody = { email, password, firstName, lastName };
+    const errors = form.validate();
 
-    // Make an axios request to the API
-    // If the POST request is a successful redirect to the login page
-    // If the request resolves with an error, set the error message in the state
-    axios
-      .post(`${import.meta.env.VITE_API_URL}/auth/signup`, requestBody)
-      .then((response) => {
-        console.log(response);
-        //navigate("/login");
-        toggle();
-      })
-      .catch((error) => {
-        const errorDescription = error.response.data.message;
-        setErrorMessage(errorDescription);
-      });
+    if (!errors.hasErrors) {
+      const requestBody = { email, password, firstName, lastName };
+
+      // Make an axios request to the API
+      // If the POST request is a successful redirect to the login page
+      // If the request resolves with an error, set the error message in the state
+      axios
+        .post(`${import.meta.env.VITE_API_URL}/auth/signup`, requestBody)
+        .then((response) => {
+          console.log(response);
+          //navigate("/login");
+          navigate("/account/login");
+        })
+        .catch((error) => {
+          const errorDescription = error.response.data.message;
+          setErrorMessage(errorDescription);
+        });
+    }
   };
 
   const handleLoginSubmit = (event) => {
     event.preventDefault();
-    console.log("Loging in...");
-    console.log("email:", email);
-    console.log("Password:", password);
 
-    const requestBody = { email, password };
+    const errors = form.validate();
 
-    axios
-      .post(`${import.meta.env.VITE_API_URL}/auth/login`, requestBody)
-      .then((response) => {
-        // Request to the server's endpoint `/auth/login` returns a response
-        // with the JWT string ->  response.data.authToken
-        console.log("JWT token", response.data.authToken);
+    if (!errors.hasErrors) {
+      const requestBody = { email, password };
 
-        navigate("/");
-      })
-      .catch((error) => {
-        const errorDescription = error.response.data.message;
-        setErrorMessage(errorDescription);
-      });
+      axios
+        .post(`${import.meta.env.VITE_API_URL}/auth/login`, requestBody)
+        .then((response) => {
+          // Request to the server's endpoint `/auth/login` returns a response
+          // with the JWT string ->  response.data.authToken
+          console.log("JWT token", response.data.authToken);
+
+          navigate("/");
+        })
+        .catch((error) => {
+          const errorDescription = error.response.data.message;
+          setErrorMessage(errorDescription);
+          console.log(errorMessage);
+        });
+    }
+  };
+
+  const navigateToLogin = () => {
+    setType("login");
+    navigate("/account/login");
+  };
+  const navigateToRegister = () => {
+    setType("register");
+    navigate("/account/register");
   };
 
   return (
@@ -168,7 +206,7 @@ export function LoginPage(props) {
                 placeholder="hello@brainbash.com"
                 value={email}
                 onChange={handleEmail}
-                error={form.errors.email && "Invalid email"}
+                error={form.errors.email}
                 radius="md"
               />
 
@@ -178,21 +216,37 @@ export function LoginPage(props) {
                 placeholder="Your password"
                 value={password}
                 onChange={handlePassword}
-                error={
-                  form.errors.password &&
-                  "Password should include at least 6 characters"
-                }
+                error={form.errors.password}
                 radius="md"
               />
 
               {type === "register" && (
-                <Checkbox
-                  label="I accept terms and conditions"
-                  checked={form.values.terms}
-                  onChange={(event) =>
-                    form.setFieldValue("terms", event.currentTarget.checked)
-                  }
-                />
+                <>
+                  <PasswordInput
+                    required
+                    label="Confirm Password"
+                    placeholder="Confirm Your password"
+                    value={confirmPassword}
+                    onChange={handleConfirmPassword}
+                    error={
+                      form.errors.confirmPassword &&
+                      "Both passwords should match"
+                    }
+                    radius="md"
+                  />
+
+                  <Checkbox
+                    label="I accept terms and conditions"
+                    checked={form.values.terms}
+                    onChange={(event) =>
+                      form.setFieldValue("terms", event.currentTarget.checked)
+                    }
+                    error={
+                      form.errors.terms &&
+                      "Terms and conditions must be accepted"
+                    }
+                  />
+                </>
               )}
             </Stack>
 
@@ -201,7 +255,11 @@ export function LoginPage(props) {
                 component="button"
                 type="button"
                 c="dimmed"
-                onClick={() => toggle()}
+                onClick={() => {
+                  type === "register"
+                    ? navigateToLogin()
+                    : navigateToRegister();
+                }}
                 size="xs"
               >
                 {type === "register"
