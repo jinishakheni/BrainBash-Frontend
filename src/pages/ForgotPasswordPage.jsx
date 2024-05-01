@@ -38,33 +38,40 @@ const ForgotPasswordPage = () => {
     }
 
     const payload = { email };
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/auth/forgot-password`,
-      {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(payload),
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/auth/forgot-password`,
+        {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+      if (response.ok) {
+        notifications.show({
+          color: "indigo",
+          title: "Please check your email for the reset password link.",
+        });
+      } else {
+        const error = await response.json();
+        notifications.show({
+          color: "red",
+          title: error.message,
+        });
       }
-    );
-    if (response.status === 200) {
-      notifications.show({
-        color: "indigo",
-        title: "Please check your email for the reset password link.",
-      });
-    } else {
-      const error = await response.json();
+      setError("");
+    } catch (error) {
       notifications.show({
         color: "red",
-        title: error.message,
+        title: "Something went wrong. Try after sometime.",
       });
     }
-    setError("");
   };
 
   return (
-    <Container size="md" my={30} className={classes.ctn}>
+    <Container size="md" className={classes.ctn}>
       <Title ta="center" mb="xs">
         Forgot your password?
       </Title>
