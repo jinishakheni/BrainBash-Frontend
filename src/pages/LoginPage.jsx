@@ -114,7 +114,7 @@ export function LoginPage(props) {
           .catch((error) => {
             setErrorMessage(error.response.data.message);
             //console.log(errorMessage);
-            setTimeout(() => showError(type, error.response.data.message), 200);
+            showError(type, error.response.data.message);
           });
       }
     } else if (type === "login") {
@@ -140,7 +140,7 @@ export function LoginPage(props) {
           .catch((error) => {
             setErrorMessage(error.response.data.message);
             console.log(error);
-            setTimeout(() => showError(type, error.response.data.message), 200);
+            showError(type, error.response.data.message);
           });
       }
     }
@@ -169,7 +169,7 @@ export function LoginPage(props) {
         height: "100vh",
       }}
     >
-      <Container size="sm" style={{ width: "100%", maxWidth: "500px" }}>
+      <Container style={{ width: "fluid", maxWidth: "500px" }}>
         <Paper
           radius="md"
           p="xl"
