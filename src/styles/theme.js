@@ -1,4 +1,4 @@
-import { Container, createTheme, rem } from '@mantine/core'
+import { Container, createTheme, rem } from "@mantine/core";
 
 const CONTAINER_SIZES = {
   xxs: rem(300),
@@ -11,21 +11,21 @@ const CONTAINER_SIZES = {
 };
 
 const theme = createTheme({
-  fontFamily: 'Montserrat, sans-serif',
-  headings: { fontFamily: 'Verdana, sans-serif' },
+  fontFamily: "Montserrat, sans-serif",
+  headings: { fontFamily: "Verdana, sans-serif" },
   components: {
     Container: Container.extend({
       vars: (_, { size, fluid }) => ({
         root: {
-          '--container-size': fluid
-            ? '100%'
+          "--container-size": fluid
+            ? "100%"
             : size !== undefined && size in CONTAINER_SIZES
-              ? CONTAINER_SIZES[size]
-              : rem(size),
+            ? CONTAINER_SIZES[size]
+            : rem(size),
         },
       }),
     }),
-  }
+  },
 });
 
 export default theme;

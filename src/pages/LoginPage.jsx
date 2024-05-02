@@ -180,7 +180,7 @@ const LoginPage = (props) => {
         height: "100vh",
       }}
     >
-      <Container size="sm" style={{ width: "100%", maxWidth: "500px" }}>
+      <Container style={{ fluid: "true" }}>
         <Paper
           radius="md"
           p="xl"
