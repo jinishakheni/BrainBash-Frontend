@@ -3,6 +3,7 @@ import HomePage from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
 import ResetPassword from "./pages/passwordPages/ResetPassword";
 import ForgotPasswordPage from "./pages/passwordPages/ForgotPasswordPage";
+import EventDetailPage from "./pages/EventDetailPage";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Route path="/account/:typeParam" element={<LoginPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
+      <Route path="/event/:id" element={<EventDetailPage />} />
       <Route path="*" element={<h1>404 Page Not Found</h1>} />
     </Routes>
   );

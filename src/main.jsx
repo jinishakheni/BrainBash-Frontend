@@ -15,7 +15,6 @@ import "./styles/global.css";
 import theme from "./styles/theme.js";
 
 import { BrowserRouter } from "react-router-dom";
-import { Notifications } from "@mantine/notifications";
 import { AuthProviderWrapper } from "./contexts/AuthContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(

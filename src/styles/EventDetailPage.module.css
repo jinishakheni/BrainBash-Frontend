@@ -1,0 +1,71 @@
+.mainContainer {
+  margin: 0;
+  padding: 0 !important;
+}
+
+.loader,
+.error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.header {
+  border-bottom: 1px solid #ccc;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem 8rem 1.5rem 8rem;
+  margin-bottom: 0;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.textHeader {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  padding-bottom: 1rem;
+}
+
+.hostSection {
+  display: flex;
+  align-items: center;
+}
+
+.userPicture {
+  /* Styles for user picture */
+}
+
+.hostInfo {
+  margin-left: 1rem;
+}
+
+.link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.eventInformation {
+  display: flex;
+  align-items: start;
+  background-color: #f7f7f7;
+  padding: 20px;
+  border-radius: 5px;
+  padding: 3rem 8rem 3rem 8rem;
+}
+
+.eventImage {
+  border-radius: 0 !important;
+}
+
+.eventDetails {
+  height: 100% !important;
+  margin-left: 4rem;
+}
+
+.attendeesList {
+  list-style: none;
+  padding-left: 0;
+}
