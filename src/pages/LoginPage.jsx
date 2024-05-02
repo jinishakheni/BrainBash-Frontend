@@ -169,7 +169,7 @@ export function LoginPage(props) {
         height: "100vh",
       }}
     >
-      <Container style={{ width: "fluid", maxWidth: "500px" }}>
+      <Container style={{ fluid: "true" }}>
         <Paper
           radius="md"
           p="xl"
