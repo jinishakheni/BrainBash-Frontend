@@ -43,6 +43,12 @@ const LoginPage = (props) => {
   // Auth context
   const { storeToken, verifyToken } = useContext(AuthContext);
 
+  // On back and forward, change type to login or register.
+  useEffect(() => {
+    setType(typeParam);
+  }, [typeParam]);
+
+
   // Function to show error notifications
   const showNotification = (page, type, message) => {
     notifications.show({
