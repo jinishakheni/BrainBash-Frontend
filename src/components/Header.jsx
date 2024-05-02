@@ -3,6 +3,7 @@
 // Module imports
 import {
   Avatar,
+  Button,
   Container,
   Group,
   Menu,
@@ -10,7 +11,7 @@ import {
   UnstyledButton,
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { FaRegUser } from "react-icons/fa6";
 
 // Component inport
@@ -21,13 +22,15 @@ import logoImg from "../assets/images/logo.png";
 
 // Styles import
 import classes from "../styles/Header.module.css";
+import { AuthContext } from "../contexts/AuthContext";
 
 const Header = () => {
   const navigate = useNavigate();
   const [userMenuOpened, setUserMenuOpened] = useState(false);
+  const { isLoggedIn, logOutUser } = useContext(AuthContext);
 
   // Create tab
-  const tabsList = ["Events", "Experts"];
+  const tabsList = ["Home", "Events", "Experts"];
   const tabItems = tabsList.map((tab) => (
     <Tabs.Tab value={tab} key={tab}>
       {tab}
@@ -38,7 +41,7 @@ const Header = () => {
     {
       key: "my_profile",
       tab: "My Profile",
-      link: `/users/${JSON.parse(localStorage.getItem("user"))?.userId}`,
+      // link: `/users/${JSON.parse(localStorage.getItem("user"))?.userId}`,
     },
     {
       key: "logout",
@@ -47,7 +50,17 @@ const Header = () => {
     },
   ];
   const userDropDownItems = userList.map((item) => (
-    <Menu.Item key={item.key}>{item.tab}</Menu.Item>
+    <Menu.Item
+      key={item.key}
+      onClick={() => {
+        if (item.key === "logout") {
+          logOutUser();
+        }
+        navigate(item.link);
+      }}
+    >
+      {item.tab}
+    </Menu.Item>
   ));
 
   return (
@@ -65,7 +78,7 @@ const Header = () => {
         {/* Tabs */}
         <Container size="sm" ml={20} mr={20}>
           <Tabs
-            defaultValue="Events"
+            defaultValue="Home"
             visibleFrom="xs"
             onChange={(value) => navigate(`/${value.toLowerCase()}`)}
             classNames={{
@@ -79,24 +92,33 @@ const Header = () => {
 
         {/* User settings */}
         <Group gap={{ base: "sm", sm: "md", lg: "xl" }}>
-          <Menu
-            width={200}
-            position="bottom"
-            withArrow
-            shadow="md"
-            opened={userMenuOpened}
-            onChange={setUserMenuOpened}
-            transitionProps={{ transition: "pop-top-right" }}
-            withinPortal
-            trigger="click-hover"
-          >
-            <Menu.Target>
-              <UnstyledButton className={classes.userIcon}>
-                <FaRegUser size={25} />
-              </UnstyledButton>
-            </Menu.Target>
-            <Menu.Dropdown> {userDropDownItems} </Menu.Dropdown>
-          </Menu>
+          {isLoggedIn ? (
+            <Menu
+              width={200}
+              position="bottom"
+              withArrow
+              shadow="md"
+              opened={userMenuOpened}
+              onChange={setUserMenuOpened}
+              transitionProps={{ transition: "pop-top-right" }}
+              withinPortal
+              trigger="click-hover"
+            >
+              <Menu.Target>
+                <UnstyledButton className={classes.userIcon}>
+                  <FaRegUser size={25} />
+                </UnstyledButton>
+              </Menu.Target>
+              <Menu.Dropdown> {userDropDownItems} </Menu.Dropdown>
+            </Menu>
+          ) : (
+            <>
+              <Button onClick={() => navigate("/account/login")}>Log in</Button>
+              <Button onClick={() => navigate("/account/register")}>
+                Sign up
+              </Button>
+            </>
+          )}
           <ColorScheme />
         </Group>
       </Group>
