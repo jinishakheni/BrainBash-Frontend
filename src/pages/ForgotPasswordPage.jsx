@@ -63,6 +63,7 @@ const ForgotPasswordPage = () => {
       }
       setError("");
     } catch (error) {
+      console.error("Error while sending mail to user:", error);
       notifications.show({
         color: "red",
         title: "Something went wrong. Try after sometime.",
