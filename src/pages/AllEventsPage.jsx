@@ -40,7 +40,7 @@ const AllEventsPage = () => {
       console.error("Error while fetching events: ", error);
       notifications.show({
         color: "red",
-        title: "Oops! Something went wrong. Please try to re-login.",
+        title: "Oops! Something went wrong. Please refresh the page and try again.",
       });
     }
   };
