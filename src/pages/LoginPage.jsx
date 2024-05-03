@@ -119,7 +119,6 @@ const LoginPage = (props) => {
         const requestBody = { email, password, firstName, lastName };
         // Make an axios request to the API
         // If the POST request is a successful redirect to the login page
-        // If the request resolves with an error, set the error message in the state
         axios
           .post(`${import.meta.env.VITE_API_URL}/auth/signup`, requestBody)
           .then((response) => {
