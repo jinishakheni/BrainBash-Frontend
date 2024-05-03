@@ -100,7 +100,7 @@ const ForgotPasswordPage = () => {
             variant="transparent"
             size="sm"
             p={0}
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/account/login")}
           >
             <Center inline>
               <FaArrowLeft

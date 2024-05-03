@@ -1,0 +1,10 @@
+.ctn {
+  min-height: 100vh;
+  margin-top: 3rem;
+}
+
+.gridCtn {
+  padding-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+}

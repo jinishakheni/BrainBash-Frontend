@@ -18,11 +18,13 @@ import {
 import { GoogleButton } from "../components/GoogleButton";
 import { GithubButton } from "../components/GithubIcon";
 
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { AuthContext } from "../contexts/AuthContext";
+import { isValidPassword } from "../helper/utils";
 
-export function LoginPage(props) {
+const LoginPage = (props) => {
   // Setting up hooks for form data
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,7 +32,6 @@ export function LoginPage(props) {
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [errorMessage, setErrorMessage] = useState(undefined);
 
   // Getting the route parameter (login or register) and storing in a hook
   const { typeParam } = useParams();
@@ -39,12 +40,24 @@ export function LoginPage(props) {
   // Navigate hook
   const navigate = useNavigate();
 
+  // Auth context
+  const { storeToken, verifyToken } = useContext(AuthContext);
+
+  // On back and forward, change type to login or register.
+  useEffect(() => {
+    setType(typeParam);
+  }, [typeParam]);
+
+
   // Function to show error notifications
-  const showError = (type, message) => {
+  const showNotification = (page, type, message) => {
     notifications.show({
-      title: type.toUpperCase() + " ERROR: ",
+      title:
+        page === "register"
+          ? `Registration ${type === "error" ? "error" : "success"}`
+          : `Login ${type === "error" ? "error" : "success"}`,
+      color: type === "error" ? "red" : "indigo", // Set the notification color based on type
       message: message,
-      color: "red", // Set the notification color to red
     });
   };
 
@@ -81,7 +94,9 @@ export function LoginPage(props) {
       email: (value) =>
         /^\S+@\S+$/.test(value) ? null : "Invalid email address",
       password: (value) =>
-        value.length >= 6 ? null : "Password must have at least 6 characters",
+        isValidPassword(value)
+          ? null
+          : "Password should contain at least one letter, one digit and one special character, and be at least 6 characters long.",
       confirmPassword: (value, values) =>
         type !== "register" || value === values.password
           ? null
@@ -108,13 +123,16 @@ export function LoginPage(props) {
         axios
           .post(`${import.meta.env.VITE_API_URL}/auth/signup`, requestBody)
           .then((response) => {
-            //console.log("User succesfully created", response);
-            navigateToLogin();
+            if (response.status === 201) {
+              // TODO Show registration success notification
+              setTimeout(navigateToLogin(), 2000);
+            } else {
+              throw new Error(response);
+            }
           })
           .catch((error) => {
-            setErrorMessage(error.response.data.message);
-            //console.log(errorMessage);
-            showError(type, error.response.data.message);
+            console.error("Error: ", error);
+            showNotification(type, "error", error.response.data.message);
           });
       }
     } else if (type === "login") {
@@ -130,17 +148,18 @@ export function LoginPage(props) {
         axios
           .post(`${import.meta.env.VITE_API_URL}/auth/login`, requestBody)
           .then((response) => {
-            // Request to the server's endpoint `/auth/login` returns a response
-            // with the JWT string ->  response.data.authToken
-            console.log("JWT token", response.data.authToken);
-            notifications.clean();
-            setErrorMessage("");
-            navigate("/");
+            if (response.status === 200) {
+              storeToken(response.data.token);
+              notifications.clean();
+              navigate("/");
+              verifyToken();
+            } else {
+              throw new Error();
+            }
           })
           .catch((error) => {
-            setErrorMessage(error.response.data.message);
-            console.log(error);
-            showError(type, error.response.data.message);
+            console.error("Error: ", error);
+            showNotification(type, "error", error.response.data.message);
           });
       }
     }
@@ -150,13 +169,11 @@ export function LoginPage(props) {
   const navigateToLogin = () => {
     setType("login");
     notifications.clean();
-    setErrorMessage("");
     navigate("/account/login");
   };
   const navigateToRegister = () => {
     setType("register");
     notifications.clean();
-    setErrorMessage("");
     navigate("/account/register");
   };
 
@@ -292,13 +309,26 @@ export function LoginPage(props) {
               >
                 {"Forgot your password?"}
               </Anchor>
-              <Button type="submit" radius="xl">
-                {upperFirst(type)}
-              </Button>
+              <Group justify="space-between">
+                <Button
+                  type="button"
+                  radius="xl"
+                  onClick={() => {
+                    navigate("/");
+                  }}
+                >
+                  Back
+                </Button>
+                <Button type="submit" radius="xl">
+                  {upperFirst(type)}
+                </Button>
+              </Group>
             </Group>
           </form>
         </Paper>
       </Container>
     </div>
   );
-}
+};
+
+export default LoginPage;
