@@ -26,13 +26,16 @@ function AuthProviderWrapper(props) {
 
     if (storedToken) {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/verify`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${storedToken}`,
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/auth/verify`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${storedToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
         if (response.ok) {
           const user = await response.json();
           setIsLoggedIn(true);
@@ -52,14 +55,21 @@ function AuthProviderWrapper(props) {
       setIsLoading(false);
     }
   };
-  
+
   useEffect(() => {
     verifyToken();
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, isLoading, user, storeToken, logOutUser, verifyToken }}
+      value={{
+        isLoggedIn,
+        isLoading,
+        user,
+        storeToken,
+        logOutUser,
+        verifyToken,
+      }}
     >
       {props.children}
     </AuthContext.Provider>

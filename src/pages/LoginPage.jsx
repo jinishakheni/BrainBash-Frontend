@@ -1,6 +1,8 @@
 import { upperFirst } from "@mantine/hooks";
 import { useParams } from "react-router-dom";
 import { useForm } from "@mantine/form";
+import { useState, useContext } from "react";
+import { AuthContext } from "../contexts/AuthContext";
 import { notifications } from "@mantine/notifications";
 import {
   TextInput,
@@ -18,7 +20,6 @@ import {
 import { GoogleButton } from "../components/GoogleButton";
 import { GithubButton } from "../components/GithubIcon";
 
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -30,7 +31,6 @@ export function LoginPage(props) {
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [errorMessage, setErrorMessage] = useState(undefined);
 
   // Getting the route parameter (login or register) and storing in a hook
   const { typeParam } = useParams();
@@ -38,6 +38,9 @@ export function LoginPage(props) {
 
   // Navigate hook
   const navigate = useNavigate();
+
+  // Get function to store token in AuthContext after login
+  const { storeToken, verifyToken } = useContext(AuthContext);
 
   // Function to show error notifications
   const showError = (type, message) => {
@@ -112,8 +115,6 @@ export function LoginPage(props) {
             navigateToLogin();
           })
           .catch((error) => {
-            setErrorMessage(error.response.data.message);
-            //console.log(errorMessage);
             showError(type, error.response.data.message);
           });
       }
@@ -132,14 +133,20 @@ export function LoginPage(props) {
           .then((response) => {
             // Request to the server's endpoint `/auth/login` returns a response
             // with the JWT string ->  response.data.authToken
-            console.log("JWT token", response.data.authToken);
+            console.log("JWT token", response.data.token);
             notifications.clean();
-            setErrorMessage("");
+
+            // Store token in the AuthContext
+            console.log("storing token...");
+            storeToken(response.data.token);
+
+            // Verify the token by sending a request
+            // to the server's JWT validation endpoint.
+            verifyToken();
+
             navigate("/");
           })
           .catch((error) => {
-            setErrorMessage(error.response.data.message);
-            console.log(error);
             showError(type, error.response.data.message);
           });
       }
@@ -150,13 +157,11 @@ export function LoginPage(props) {
   const navigateToLogin = () => {
     setType("login");
     notifications.clean();
-    setErrorMessage("");
     navigate("/account/login");
   };
   const navigateToRegister = () => {
     setType("register");
     notifications.clean();
-    setErrorMessage("");
     navigate("/account/register");
   };
 
