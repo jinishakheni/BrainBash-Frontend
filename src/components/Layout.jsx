@@ -1,6 +1,7 @@
 import { useLocation } from "react-router-dom";
 import Header from "./Header";
 import { Footer } from "./Footer";
+import AuthForms from "./AuthForms/AuthForms";
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -16,7 +17,12 @@ const Layout = ({ children }) => {
   );
   return (
     <>
-      {shouldDisplayNavbar && <Header />}
+      {shouldDisplayNavbar && (
+        <>
+          <Header /> 
+          <AuthForms></AuthForms>
+        </>
+      )}
       {children}
       <Footer />
     </>
