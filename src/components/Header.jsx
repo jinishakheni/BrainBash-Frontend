@@ -3,12 +3,16 @@
 // Module imports
 import {
   Avatar,
+  Burger,
   Button,
   Container,
+  Drawer,
   Group,
   Menu,
   Tabs,
+  Title,
   UnstyledButton,
+  em,
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
@@ -23,11 +27,15 @@ import logoImg from "../assets/images/logo.png";
 // Styles import
 import classes from "../styles/Header.module.css";
 import { AuthContext } from "../contexts/AuthContext";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 
 const Header = () => {
   const navigate = useNavigate();
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const { isLoggedIn, logOutUser } = useContext(AuthContext);
+  const [menuDrawerOpened, menuDrawer] = useDisclosure(false);
+  const [openedTab, setOpenedTab] = useState("Home");
+  const isMobile = useMediaQuery(`(max-width: ${em(500)})`);
 
   // Create tab
   const tabsList = ["Home", "Events", "Experts"];
@@ -64,65 +72,130 @@ const Header = () => {
   ));
 
   return (
-    <Container fluid className={classes.ctn} pl={70} pr={70}>
-      <Group justify="space-between" gap={20}>
-        {/* App logo */}
-        <Avatar
-          src={logoImg}
-          alt={"App Logo"}
-          radius="xs"
-          size={60}
-          onClick={() => navigate("/")}
-        />
+    <>
+      <Container
+        fluid
+        className={classes.ctn}
+        pl={{ base: 30, md: 70 }}
+        pr={{ base: 30, md: 70 }}
+      >
+        <Group justify="space-between" gap={{ base: 0 }} wrap="nowrap">
+          <Burger
+            opened={menuDrawerOpened}
+            onClick={menuDrawer.open}
+            hiddenFrom="sm"
+            size="sm"
+          />
 
-        {/* Tabs */}
-        <Container size="sm" ml={20} mr={20}>
-          <Tabs
-            defaultValue="Home"
-            visibleFrom="xs"
-            onChange={(value) => navigate(`/${value.toLowerCase()}`)}
-            classNames={{
-              list: classes.tabsList,
-              tab: classes.tab,
-            }}
-          >
-            <Tabs.List>{tabItems}</Tabs.List>
-          </Tabs>
-        </Container>
+          {/* App logo */}
+          <Avatar src={logoImg} alt={"App Logo"} radius="xs" size={60} />
 
-        {/* User settings */}
-        <Group gap={{ base: "sm", sm: "md", lg: "xl" }}>
-          {isLoggedIn ? (
-            <Menu
-              width={200}
-              position="bottom"
-              withArrow
-              shadow="md"
-              opened={userMenuOpened}
-              onChange={setUserMenuOpened}
-              transitionProps={{ transition: "pop-top-right" }}
-              withinPortal
-              trigger="click-hover"
+          {/* Tabs */}
+          <Container size="sm" ml={20} mr={20}>
+            <Tabs
+              defaultValue={openedTab}
+              visibleFrom="sm"
+              onChange={(value) => {
+                value === "Home"
+                  ? navigate(`/`)
+                  : navigate(`/${value.toLowerCase()}`);
+                setOpenedTab(value);
+              }}
+              classNames={{
+                list: classes.tabsList,
+                tab: classes.tab,
+              }}
             >
-              <Menu.Target>
-                <UnstyledButton className={classes.userIcon}>
-                  <FaRegUser size={25} />
-                </UnstyledButton>
-              </Menu.Target>
-              <Menu.Dropdown> {userDropDownItems} </Menu.Dropdown>
-            </Menu>
-          ) : (
-            <>
-              <Button onClick={() => navigate("/account/login")}>Log in</Button>
-              <Button onClick={() => navigate("/account/register")}>
-                Sign up
-              </Button>
-            </>
-          )}
-          <ColorScheme />
+              <Tabs.List>{tabItems}</Tabs.List>
+            </Tabs>
+          </Container>
+
+          {/* User settings */}
+          <Group gap={{ sm: "md", lg: "xl" }} wrap="nowrap">
+            {isLoggedIn ? (
+              <Menu
+                width={200}
+                position="bottom"
+                withArrow
+                shadow="md"
+                opened={userMenuOpened}
+                onChange={setUserMenuOpened}
+                transitionProps={{ transition: "pop-top-right" }}
+                withinPortal
+                trigger="click-hover"
+              >
+                <Menu.Target>
+                  <UnstyledButton className={classes.userIcon}>
+                    <FaRegUser size={25} />
+                  </UnstyledButton>
+                </Menu.Target>
+                <Menu.Dropdown> {userDropDownItems} </Menu.Dropdown>
+              </Menu>
+            ) : (
+              <>
+                <Button
+                  size={isMobile ? "xs" : "sm"}
+                  onClick={() => navigate("/account/login")}
+                >
+                  Log in
+                </Button>
+                <Button
+                  size={isMobile ? "xs" : "sm"}
+                  onClick={() => navigate("/account/register")}
+                >
+                  Sign up
+                </Button>
+              </>
+            )}
+            <ColorScheme />
+          </Group>
         </Group>
-      </Group>
-    </Container>
+      </Container>
+      <Drawer.Root
+        opened={menuDrawerOpened}
+        onClose={menuDrawer.close}
+        size={200}
+      >
+        <Drawer.Overlay />
+        <Drawer.Content>
+          <Drawer.Header>
+            <Drawer.Title>
+              <Group justify="flex-start" gap={5}>
+                <Avatar
+                  src={logoImg}
+                  alt={"App Logo"}
+                  radius="xs"
+                  size={45}
+                  onClick={() => navigate("/")}
+                />
+                <Title order={5}>BrainBash</Title>
+              </Group>
+            </Drawer.Title>
+            <Drawer.CloseButton />
+          </Drawer.Header>
+          <Drawer.Body>
+            <Tabs
+              variant="pills"
+              defaultValue={openedTab}
+              orientation="vertical"
+              onChange={(value) => {
+                value === "Home"
+                  ? navigate(`/`)
+                  : navigate(`/${value.toLowerCase()}`);
+                setOpenedTab(value);
+                menuDrawer.close();
+              }}
+              classNames={{
+                list: classes.tabsList,
+                root: { width: "100%" },
+              }}
+            >
+              <Tabs.List>{tabItems}</Tabs.List>
+            </Tabs>
+          </Drawer.Body>
+        </Drawer.Content>
+      </Drawer.Root>
+    </>
   );
 };
 
