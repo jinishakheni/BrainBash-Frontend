@@ -28,6 +28,7 @@ import logoImg from "../assets/images/logo.png";
 import classes from "../styles/Header.module.css";
 import { AuthContext } from "../contexts/AuthContext";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import { useAuthFormsContext } from "../contexts/AuthFormsContext";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -36,6 +37,8 @@ const Header = () => {
   const [menuDrawerOpened, menuDrawer] = useDisclosure(false);
   const [openedTab, setOpenedTab] = useState("Home");
   const isMobile = useMediaQuery(`(max-width: ${em(500)})`);
+
+  const { toggleAuthForms } = useAuthFormsContext();
 
   // Create tab
   const tabsList = ["Home", "Events", "Experts"];
@@ -135,13 +138,17 @@ const Header = () => {
               <>
                 <Button
                   size={isMobile ? "xs" : "sm"}
-                  onClick={() => navigate("/account/login")}
+                  onClick={() => {
+                    toggleAuthForms("login", "true");
+                  }}
                 >
                   Log in
                 </Button>
                 <Button
                   size={isMobile ? "xs" : "sm"}
-                  onClick={() => navigate("/account/register")}
+                  onClick={() => {
+                    toggleAuthForms("register", "true");
+                  }}
                 >
                   Sign up
                 </Button>
