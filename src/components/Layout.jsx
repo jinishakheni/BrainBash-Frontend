@@ -11,7 +11,6 @@ const Layout = ({ children }) => {
     "/account/register",
     "/reset-password",
   ];
-  console.log(location.pathname);
   const shouldDisplayNavbar = !ignoreRoute.some((path) =>
     location.pathname.includes(path)
   );
