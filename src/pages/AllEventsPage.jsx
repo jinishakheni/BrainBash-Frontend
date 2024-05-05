@@ -1,7 +1,7 @@
 // Module imports
 import { notifications } from "@mantine/notifications";
 import { useState } from "react";
-import { Loader } from "@mantine/core";
+import { Loader, Title } from "@mantine/core";
 
 // Style imports
 import classes from "../styles/AllEventsPage.module.css";
@@ -11,10 +11,12 @@ import EventsGrid from "../components/EventsGrid";
 import SearchAndFilter from "../components/SearchAndFilter";
 
 const AllEventsPage = () => {
-  const [events, setEvents] = useState();
+  const [events, setEvents] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Fetch all events from DB
   const fetchEvents = async (searchTerm, category, skill, type) => {
+    setIsLoading(true);
     let apiEndPoint = `${import.meta.env.VITE_API_URL}/api/events?`;
     if (searchTerm) {
       apiEndPoint += `title=${searchTerm}&`;
@@ -33,10 +35,12 @@ const AllEventsPage = () => {
       if (response.ok) {
         const responseData = await response.json();
         setEvents(responseData);
+        setIsLoading(false);
       } else {
         throw new Error(response);
       }
     } catch (error) {
+      setIsLoading(false);
       console.error("Error while fetching events: ", error);
       notifications.show({
         color: "red",
@@ -50,8 +54,12 @@ const AllEventsPage = () => {
     <div className={classes.ctn}>
       <SearchAndFilter page="event" fetchData={fetchEvents} />
       <div className={classes.gridCtn}>
-        {events ? (
-          <EventsGrid list={events}></EventsGrid>
+        {!isLoading ? (
+          events.length ? (
+            <EventsGrid list={events}></EventsGrid>
+          ) : (
+            <Title order={3}>No Data Found</Title>
+          )
         ) : (
           <Loader color="blue" size="xl" type="bars" />
         )}
