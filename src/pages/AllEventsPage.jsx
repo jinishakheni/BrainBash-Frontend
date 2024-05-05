@@ -1,17 +1,15 @@
 // Module imports
 import { notifications } from "@mantine/notifications";
-import { useContext, useEffect, useState } from "react";
+import { useState } from "react";
 import { Loader } from "@mantine/core";
 
 // Style imports
 import classes from "../styles/AllEventsPage.module.css";
 import EventsGrid from "../components/EventsGrid";
 import SearchAndFilter from "../components/SearchAndFilter";
-import { CategoryContext } from "../contexts/CategoryContext";
 
 const AllEventsPage = () => {
   const [events, setEvents] = useState();
-  const { fetchCategories } = useContext(CategoryContext);
 
   // Fetch all events from DB
   const fetchEvents = async (searchTerm, category, skill, type) => {
@@ -20,7 +18,7 @@ const AllEventsPage = () => {
       apiEndPoint += `title=${searchTerm}&`;
     }
     if (category) {
-      apiEndPoint += `categories=${category}&`;
+      apiEndPoint += `category=${category}&`;
     }
     if (skill) {
       apiEndPoint += `skills=${skill}&`;
@@ -45,10 +43,6 @@ const AllEventsPage = () => {
       });
     }
   };
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
 
   return (
     <div className={classes.ctn}>

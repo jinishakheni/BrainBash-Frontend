@@ -23,11 +23,15 @@ import logoImg from "../assets/images/logo.png";
 // Styles import
 import classes from "../styles/Header.module.css";
 import { AuthContext } from "../contexts/AuthContext";
+import { useAuthFormsContext } from "../contexts/AuthFormsContext";
 
 const Header = () => {
   const navigate = useNavigate();
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const { isLoggedIn, logOutUser } = useContext(AuthContext);
+
+  const { toggleAuthForms } = useAuthFormsContext();
+
 
   // Create tab
   const tabsList = ["Home", "Events", "Experts"];
@@ -113,8 +117,8 @@ const Header = () => {
             </Menu>
           ) : (
             <>
-              <Button onClick={() => navigate("/account/login")}>Log in</Button>
-              <Button onClick={() => navigate("/account/register")}>
+              <Button onClick={() => {toggleAuthForms("login","true")}}>Log in</Button>
+              <Button onClick={() => {toggleAuthForms("register","true")}}>
                 Sign up
               </Button>
             </>
@@ -123,6 +127,8 @@ const Header = () => {
         </Group>
       </Group>
     </Container>
+
+    
   );
 };
 

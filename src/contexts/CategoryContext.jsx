@@ -1,5 +1,5 @@
 import { notifications } from "@mantine/notifications";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 const CategoryContext = createContext();
 
@@ -27,6 +27,10 @@ const CategoryContextWrapper = ({ children }) => {
       }
     }
   };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   return (
     <CategoryContext.Provider value={{ categories, fetchCategories }}>
