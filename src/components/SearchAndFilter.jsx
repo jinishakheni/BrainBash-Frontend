@@ -112,8 +112,8 @@ const SearchAndFilter = ({ fetchEvents }) => {
 
   return (
     <>
-      <Container size="lg" h={rem(50)} mb={rem(20)}>
-        <Group justify="center">
+      <Container fluid h={rem(50)} mb={rem(20)}>
+        <Group justify="center" wrap="nowrap">
           <TextInput
             styles={{
               input: {
