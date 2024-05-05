@@ -79,25 +79,25 @@ const Header = () => {
       <Container
         fluid
         className={classes.ctn}
-        pl={{ base: 30, md: 70 }}
-        pr={{ base: 30, md: 70 }}
+        pl={{ base: 10, md: 70 }}
+        pr={{ base: 10, md: 70 }}
       >
-        <Group justify="space-between" gap={{ base: 0 }} wrap="nowrap">
-          <Burger
-            opened={menuDrawerOpened}
-            onClick={menuDrawer.open}
-            hiddenFrom="sm"
-            size="sm"
-          />
+        <Group justify="space-between">
+          <Group justify="space-between" gap={5}>
+            <Burger
+              opened={menuDrawerOpened}
+              onClick={menuDrawer.open}
+              hiddenFrom="sm"
+              size="sm"
+            />
 
-          {/* App logo */}
-          <Avatar src={logoImg} alt={"App Logo"} radius="xs" size={60} />
-
+            {/* App logo */}
+            <Avatar src={logoImg} alt={"App Logo"} radius="xs" size={60} />
+          </Group>
           {/* Tabs */}
-          <Container size="sm" ml={20} mr={20}>
+          <Container size="sm" ml={20} mr={20} visibleFrom="sm">
             <Tabs
               defaultValue={openedTab}
-              visibleFrom="sm"
               onChange={(value) => {
                 value === "Home"
                   ? navigate(`/`)
