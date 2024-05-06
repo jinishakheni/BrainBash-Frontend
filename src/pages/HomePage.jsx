@@ -1,9 +1,12 @@
 // Module imports
 import { notifications } from "@mantine/notifications";
 import { useEffect, useState } from "react";
-import { Loader, Title, Button, Flex, Image } from "@mantine/core";
+import { useNavigate } from "react-router-dom";
+import { Loader, Title, Button, Flex, Image, em } from "@mantine/core";
 import classes from "../styles/HomePage.module.css";
 import homepic from "../assets/images/homepic.png";
+import { useAuthFormsContext } from "../contexts/AuthFormsContext";
+import { useMediaQuery } from "@mantine/hooks";
 
 // Components import
 import EventsGrid from "../components/EventsGrid";
@@ -11,6 +14,11 @@ import EventsGrid from "../components/EventsGrid";
 const HomePage = () => {
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const isMobile = useMediaQuery(`(max-width: ${em(500)})`);
+
+  const { toggleAuthForms } = useAuthFormsContext();
+  const navigate = useNavigate();
 
   // Fetch all events from DB
   const fetchEvents = async () => {
@@ -56,7 +64,14 @@ const HomePage = () => {
             Discover a community where your thirst for learning meets endless
             opportunities for growth.
           </Title>
-          <Button>Join BrainBash</Button>
+          <Button
+            size={isMobile ? "xs" : "sm"}
+            onClick={() => {
+              toggleAuthForms("login", "true");
+            }}
+          >
+            Join BrainBash
+          </Button>
         </Flex>
         <div className={classes.headerImage}>
           <Image src={homepic} />
@@ -70,7 +85,9 @@ const HomePage = () => {
             events.length ? (
               <div className={classes.listEvents}>
                 <EventsGrid list={events.slice(0, 4)}></EventsGrid>
-                <Button>See All Events!</Button>
+                <Button onClick={() => navigate("/events")}>
+                  See All Events!
+                </Button>
               </div>
             ) : (
               <Title order={3}>No Data Found</Title>
