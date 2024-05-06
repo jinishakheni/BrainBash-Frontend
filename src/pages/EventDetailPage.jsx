@@ -187,7 +187,7 @@ const EventDetailPage = () => {
 
   useEffect(() => {
     fetchEvent();
-  }, []);
+  }, [isAttending, isLoggedIn]);
 
   if (isLoading)
     return <Container className={classes.loader}>Loading...</Container>;
