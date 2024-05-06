@@ -238,7 +238,9 @@ const EventDetailPage = () => {
           className={classes.eventImage}
         />
         <Flex direction="column" className={classes.eventDetails}>
-          <Text size="lg">{event.description}</Text>
+          <Text lineClamp={12} size="lg">
+            {event.description}
+          </Text>
           <Space h="md" />
           <Text size="sm">
             Starting time:{" "}
@@ -263,7 +265,9 @@ const EventDetailPage = () => {
             <div
               key={idx}
               className={`${classes.attendeeInformation} ${
-                attendee === user.userId ? classes.attendeeHighlighted : ""
+                user && attendee === user.userId
+                  ? classes.attendeeHighlighted
+                  : ""
               }`}
             >
               <Avatar size="lg" alt={attendee} />

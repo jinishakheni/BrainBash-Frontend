@@ -3,8 +3,8 @@ import { Route, Routes } from "react-router-dom";
 
 // Import components
 import Layout from "./components/Layout";
-import ForgotPasswordPage from "./pages/PasswordPages/ForgotPasswordPage";
-import ResetPasswordPage from "./pages/PasswordPages/ResetPasswordPage";
+import ForgotPasswordPage from "./pages/passwordPages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/passwordPages/ResetPasswordPage";
 import AllEventsPage from "./pages/AllEventsPage";
 import AllExpertsPage from "./pages/AllExpertsPage";
 import HomePage from "./pages/HomePage";
@@ -34,7 +34,7 @@ function App() {
           />
           <Route path="/events" element={<AllEventsPage />} />
           <Route path="/experts" element={<AllExpertsPage />} />
-          <Route path="/event/:id" element={<EventDetailPage />} />
+          <Route path="/events/:id" element={<EventDetailPage />} />
           <Route path="*" element={<h1>404 Page Not Found</h1>} />
         </Routes>
       </Layout>
