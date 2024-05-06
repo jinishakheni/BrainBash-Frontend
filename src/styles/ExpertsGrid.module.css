@@ -1,0 +1,4 @@
+.gridContainer {
+  width: 90%;
+  margin: var(--mantine-spacing-md);
+}

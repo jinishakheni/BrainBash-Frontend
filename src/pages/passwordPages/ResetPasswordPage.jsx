@@ -15,8 +15,9 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import { notifications } from "@mantine/notifications";
+import { isValidPassword } from "../../helper/utils";
 
-const ResetPassword = () => {
+const ResetPasswordPage = () => {
   const navigate = useNavigate();
   const [newPassword, setNewPassword] = useState("");
   const [verifyNewPassword, setVerifyNewPassword] = useState("");
@@ -24,12 +25,6 @@ const ResetPassword = () => {
 
   const params = useParams();
   const { token } = params;
-
-  const isValidPassword = (newPassword) => {
-    const passwordValidator =
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
-    return passwordValidator.test(newPassword);
-  };
 
   const handleSendResetLink = async (event) => {
     event.preventDefault();
@@ -65,6 +60,7 @@ const ResetPassword = () => {
           color: "indigo",
           title: "Password succesfully has changed",
         });
+        navigate("/account/login");
       } else {
         const error = await response.json();
         notifications.show({
@@ -119,7 +115,7 @@ const ResetPassword = () => {
             variant="transparent"
             size="sm"
             p={0}
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/account/login")}
           >
             <Center inline>
               <FaArrowLeft
@@ -136,4 +132,4 @@ const ResetPassword = () => {
   );
 };
 
-export default ResetPassword;
+export default ResetPasswordPage;
