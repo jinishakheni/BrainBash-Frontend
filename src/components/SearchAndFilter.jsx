@@ -4,7 +4,7 @@ import { FaSearch } from "react-icons/fa";
 import { CategoryContext } from "../contexts/CategoryContext";
 import { useDebouncedValue } from "@mantine/hooks";
 
-const SearchAndFilter = ({ fetchEvents }) => {
+const SearchAndFilter = ({ page, fetchData }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [debounced] = useDebouncedValue(searchTerm, 200);
   const [categoryMenuOpen, setCategoryMenuOpen] = useState(false);
@@ -16,7 +16,7 @@ const SearchAndFilter = ({ fetchEvents }) => {
   const { categories } = useContext(CategoryContext);
 
   useEffect(() => {
-    fetchEvents(
+    fetchData(
       searchTerm,
       selectedCategory?.categoryName,
       selectedSkill?.skillName,
@@ -30,7 +30,7 @@ const SearchAndFilter = ({ fetchEvents }) => {
       onClick={() => {
         setSelectedCategory(item);
         setSelectedSkill();
-        fetchEvents(searchTerm, item.categoryName, undefined, selectedType);
+        fetchData(searchTerm, item.categoryName, undefined, selectedType);
       }}
     >
       {item.categoryName}
@@ -42,7 +42,7 @@ const SearchAndFilter = ({ fetchEvents }) => {
       key={"all"}
       onClick={() => {
         setSelectedCategory();
-        fetchEvents(searchTerm, undefined, undefined, selectedType);
+        fetchData(searchTerm, undefined, undefined, selectedType);
       }}
     >
       All Category
@@ -54,7 +54,7 @@ const SearchAndFilter = ({ fetchEvents }) => {
       key={item._id}
       onClick={() => {
         setSelectedSkill(item);
-        fetchEvents(
+        fetchData(
           searchTerm,
           selectedCategory.categoryName,
           item.skillName,
@@ -71,7 +71,7 @@ const SearchAndFilter = ({ fetchEvents }) => {
       key={"all"}
       onClick={() => {
         setSelectedSkill();
-        fetchEvents(
+        fetchData(
           searchTerm,
           selectedCategory.categoryName,
           undefined,
@@ -90,14 +90,14 @@ const SearchAndFilter = ({ fetchEvents }) => {
       onClick={() => {
         if (type === "All") {
           setSelectedType();
-          fetchEvents(
+          fetchData(
             searchTerm,
             selectedCategory?.categoryName,
             selectedSkill?.skillName
           );
         } else {
           setSelectedType(type);
-          fetchEvents(
+          fetchData(
             searchTerm,
             selectedCategory?.categoryName,
             selectedSkill?.skillName,
@@ -169,21 +169,23 @@ const SearchAndFilter = ({ fetchEvents }) => {
           )}
 
           {/* Type menu */}
-          <Menu
-            shadow="md"
-            width={200}
-            opened={typeMenuOpen}
-            onChange={setTypeMenuOpen}
-            position="bottom-start"
-          >
-            <Menu.Target>
-              <Button variant="outline" radius="lg">
-                {selectedType ? selectedType : "All Type"}
-              </Button>
-            </Menu.Target>
+          {page === "event" && (
+            <Menu
+              shadow="md"
+              width={200}
+              opened={typeMenuOpen}
+              onChange={setTypeMenuOpen}
+              position="bottom-start"
+            >
+              <Menu.Target>
+                <Button variant="outline" radius="lg">
+                  {selectedType ? selectedType : "All Type"}
+                </Button>
+              </Menu.Target>
 
-            <Menu.Dropdown>{typeMenuItems}</Menu.Dropdown>
-          </Menu>
+              <Menu.Dropdown>{typeMenuItems}</Menu.Dropdown>
+            </Menu>
+          )}
         </Group>
       </Container>
     </>

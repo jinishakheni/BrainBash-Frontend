@@ -5,8 +5,13 @@ import { MdCopyright } from "react-icons/md";
 
 export function Footer() {
   return (
-    <Container fluid className={classes.ctn} pl={70} pr={70}>
-      <Group justify="space-between" gap={20}>
+    <Container
+      fluid
+      className={classes.ctn}
+      pl={{ base: 10, md: 70 }}
+      pr={{ base: 10, md: 70 }}
+    >
+      <Group justify="space-between">
         {/* App logo */}
         <Avatar src={logoImg} alt={"App Logo"} radius="xs" size={60} />
 
