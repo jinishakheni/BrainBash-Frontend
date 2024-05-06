@@ -63,17 +63,22 @@ const HomePage = () => {
         </div>
       </Flex>
 
-      <div className={classes.gridCtn}>
-        <Title>Upcoming events:</Title>
-        {!isLoading ? (
-          events.length ? (
-            <EventsGrid list={events}></EventsGrid>
+      <div className={classes.upcomingEvents}>
+        <Title order={3}>Upcoming events:</Title>
+        <>
+          {!isLoading ? (
+            events.length ? (
+              <div className={classes.listEvents}>
+                <EventsGrid list={events.slice(0, 4)}></EventsGrid>
+                <Button>See All Events!</Button>
+              </div>
+            ) : (
+              <Title order={3}>No Data Found</Title>
+            )
           ) : (
-            <Title order={3}>No Data Found</Title>
-          )
-        ) : (
-          <Loader color="blue" size="xl" type="bars" />
-        )}
+            <Loader color="blue" size="xl" type="bars" />
+          )}
+        </>
       </div>
     </Flex>
   );
