@@ -1,0 +1,128 @@
+.mainContainer {
+  margin: 0;
+  padding: 0 !important;
+  min-height: calc(100vh - 130px);
+}
+
+.loader,
+.error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.header {
+  border-bottom: 1px solid #ccc;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem 8rem 1.5rem 8rem;
+  margin-bottom: 0;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.textHeader {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  padding-bottom: 1rem;
+}
+
+.hostSection {
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem; /* Separate host section slightly */
+}
+
+.userPicture {
+  /* Styles for user picture */
+}
+
+.hostInfo {
+  margin-left: 1rem;
+}
+
+.link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.eventInformation {
+  display: flex;
+  align-items: flex-start;
+  background-color: #f7f7f7;
+  border-radius: 5px;
+  padding: 3rem 8rem 3rem 8rem;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 16px; /* Adjust as needed */
+}
+
+.eventImage {
+  border-radius: 0 !important;
+}
+
+.eventDetails {
+  height: 100% !important;
+  margin-left: 4rem;
+}
+
+.attendeesList {
+  list-style: none;
+  padding-left: 0;
+}
+
+.attendeeInformation {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  width: 80px;
+  margin-right: 1rem;
+}
+
+.attendeeBox {
+  width: 80px;
+  padding: 0.2rem;
+}
+
+.attendeesInformation {
+  padding: 1.5rem 8rem 1.5rem 8rem;
+  margin-bottom: 0;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.attendeeHighlighted {
+  background-color: pink;
+}
+
+/* Media query to switch to column layout on small screens */
+@media (max-width: 768px) {
+  .eventInformation {
+    flex-direction: column; /* Stack vertically */
+    padding: 3rem;
+  }
+
+  .eventImage {
+    width: 100%; /* Ensure the image takes full width in column layout */
+    margin-bottom: 16px; /* Add spacing between image and text */
+  }
+
+  .eventDetails {
+    margin-left: 0rem;
+  }
+
+  .header {
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 3rem;
+  }
+
+  .attendeesInformation {
+    padding: 1.5rem 3rem 1.5rem 3rem;
+  }
+}
