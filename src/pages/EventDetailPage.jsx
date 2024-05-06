@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
 import { notifications } from "@mantine/notifications";
 import { AuthContext } from "../contexts/AuthContext.jsx";
+import { useAuthFormsContext } from "../contexts/AuthFormsContext";
 
 import {
   Image,
@@ -34,6 +35,8 @@ const EventDetailPage = () => {
 
   // Hook to know if user is attending event
   const [isAttending, setIsAttending] = useState(false);
+
+  const { toggleAuthForms } = useAuthFormsContext();
 
   // Fetch the event from from DB
   const fetchEvent = async () => {
@@ -185,6 +188,15 @@ const EventDetailPage = () => {
       });
   };
 
+  function handleJoinButton() {
+    if (!isLoggedIn) {
+      // If user is not logged in, button should navigate to Login
+      toggleAuthForms("login", "true");
+    } else {
+      isAttending ? leaveEvent() : updateAttendees();
+    }
+  }
+
   useEffect(() => {
     fetchEvent();
   }, [isAttending, isLoggedIn]);
@@ -222,9 +234,9 @@ const EventDetailPage = () => {
           </Flex>
         </Flex>
         <Button
-          onClick={() => (isAttending ? leaveEvent() : updateAttendees())}
-          disabled={!isLoggedIn || user.userId === event.hostID}
-          variant={isAttending ? "outline" : "filled"}
+          onClick={handleJoinButton}
+          disabled={user && user.userId === event.hostID}
+          variant={isLoggedIn && isAttending ? "outline" : "filled"}
         >
           {isAttending ? "Leave" : "Join"}
         </Button>
