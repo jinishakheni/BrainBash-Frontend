@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext, useMemo } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
 import { notifications } from "@mantine/notifications";
 import { AuthContext } from "../contexts/AuthContext.jsx";
@@ -10,11 +10,6 @@ import {
   Button,
   Avatar,
   Box,
-  Group,
-  Loader,
-  TextInput,
-  UnstyledButton,
-  rem,
   Title,
   Text,
   Flex,
@@ -31,7 +26,7 @@ const EventDetailPage = () => {
   const [event, setEvent] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [date, setDate] = useState("no date available");
-  const [attendees, setAttendees] = useState();
+  const [attendees, setAttendees] = useState([]);
 
   // Subscribe to the AuthContext to gain access to
   // the values from AuthContext.Provider `value` prop
@@ -48,13 +43,16 @@ const EventDetailPage = () => {
       if (response.ok) {
         const responseData = await response.json();
         if (responseData && responseData.attendees) {
+          // Store event information in Event hook
           setEvent(responseData);
+          // Store attendees informationin Attendees hook
           setAttendees(responseData.attendees);
           const eventDate = new Date(responseData.startingTime);
+          // Stores event date in Date format
           setDate(eventDate);
-          console.log(user);
-          console.log(responseData.attendees);
+          // If user is logged in, that is, user is true
           if (user) {
+            // Check is logged user is attending, store in Attending hook
             setIsAttending(responseData.attendees.includes(user.userId));
           }
         } else {
@@ -77,28 +75,41 @@ const EventDetailPage = () => {
     }
   };
 
+  // Function add current user to the list of attendees, and to update attendees list in the front-end and in the database
   const updateAttendees = () => {
-    console.log("Adding current user as attendee...");
+    console.log("Adding current user to the list of attendees...");
 
+    // Add current user to the list of attendees (Attendess hook), and update isAttending as true
     const updatedAttendees = [...attendees, user.userId];
-    setAttendees(updatedAttendees);
-    setIsAttending(true);
+    // Optimistic updating
+    //  setAttendees(updatedAttendees);
+    //  setIsAttending(true);
 
     // Get token from local storage
     const storedToken = localStorage.getItem("authToken");
 
+    if (!storedToken) {
+      notifications.show({
+        color: "red",
+        title: "Authorization Error",
+        message: "Authentication token is missing.",
+      });
+      return;
+    }
+
     // Put to event
     let apiEndPoint = `${import.meta.env.VITE_API_URL}/api/events/${id}`;
-
+    // Updating only attendee array information
     const updatedData = { attendees: updatedAttendees };
 
+    // PUT request to update
     const requestOptions = {
-      method: "PUT", // or 'PUT' if updating the whole object
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${storedToken}`, // Include this if your API requires authentication
+        Authorization: `Bearer ${storedToken}`,
       },
-      body: JSON.stringify(updatedData), // Convert the JavaScript object to a JSON string
+      body: JSON.stringify(updatedData),
     };
 
     fetch(apiEndPoint, requestOptions)
@@ -111,24 +122,41 @@ const EventDetailPage = () => {
       .then((data) => {
         console.log("Event updated successfully:", data);
         setAttendees(updatedAttendees);
+        setIsAttending(true);
       })
       .catch((error) => {
         console.error("Error updating the event:", error);
       });
   };
 
+  // Function removing the current user from the list of attendees, in front and back (database)
   const leaveEvent = () => {
-    console.log("Removing current user from attendees...");
+    console.log("Removing current user from list of attendees...");
 
+    // Get token from local storage
     const storedToken = localStorage.getItem("authToken");
 
-    let apiEndPoint = `${import.meta.env.VITE_API_URL}/api/events/${event._id}`;
+    // Make sure that token and even are available
+    if (!storedToken || !event) {
+      notifications.show({
+        color: "red",
+        title: "Authorization or Event Error",
+        message: "Authentication token or event data is missing.",
+      });
+      return;
+    }
+
+    // API endpoint
+    const apiEndPoint = `${import.meta.env.VITE_API_URL}/api/events/${
+      event._id
+    }`;
 
     // Filter out the current user's userId
     const updatedAttendees = event.attendees.filter(
       (userId) => userId !== user.userId
     );
 
+    // Prepare information to be updated
     const updatedData = { attendees: updatedAttendees };
 
     const requestOptions = {

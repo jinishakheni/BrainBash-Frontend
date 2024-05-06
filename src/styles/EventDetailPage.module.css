@@ -18,6 +18,7 @@
   margin-bottom: 0;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 }
 
 .textHeader {
@@ -32,6 +33,7 @@
 .hostSection {
   display: flex;
   align-items: center;
+  margin-top: 0.5rem; /* Separate host section slightly */
 }
 
 .userPicture {
@@ -49,10 +51,13 @@
 
 .eventInformation {
   display: flex;
-  align-items: start;
+  align-items: flex-start;
   background-color: #f7f7f7;
   border-radius: 5px;
   padding: 3rem 8rem 3rem 8rem;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 16px; /* Adjust as needed */
 }
 
 .eventImage {
@@ -93,4 +98,30 @@
 
 .attendeeHighlighted {
   background-color: pink;
+}
+
+/* Media query to switch to column layout on small screens */
+@media (max-width: 768px) {
+  .eventInformation {
+    flex-direction: column; /* Stack vertically */
+    padding: 3rem;
+  }
+
+  .eventImage {
+    width: 100%; /* Ensure the image takes full width in column layout */
+    margin-bottom: 16px; /* Add spacing between image and text */
+  }
+
+  .eventDetails {
+    margin-left: 0rem;
+  }
+
+  .header {
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 3rem;
+  }
+
+  .attendeesInformation {
+    padding: 1.5rem 3rem 1.5rem 3rem;
+  }
 }
