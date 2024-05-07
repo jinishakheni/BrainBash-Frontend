@@ -10,7 +10,6 @@ import {
 import { useContext, useEffect, useState } from "react";
 import no_photo from "../assets/images/no_photo.png";
 import { DateTimePicker } from "@mantine/dates";
-import dayjs from "dayjs";
 import { CategoryContext } from "../contexts/CategoryContext";
 import { isValidDuration } from "../helper/utils";
 
@@ -21,7 +20,7 @@ const UpdateEventModal = ({ eventDetails, updateEventInfo }) => {
   const [skills, setSkills] = useState("");
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [startingTime, setStartingTime] = useState(
-    dayjs().startOf("day").toDate()
+    new Date(eventDetails.startingTime)
   );
   const [duration, setDuration] = useState(eventDetails.duration);
   const [mode, setMode] = useState(eventDetails.mode);
@@ -63,9 +62,9 @@ const UpdateEventModal = ({ eventDetails, updateEventInfo }) => {
     let validationErrors = {};
     if (!title) validationErrors.title = "Title is required";
     if (!description) validationErrors.description = "Description is required";
-    if (!selectedCategory) validationErrors.category = "Category is required";
-    if (selectedSkills.length === 0)
-      validationErrors.skill = "Skill is required";
+    // if (!selectedCategory) validationErrors.category = "Category is required";
+    //  if (selectedSkills.length === 0)
+    //    validationErrors.skill = "Skill is required";
     if (!startingTime) validationErrors.startingTime = "Time is required";
     if (!duration) validationErrors.duration = "Duration is required";
     else if (!isValidDuration(duration))

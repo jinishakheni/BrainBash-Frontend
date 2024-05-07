@@ -34,6 +34,7 @@ const EventDetailPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [date, setDate] = useState("no date available");
   const [attendees, setAttendees] = useState([]);
+  const [host, setHost] = useState("");
 
   // Subscribe to the AuthContext to gain access to
   // the values from AuthContext.Provider `value` prop
@@ -63,6 +64,8 @@ const EventDetailPage = () => {
           const eventDate = new Date(responseData.startingTime);
           // Stores event date in Date format
           setDate(eventDate);
+          // Store host information
+          setHost(responseData.hostId);
 
           // If user is logged in, that is, user is true
           if (user) {
@@ -210,6 +213,9 @@ const EventDetailPage = () => {
 
   const updateEventInfo = async (updateInfo) => {
     updateEventModal.close();
+    console.log("event", event);
+    const payload = {};
+
     let apiCall = `${import.meta.env.VITE_API_URL}/api/events/${event._id}`;
 
     try {
@@ -271,16 +277,16 @@ const EventDetailPage = () => {
             />
             <div className={classes.hostInfo}>
               <Text size="sm">Hosted by:</Text>
-              <Link to={`/user/${event.hostId._id}`} className={classes.link}>
+              <Link to={`/user/${host._id}`} className={classes.link}>
                 <Text size="md" fw={700}>
-                  {event.hostId.firstName} {event.hostId.lastName}
+                  {host.firstName} {host.lastName}
                 </Text>
               </Link>
             </div>
           </Flex>
         </Flex>
         <Flex className={classes.headerButtons}>
-          {event && user.userId === event.hostId._id && (
+          {event && user && user.userId === host._id && (
             <Button onClick={updateEventModal.open}>Edit Event</Button>
           )}
           <Button
@@ -344,11 +350,12 @@ const EventDetailPage = () => {
             </div>
           ))}
         </Flex>
-        <Text>
+        {/*}        <Text>
           Host: {event && event.hostId._id} User: {user && user.userId}. Logged?{" "}
           {isLoggedIn ? "yes" : "no"} User Attending?{" "}
           {isAttending ? "yes" : "no"}
         </Text>
+        */}
       </Flex>
 
       {/* Update member modal */}
@@ -358,7 +365,7 @@ const EventDetailPage = () => {
         opened={updateEventModal.opened}
         onClose={updateEventModal.close}
         size="lg"
-        title="Personal Information"
+        title="Event Information"
         overlayProps={{
           backgroundOpacity: 0.55,
           blur: 3,
