@@ -169,8 +169,8 @@ const MemberPersonalInfo = ({ memberDetails, updateMemberInfo }) => {
           <Container ml={0} pl={0}>
             <Title order={4}>Date of Birth</Title>
             <Text>
-              {memberDetails.dateOfBirt
-                ? dayjs(memberDetails.dateOfBirth).format("MM/DD/YYYY")
+              {memberDetails.dateOfBirth
+                ? dayjs(memberDetails.dateOfBirth).format("DD/MM/YYYY")
                 : "-"}
             </Text>
           </Container>

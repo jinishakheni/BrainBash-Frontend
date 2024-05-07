@@ -20,7 +20,7 @@ import { CategoryContext } from "../contexts/CategoryContext";
 import { isValidDuration } from "../helper/utils";
 
 // Image import
-import no_photo from "../assets/images/evet_placeholder.jpg";
+import no_photo from "../assets/images/event_placeholder.jpg";
 
 const CreateEventModal = ({ userDetails, closeModal, fetchMemberEvents }) => {
   const [title, setTitle] = useState("");
