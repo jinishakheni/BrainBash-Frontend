@@ -33,7 +33,7 @@ import { useAuthFormsContext } from "../contexts/AuthFormsContext";
 const Header = () => {
   const navigate = useNavigate();
   const [userMenuOpened, setUserMenuOpened] = useState(false);
-  const { isLoggedIn, logOutUser } = useContext(AuthContext);
+  const { isLoggedIn, logOutUser, user } = useContext(AuthContext);
   const [menuDrawerOpened, menuDrawer] = useDisclosure(false);
   const [openedTab, setOpenedTab] = useState("Home");
   const isMobile = useMediaQuery(`(max-width: ${em(500)})`);
@@ -52,7 +52,7 @@ const Header = () => {
     {
       key: "my_profile",
       tab: "My Profile",
-      // link: `/users/${JSON.parse(localStorage.getItem("user"))?.userId}`,
+      link: `/members/${user?.userId}`,
     },
     {
       key: "logout",

@@ -12,6 +12,7 @@
   "dependencies": {
     "@mantine/colors-generator": "^7.8.1",
     "@mantine/core": "^7.8.1",
+    "@mantine/dates": "^7.8.1",
     "@mantine/form": "^7.8.1",
     "@mantine/hooks": "^7.8.1",
     "@mantine/notifications": "^7.8.1",
