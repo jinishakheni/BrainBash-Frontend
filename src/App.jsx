@@ -3,8 +3,8 @@ import { Route, Routes } from "react-router-dom";
 
 // Import components
 import Layout from "./components/Layout";
-import ForgotPasswordPage from "./pages/passwordPages/ForgotPasswordPage";
-import ResetPasswordPage from "./pages/passwordPages/ResetPasswordPage";
+import ForgotPasswordPage from "./pages/PasswordPages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/PasswordPages/ResetPasswordPage";
 import AllEventsPage from "./pages/AllEventsPage";
 import AllExpertsPage from "./pages/AllExpertsPage";
 import HomePage from "./pages/HomePage";
@@ -12,6 +12,8 @@ import LoginPage from "./pages/LoginPage";
 import { AuthFormsProvider } from "./contexts/AuthFormsContext";
 import IsAnon from "./components/IsAnon";
 import EventDetailPage from "./pages/EventDetailPage";
+import ChatPage from "./pages/ChatPage";
+import IsPrivate from "./components/IsPrivate";
 
 function App() {
   return (
@@ -35,6 +37,9 @@ function App() {
           <Route path="/events" element={<AllEventsPage />} />
           <Route path="/experts" element={<AllExpertsPage />} />
           <Route path="/events/:id" element={<EventDetailPage />} />
+          <Route path="/direct/inbox" element={<IsPrivate><ChatPage /></IsPrivate>} />
+          <Route path="/direct/t/:chatId" element={<IsPrivate><ChatPage /></IsPrivate>} />
+
           <Route path="*" element={<h1>404 Page Not Found</h1>} />
         </Routes>
       </Layout>
