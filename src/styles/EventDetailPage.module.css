@@ -90,6 +90,11 @@
   padding: 0.2rem;
 }
 
+.attendeeHighlighted {
+  background-color: pink;
+  width: 80px;
+}
+
 .attendeesInformation {
   padding: 1.5rem 8rem 1.5rem 8rem;
   margin-bottom: 0;

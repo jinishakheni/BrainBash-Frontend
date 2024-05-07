@@ -3,7 +3,6 @@ import { useAuthFormsContext } from "../../contexts/AuthFormsContext";
 
 const ConditionalModal = ({ children }) => {
   const { showModal, toggleAuthForms } = useAuthFormsContext();
-  console.log(showModal);
 
   return (
     <>

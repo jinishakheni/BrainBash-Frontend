@@ -4,7 +4,6 @@ import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { AuthContext } from "../contexts/AuthContext.jsx";
 import { useAuthFormsContext } from "../contexts/AuthFormsContext";
-
 import {
   Image,
   Container,
@@ -18,11 +17,8 @@ import {
   Modal,
   ScrollArea,
 } from "@mantine/core";
-
 import UpdateEventModal from "../components/UpdateEventModal.jsx";
-
 import no_user_icon from "../assets/images/no_user_icon.png";
-
 // Style imports
 import classes from "../styles/EventDetailPage.module.css";
 
@@ -35,16 +31,13 @@ const EventDetailPage = () => {
   const [date, setDate] = useState("no date available");
   const [attendees, setAttendees] = useState([]);
   const [host, setHost] = useState("");
-
   // Subscribe to the AuthContext to gain access to
   // the values from AuthContext.Provider `value` prop
   const { isLoggedIn, user } = useContext(AuthContext);
-
   // Hook to know if user is attending event
   const [isAttending, setIsAttending] = useState(false);
-
+  // Hook to control opening and clossing modals
   const { toggleAuthForms } = useAuthFormsContext();
-
   // Handle event modal
   let [opened, { open, close }] = useDisclosure(false);
   const updateEventModal = { opened, open, close };
@@ -93,53 +86,66 @@ const EventDetailPage = () => {
 
   // Function add current user to the list of attendees, and to update attendees list in the front-end and in the database
   const updateAttendees = () => {
-    console.log("Adding current user to the list of attendees...");
-
     // Add current user to the list of attendees (Attendess hook), and update isAttending as true
-    const updatedAttendees = [...attendees, user.userId];
 
-    // Get token from local storage
-    const storedToken = localStorage.getItem("authToken");
+    // Get list of attendees ids from the hook containing all attendee information
+    let attendeesIds = attendees.map((a) => a._id);
 
-    if (!storedToken) {
-      notifications.show({
-        color: "red",
-        title: "Authorization Error",
-        message: "Authentication token is missing.",
-      });
-      return;
+    // Make sure user is not already attending even
+    if (!attendeesIds.includes(user.userId)) {
+      // Ids
+      const updatedAttendeesIds = [...attendeesIds, user.userId];
+      // Ids & fullname
+      const updatedAttendees = [
+        ...attendees,
+        { _id: user.userId, fullName: "You" },
+      ];
+
+      // Get token from local storage
+      const storedToken = localStorage.getItem("authToken");
+      // If token is not available
+      if (!storedToken) {
+        notifications.show({
+          color: "red",
+          title: "Authorization Error",
+          message: "Authentication token is missing.",
+        });
+        return;
+      }
+      // Put to event
+      let apiEndPoint = `${import.meta.env.VITE_API_URL}/api/events/${id}`;
+      // Updating only attendee array information
+      const updatedData = { attendees: updatedAttendeesIds };
+
+      // PUT request to update
+      const requestOptions = {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${storedToken}`,
+        },
+        body: JSON.stringify(updatedData),
+      };
+
+      fetch(apiEndPoint, requestOptions)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to update the event");
+          }
+          return response.json(); // Convert the response to JSON
+        })
+        .then((data) => {
+          //console.log("Event updated successfully:", data);
+          setAttendees(updatedAttendees);
+          setIsAttending(true);
+        })
+        .catch((error) => {
+          console.error("Error updating the event:", error);
+        });
+    } else {
+      // Make sure isAttending is true
+      setIsAttending(true);
     }
-
-    // Put to event
-    let apiEndPoint = `${import.meta.env.VITE_API_URL}/api/events/${id}`;
-    // Updating only attendee array information
-    const updatedData = { attendees: updatedAttendees };
-
-    // PUT request to update
-    const requestOptions = {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${storedToken}`,
-      },
-      body: JSON.stringify(updatedData),
-    };
-
-    fetch(apiEndPoint, requestOptions)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to update the event");
-        }
-        return response.json(); // Convert the response to JSON
-      })
-      .then((data) => {
-        console.log("Event updated successfully:", data);
-        setAttendees([...attendees, { _id: user.userId, fullName: "You" }]);
-        setIsAttending(true);
-      })
-      .catch((error) => {
-        console.error("Error updating the event:", error);
-      });
   };
 
   // Function removing the current user from the list of attendees, in front and back (database)
@@ -163,14 +169,16 @@ const EventDetailPage = () => {
     }`;
 
     // Filter out the current user's userId
-    let attendeesIds = attendees.map((a) => a._id);
-
-    const updatedAttendees = attendeesIds.filter(
+    const attendeesIds = attendees.map((a) => a._id);
+    const updatedAttendeesIds = attendeesIds.filter(
       (userId) => userId !== user.userId
     );
 
+    let updatedAttendees = [...attendees];
+    updatedAttendees.pop();
+
     // Prepare information to be updated
-    const updatedData = { attendees: updatedAttendees };
+    const updatedData = { attendees: updatedAttendeesIds };
 
     const requestOptions = {
       method: "PUT",
@@ -189,7 +197,7 @@ const EventDetailPage = () => {
         return response.json();
       })
       .then((data) => {
-        console.log("Event updated successfully:", data);
+        //console.log("Event updated successfully:", data);
         setAttendees(updatedAttendees);
         setIsAttending(false);
       })
@@ -325,48 +333,32 @@ const EventDetailPage = () => {
         <Text size="sm">Attendees ({attendees.length}):</Text>
         <Flex>
           {attendees &&
-            attendees.map((attendee, idx) => {
-              {
-                attendee._id !== user.userId && (
-                  <div key={idx} className={classes.attendeeInformation}>
-                    <Avatar size="lg" src={attendee.photo} alt={no_user_icon} />
-                    <Link
-                      to={`/members/${attendee._id}`}
-                      className={classes.link}
-                    >
-                      <Box className={classes.attendeeBox}>
-                        <Text truncate="end" size="xs" fw={600}>
-                          {attendee.fullName}
-                        </Text>
-                      </Box>
-                    </Link>
-                  </div>
-                );
-              }
-            })}
-          {/*If current user has join, add it at the end (directly, not from the attendee array!)*/}
-          {isAttending && (
-            <div
-              className={classes.attendeeInformation}
-              style={{ backgroundColor: "pink" }}
-            >
-              <Avatar size="lg" src={no_user_icon} alt={no_user_icon} />
-              <Link to={`/members/${user.userId}`} className={classes.link}>
-                <Box className={classes.attendeeBox}>
-                  <Text ta="center" truncate="end" size="xs" fw={600}>
-                    You
-                  </Text>
-                </Box>
-              </Link>
-            </div>
-          )}
+            attendees.map((at, idx) => (
+              <div key={idx} className={classes.attendeeInformation}>
+                <Avatar size="lg" src={at.photo} alt={no_user_icon} />
+                <Link to={`/members/${at._id}`} className={classes.link}>
+                  <Box
+                    className={classes.attendeeBox}
+                    style={
+                      user && at._id === user.userId
+                        ? { backgroundColor: "pink" }
+                        : {}
+                    }
+                  >
+                    <Text ta="center" truncate="end" size="xs" fw={600}>
+                      {user && at._id === user.userId ? "You" : at.fullName}
+                    </Text>
+                  </Box>
+                </Link>
+              </div>
+            ))}
         </Flex>
-        {/*        <Text>
-          Host: {event && host._id} {host.fullName} User: {user && user.userId}{" "}
+        {/*       <Text>
+        Host: {event && host._id} {host.fullName} User: {user && user.userId}{" "}
           {"Me"}. Logged? {isLoggedIn ? "yes" : "no"} User Attending?{" "}
           {isAttending ? "yes" : "no"}
         </Text>
-        */}
+          */}
       </Flex>
 
       {/* Update member modal */}

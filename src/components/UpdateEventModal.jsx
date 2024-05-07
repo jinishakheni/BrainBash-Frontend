@@ -41,8 +41,6 @@ const UpdateEventModal = ({ eventDetails, updateEventInfo }) => {
   const { categories } = useContext(CategoryContext);
 
   useEffect(() => {
-    console.log(eventDetails);
-
     const userSkills = eventDetails.skills.map((skill) => skill.skillName);
     const categorySkills = categories
       .find((category) => category.categoryName === selectedCategory)
@@ -56,7 +54,7 @@ const UpdateEventModal = ({ eventDetails, updateEventInfo }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    console.log("submitting...");
+    //console.log("submitting...");
 
     // Validate inputs
     let validationErrors = {};
