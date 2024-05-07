@@ -94,11 +94,8 @@
   padding: 1.5rem 8rem 1.5rem 8rem;
   margin-bottom: 0;
   flex-direction: column;
-  justify-content: flex-start;
-}
-
-.attendeeHighlighted {
-  background-color: pink;
+  justify-content: center;
+  align-items: start-flex;
 }
 
 /* Media query to switch to column layout on small screens */

@@ -66,11 +66,10 @@ const EventDetailPage = () => {
           setDate(eventDate);
           // Store host information
           setHost(responseData.hostId);
-
-          // If user is logged in, that is, user is true
+          // Check is logged user is attending, store in Attending hook
+          let attendeesIds = responseData.attendees.map((a) => a._id);
           if (user) {
-            // Check is logged user is attending, store in Attending hook
-            setIsAttending(responseData.attendees.includes(user.userId));
+            setIsAttending(attendeesIds.includes(user.userId));
           }
         } else {
           console.error("Attendees data is missing");
@@ -98,9 +97,6 @@ const EventDetailPage = () => {
 
     // Add current user to the list of attendees (Attendess hook), and update isAttending as true
     const updatedAttendees = [...attendees, user.userId];
-    // Optimistic updating
-    //  setAttendees(updatedAttendees);
-    //  setIsAttending(true);
 
     // Get token from local storage
     const storedToken = localStorage.getItem("authToken");
@@ -138,7 +134,7 @@ const EventDetailPage = () => {
       })
       .then((data) => {
         console.log("Event updated successfully:", data);
-        setAttendees(updatedAttendees);
+        setAttendees([...attendees, { _id: user.userId, fullName: "You" }]);
         setIsAttending(true);
       })
       .catch((error) => {
@@ -148,8 +144,6 @@ const EventDetailPage = () => {
 
   // Function removing the current user from the list of attendees, in front and back (database)
   const leaveEvent = () => {
-    console.log("Removing current user from list of attendees...");
-
     // Get token from local storage
     const storedToken = localStorage.getItem("authToken");
 
@@ -169,7 +163,9 @@ const EventDetailPage = () => {
     }`;
 
     // Filter out the current user's userId
-    const updatedAttendees = event.attendees.filter(
+    let attendeesIds = attendees.map((a) => a._id);
+
+    const updatedAttendees = attendeesIds.filter(
       (userId) => userId !== user.userId
     );
 
@@ -213,8 +209,6 @@ const EventDetailPage = () => {
 
   const updateEventInfo = async (updateInfo) => {
     updateEventModal.close();
-    console.log("event", event);
-    const payload = {};
 
     let apiCall = `${import.meta.env.VITE_API_URL}/api/events/${event._id}`;
 
@@ -251,7 +245,7 @@ const EventDetailPage = () => {
 
   useEffect(() => {
     fetchEvent();
-  }, [isAttending, isLoggedIn]);
+  }, []);
 
   if (isLoading)
     return <Container className={classes.loader}>Loading...</Container>;
@@ -271,15 +265,15 @@ const EventDetailPage = () => {
             <Image
               radius="md"
               w="50px"
-              src={no_user_icon}
+              src={host.photo || no_user_icon}
               alt="Host icon"
               className={classes.userPicture}
             />
             <div className={classes.hostInfo}>
               <Text size="sm">Hosted by:</Text>
-              <Link to={`/user/${host._id}`} className={classes.link}>
+              <Link to={`/members/${host._id}`} className={classes.link}>
                 <Text size="md" fw={700}>
-                  {host.firstName} {host.lastName}
+                  {host.fullName}
                 </Text>
               </Link>
             </div>
@@ -291,7 +285,7 @@ const EventDetailPage = () => {
           )}
           <Button
             onClick={handleJoinButton}
-            disabled={user && user.userId === event.hostId._id}
+            disabled={user && user.userId === host._id}
             variant={isLoggedIn && isAttending ? "outline" : "filled"}
           >
             {isAttending ? "Leave" : "Join"}
@@ -312,7 +306,7 @@ const EventDetailPage = () => {
           </Text>
           <Space h="md" />
           <Text size="sm">
-            Starting time:{" "}
+            Date:{" "}
             <strong>
               {date.toLocaleDateString("en-US", {
                 month: "long",
@@ -330,29 +324,46 @@ const EventDetailPage = () => {
       <Flex className={classes.attendeesInformation}>
         <Text size="sm">Attendees ({attendees.length}):</Text>
         <Flex>
-          {attendees.map((attendee, idx) => (
+          {attendees &&
+            attendees.map((attendee, idx) => {
+              {
+                attendee._id !== user.userId && (
+                  <div key={idx} className={classes.attendeeInformation}>
+                    <Avatar size="lg" src={attendee.photo} alt={no_user_icon} />
+                    <Link
+                      to={`/members/${attendee._id}`}
+                      className={classes.link}
+                    >
+                      <Box className={classes.attendeeBox}>
+                        <Text truncate="end" size="xs" fw={600}>
+                          {attendee.fullName}
+                        </Text>
+                      </Box>
+                    </Link>
+                  </div>
+                );
+              }
+            })}
+          {/*If current user has join, add it at the end (directly, not from the attendee array!)*/}
+          {isAttending && (
             <div
-              key={idx}
-              className={`${classes.attendeeInformation} ${
-                user && attendee === user.userId
-                  ? classes.attendeeHighlighted
-                  : ""
-              }`}
+              className={classes.attendeeInformation}
+              style={{ backgroundColor: "pink" }}
             >
-              <Avatar size="lg" alt={attendee} />
-              <Link to={`/user/${attendee}`} className={classes.link}>
+              <Avatar size="lg" src={no_user_icon} alt={no_user_icon} />
+              <Link to={`/members/${user.userId}`} className={classes.link}>
                 <Box className={classes.attendeeBox}>
-                  <Text truncate="end" size="xs" fw={600}>
-                    {attendee}
+                  <Text ta="center" truncate="end" size="xs" fw={600}>
+                    You
                   </Text>
                 </Box>
               </Link>
             </div>
-          ))}
+          )}
         </Flex>
-        {/*}        <Text>
-          Host: {event && event.hostId._id} User: {user && user.userId}. Logged?{" "}
-          {isLoggedIn ? "yes" : "no"} User Attending?{" "}
+        {/*        <Text>
+          Host: {event && host._id} {host.fullName} User: {user && user.userId}{" "}
+          {"Me"}. Logged? {isLoggedIn ? "yes" : "no"} User Attending?{" "}
           {isAttending ? "yes" : "no"}
         </Text>
         */}
