@@ -10,6 +10,7 @@ import App from "./App.jsx";
 // All packages except `@mantine/hooks` require styles imports
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
+import "@mantine/dates/styles.css";
 
 import "./styles/global.css";
 import theme from "./styles/theme.js";

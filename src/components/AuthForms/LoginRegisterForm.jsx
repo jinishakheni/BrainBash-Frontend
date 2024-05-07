@@ -1,5 +1,4 @@
 import { upperFirst } from "@mantine/hooks";
-import { useParams } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import {
@@ -18,7 +17,7 @@ import {
 import { GoogleButton } from "../GoogleButton";
 import { GithubButton } from "../GithubIcon";
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -91,7 +90,7 @@ const LoginRegisterForm = ({ email, setEmail }) => {
       email: (value) =>
         /^\S+@\S+$/.test(value) ? null : "Invalid email address",
       password: (value) =>
-        isValidPassword(value)
+        formType !== "register" || isValidPassword(value)
           ? null
           : "Password should contain at least one letter, one digit and one special character, and be at least 6 characters long.",
       confirmPassword: (value, values) =>

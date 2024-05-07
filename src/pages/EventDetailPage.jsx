@@ -207,15 +207,18 @@ const EventDetailPage = () => {
             <Image
               radius="md"
               w="50px"
-              src={no_user_icon}
+              src={event.hostId.photo || no_user_icon}
               alt="Host icon"
               className={classes.userPicture}
             />
             <div className={classes.hostInfo}>
               <Text size="sm">Hosted by:</Text>
-              <Link to={`/user/${event.hostId._id}`} className={classes.link}>
+              <Link
+                to={`/members/${event.hostId._id}`}
+                className={classes.link}
+              >
                 <Text size="md" fw={700}>
-                  {event.hostId.firstName} {event.hostId.lastName}
+                  {event.hostId.fullName}
                 </Text>
               </Link>
             </div>
@@ -243,7 +246,7 @@ const EventDetailPage = () => {
           </Text>
           <Space h="md" />
           <Text size="sm">
-            Starting time:{" "}
+            Date:{" "}
             <strong>
               {date.toLocaleDateString("en-US", {
                 month: "long",
@@ -270,11 +273,11 @@ const EventDetailPage = () => {
                   : ""
               }`}
             >
-              <Avatar size="lg" alt={attendee} />
-              <Link to={`/user/${attendee}`} className={classes.link}>
+              <Avatar size="lg" src={attendee.photo} alt={no_user_icon} />
+              <Link to={`/members/${attendee._id}`} className={classes.link}>
                 <Box className={classes.attendeeBox}>
                   <Text truncate="end" size="xs" fw={600}>
-                    {attendee}
+                    {attendee.fullName}
                   </Text>
                 </Box>
               </Link>

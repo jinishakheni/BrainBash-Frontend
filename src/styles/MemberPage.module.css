@@ -1,0 +1,13 @@
+.ctn {
+  height: calc(100vh - 8rem);
+  overflow-y: auto;
+}
+
+.section {
+  margin: 1rem 0;
+}
+
+.tab {
+  background-color: "transparent";
+  border: "none";
+}
