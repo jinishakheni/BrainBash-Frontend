@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { AuthContext } from "../contexts/AuthContext.jsx";
 import { useAuthFormsContext } from "../contexts/AuthFormsContext";
@@ -14,7 +15,12 @@ import {
   Title,
   Text,
   Flex,
+  Modal,
+  ScrollArea,
 } from "@mantine/core";
+
+import UpdateEventModal from "../components/UpdateEventModal.jsx";
+
 import no_user_icon from "../assets/images/no_user_icon.png";
 
 // Style imports
@@ -38,6 +44,10 @@ const EventDetailPage = () => {
 
   const { toggleAuthForms } = useAuthFormsContext();
 
+  // Handle event modal
+  let [opened, { open, close }] = useDisclosure(false);
+  const updateEventModal = { opened, open, close };
+
   // Fetch the event from from DB
   const fetchEvent = async () => {
     let apiEndPoint = `${import.meta.env.VITE_API_URL}/api/events/${id}`;
@@ -53,6 +63,7 @@ const EventDetailPage = () => {
           const eventDate = new Date(responseData.startingTime);
           // Stores event date in Date format
           setDate(eventDate);
+
           // If user is logged in, that is, user is true
           if (user) {
             // Check is logged user is attending, store in Attending hook
@@ -197,6 +208,41 @@ const EventDetailPage = () => {
     }
   }
 
+  const updateEventInfo = async (updateInfo) => {
+    updateEventModal.close();
+    let apiCall = `${import.meta.env.VITE_API_URL}/api/events/${event._id}`;
+
+    try {
+      const response = await fetch(apiCall, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Berear ${localStorage.getItem("authToken")}`,
+        },
+        body: JSON.stringify(updateInfo),
+      });
+      if (response.ok) {
+        const responseData = await response.json();
+        setEvent(responseData);
+        notifications.show({
+          color: "indigo",
+          title: "Updated successfully",
+        });
+      } else {
+        const errorResponse = await response.json();
+        throw new Error(errorResponse.message);
+      }
+    } catch (error) {
+      console.error("Error while updating event information: ", error);
+      notifications.show({
+        color: "red",
+        title:
+          error.toString() ||
+          "Oops! Something went wrong. Please try after sometime.",
+      });
+    }
+  };
+
   useEffect(() => {
     fetchEvent();
   }, [isAttending, isLoggedIn]);
@@ -233,13 +279,18 @@ const EventDetailPage = () => {
             </div>
           </Flex>
         </Flex>
-        <Button
-          onClick={handleJoinButton}
-          disabled={user && user.userId === event.hostID}
-          variant={isLoggedIn && isAttending ? "outline" : "filled"}
-        >
-          {isAttending ? "Leave" : "Join"}
-        </Button>
+        <Flex className={classes.headerButtons}>
+          {event && user.userId === event.hostId._id && (
+            <Button onClick={updateEventModal.open}>Edit Event</Button>
+          )}
+          <Button
+            onClick={handleJoinButton}
+            disabled={user && user.userId === event.hostId._id}
+            variant={isLoggedIn && isAttending ? "outline" : "filled"}
+          >
+            {isAttending ? "Leave" : "Join"}
+          </Button>
+        </Flex>
       </Flex>
       <Flex className={classes.eventInformation}>
         <Image
@@ -294,10 +345,31 @@ const EventDetailPage = () => {
           ))}
         </Flex>
         <Text>
-          User: {user && user.userId}. Logged? {isLoggedIn ? "yes" : "no"} User
-          Attending? {isAttending ? "yes" : "no"}
+          Host: {event && event.hostId._id} User: {user && user.userId}. Logged?{" "}
+          {isLoggedIn ? "yes" : "no"} User Attending?{" "}
+          {isAttending ? "yes" : "no"}
         </Text>
       </Flex>
+
+      {/* Update member modal */}
+      <Modal
+        padding="lg"
+        radius="xl"
+        opened={updateEventModal.opened}
+        onClose={updateEventModal.close}
+        size="lg"
+        title="Personal Information"
+        overlayProps={{
+          backgroundOpacity: 0.55,
+          blur: 3,
+        }}
+        scrollAreaComponent={ScrollArea.Autosize}
+      >
+        <UpdateEventModal
+          eventDetails={event}
+          updateEventInfo={updateEventInfo}
+        />
+      </Modal>
     </Container>
   );
 };
