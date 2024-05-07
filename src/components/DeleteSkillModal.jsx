@@ -1,6 +1,8 @@
+// Import modules
 import { Button, Text } from "@mantine/core";
 
 const DeleteSkillModal = ({ skillDetail, deleteSkillHandler }) => {
+  // Handle submit event
   const handleSubmit = (event) => {
     event.preventDefault();
     const payload = {

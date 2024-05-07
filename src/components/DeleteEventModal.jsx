@@ -1,6 +1,8 @@
+// Import module
 import { Button, Text } from "@mantine/core";
 
 const DeleteEventModal = ({ eventId, deleteEventHandler }) => {
+  // Delete event handler
   const handleSubmit = (event) => {
     event.preventDefault();
     deleteEventHandler(eventId);

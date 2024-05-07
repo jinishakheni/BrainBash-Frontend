@@ -1,3 +1,4 @@
+// Module imports
 import {
   Badge,
   Container,
@@ -14,11 +15,17 @@ import { MdAddCircle, MdDelete, MdModeEditOutline } from "react-icons/md";
 import dayjs from "dayjs";
 import { useContext, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
-import classes from "../styles/MemberPage.module.css";
-import DeleteSkillModal from "./DeleteSkillModal";
-import AddEditSkillModal from "./AddEditSkillModal";
+
+// Context imports
 import { CategoryContext } from "../contexts/CategoryContext";
 import { AuthContext } from "../contexts/AuthContext";
+
+// Component imports
+import DeleteSkillModal from "./DeleteSkillModal";
+import AddEditSkillModal from "./AddEditSkillModal";
+
+// Style import
+import classes from "../styles/MemberPage.module.css";
 
 const MemberPersonalInfo = ({ memberDetails, updateMemberInfo }) => {
   const { categories } = useContext(CategoryContext);
@@ -37,11 +44,13 @@ const MemberPersonalInfo = ({ memberDetails, updateMemberInfo }) => {
   [opened, { open, close }] = useDisclosure(false);
   const deleteSkillModal = { opened, open, close };
 
+  // Skill add/edit handler
   const AddEditSkillHandler = (dataToUpdate) => {
     skillModal.close();
     updateMemberInfo(dataToUpdate, "skillInfo");
   };
 
+  // Delete skill handler
   const deleteSkillHandler = (dataToDelete) => {
     deleteSkillModal.close();
     const category = categories.filter((currentCategory) => {

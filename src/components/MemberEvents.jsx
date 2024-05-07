@@ -1,3 +1,4 @@
+// Import modules
 import {
   Container,
   Group,
@@ -12,14 +13,17 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+
+// Import components
 import DeleteEventModal from "./DeleteEventModal";
+
+// Import context
 import { AuthContext } from "../contexts/AuthContext";
 
-const MemberEvents = ({ memberId }) => {
-  const [events, setEvents] = useState([]);
+const MemberEvents = ({ memberId, events, fetchMemberEvents }) => {
   const [selectedEvent, setSelectedEvent] = useState();
   const navigate = useNavigate();
   const { isLoggedIn, user } = useContext(AuthContext);
@@ -28,31 +32,9 @@ const MemberEvents = ({ memberId }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const deleteEventModal = { opened, open, close };
 
-  const fetchMemberEvents = async () => {
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/events/?hostId=${memberId}`
-      );
-      if (response.ok) {
-        const responseData = await response.json();
-        setEvents(responseData);
-      } else {
-        const errorResponse = await response.json();
-        throw new Error(errorResponse);
-      }
-    } catch (error) {
-      console.error(
-        "Error while fetching event details: ",
-        JSON.stringify(error)
-      );
-      notifications.show({
-        color: "red",
-        title: "Oops! Something went wrong. Please try again.",
-      });
-    }
-  };
-
+  // Delete event handler
   const deleteEventHandler = async (eventId) => {
+    deleteEventModal.close();
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/events/${eventId}`,
@@ -84,10 +66,6 @@ const MemberEvents = ({ memberId }) => {
       });
     }
   };
-
-  useEffect(() => {
-    fetchMemberEvents();
-  }, []);
 
   return (
     <>

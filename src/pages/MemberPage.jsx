@@ -1,3 +1,4 @@
+// Module imports
 import {
   Avatar,
   Button,
@@ -15,13 +16,19 @@ import {
 import { notifications } from "@mantine/notifications";
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import classes from "../styles/MemberPage.module.css";
 import { useDisclosure } from "@mantine/hooks";
-import EditMemberModal from "../components/EditMemberModal";
+
+// Components import
 import MemberPersonalInfo from "../components/MemberPersonalInfo";
-import { AuthContext } from "../contexts/AuthContext";
 import MemberEvents from "../components/MemberEvents";
+import EditMemberModal from "../components/EditMemberModal";
 import CreateEventModal from "../components/CreateEventModal";
+
+// Context import
+import { AuthContext } from "../contexts/AuthContext";
+
+// CSS import
+import classes from "../styles/MemberPage.module.css";
 
 //Image imports
 const no_gender_photo = "../assets/images/no_photo.png";
@@ -29,6 +36,7 @@ const no_gender_photo = "../assets/images/no_photo.png";
 const MemberPage = () => {
   const { memberId } = useParams();
   const [memberDetails, setMemberDetails] = useState({});
+  const [events, setEvents] = useState([]);
   const [activeTab, setActiveTab] = useState("PersonalInfo");
   const { isLoggedIn, user } = useContext(AuthContext);
 
@@ -40,6 +48,7 @@ const MemberPage = () => {
   [opened, { open, close }] = useDisclosure(false);
   const createEventModal = { opened, open, close };
 
+  // Fetch member detaiils
   const fetchMemberDetails = async () => {
     try {
       const response = await fetch(
@@ -50,20 +59,19 @@ const MemberPage = () => {
         setMemberDetails(responseData);
       } else {
         const errorResponse = await response.json();
-        throw new Error(errorResponse);
+        throw new Error(errorResponse.message);
       }
     } catch (error) {
-      console.error(
-        "Error while fetching member details: ",
-        JSON.stringify(error)
-      );
+      console.error("Error while fetching member details: ", error);
       notifications.show({
         color: "red",
-        title: "Oops! Something went wrong. Please try again.",
+        title:
+          error.toString() || "Oops! Something went wrong. Please try again.",
       });
     }
   };
 
+  // Update member personal info & skills
   const updateMemberInfo = async (updateInfo, type) => {
     let apiCall;
     if (type === "personalInfo") {
@@ -103,8 +111,32 @@ const MemberPage = () => {
     }
   };
 
+  // Fetch member`s hosted events
+  const fetchMemberEvents = async () => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/events/?hostId=${memberId}`
+      );
+      if (response.ok) {
+        const responseData = await response.json();
+        setEvents(responseData);
+      } else {
+        const errorResponse = await response.json();
+        throw new Error(errorResponse.message);
+      }
+    } catch (error) {
+      console.error("Error while fetching event details: ", error);
+      notifications.show({
+        color: "red",
+        title:
+          error.toString() || "Oops! Something went wrong. Please try again.",
+      });
+    }
+  };
+
   useEffect(() => {
     fetchMemberDetails();
+    fetchMemberEvents();
   }, [memberId]);
 
   return (
@@ -121,7 +153,6 @@ const MemberPage = () => {
                 style={{
                   position: "relative",
                   top: "-4rem",
-                  backgroundColor: "#AE5A00",
                 }}
               >
                 <Avatar
@@ -190,11 +221,12 @@ const MemberPage = () => {
                     />
                   </Tabs.Panel>
                   <Tabs.Panel value="Events">
-                    <MemberEvents memberId={memberId} />
+                    <MemberEvents
+                      memberId={memberId}
+                      events={events}
+                      fetchMemberEvents={fetchMemberEvents}
+                    />
                   </Tabs.Panel>
-
-                  <Tabs.Panel value="Event"></Tabs.Panel>
-                  <Tabs.Panel value="messages">Messages tab content</Tabs.Panel>
                 </Tabs>
               </Paper>
             </Group>
@@ -222,7 +254,7 @@ const MemberPage = () => {
         />
       </Modal>
 
-      {/* Update member modal */}
+      {/* Create event modal */}
       <Modal
         padding="lg"
         radius="xl"
@@ -236,7 +268,11 @@ const MemberPage = () => {
         }}
         scrollAreaComponent={ScrollArea.Autosize}
       >
-        <CreateEventModal userDetails={memberDetails} />
+        <CreateEventModal
+          userDetails={memberDetails}
+          closeModal={createEventModal.close}
+          fetchMemberEvents={fetchMemberEvents}
+        />
       </Modal>
     </>
   );

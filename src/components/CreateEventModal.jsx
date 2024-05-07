@@ -1,3 +1,4 @@
+// Module imports
 import {
   Button,
   Image,
@@ -8,13 +9,20 @@ import {
   Textarea,
 } from "@mantine/core";
 import { useContext, useEffect, useState } from "react";
-import no_photo from "../assets/images/no_photo.png";
 import { DateTimePicker } from "@mantine/dates";
 import dayjs from "dayjs";
+import { notifications } from "@mantine/notifications";
+
+// Context import
 import { CategoryContext } from "../contexts/CategoryContext";
+
+// Helper import
 import { isValidDuration } from "../helper/utils";
 
-const CreateEventModal = ({ userDetails }) => {
+// Image import
+import no_photo from "../assets/images/evet_placeholder.jpg";
+
+const CreateEventModal = ({ userDetails, closeModal, fetchMemberEvents }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -27,7 +35,6 @@ const CreateEventModal = ({ userDetails }) => {
   const [mode, setMode] = useState("");
   const [address, setAddress] = useState("");
   const [imageUrl, setSetImagUrl] = useState("");
-
   const [errors, setErrors] = useState({
     title: "",
     description: "",
@@ -41,6 +48,7 @@ const CreateEventModal = ({ userDetails }) => {
 
   const { categories } = useContext(CategoryContext);
 
+  // Set skills options based on category selection, that are added to host/user skills
   useEffect(() => {
     const userSkills = userDetails.skills.map((skill) => skill.skillName);
     const categorySkills = categories
@@ -78,15 +86,46 @@ const CreateEventModal = ({ userDetails }) => {
       title,
       description,
       startingTime,
-      selectedCategory,
-      selectedSkills,
+      category: selectedCategory,
+      skills: selectedSkills,
       duration,
       mode,
       address,
       imageUrl,
+      hostId: userDetails._id,
     };
-    console.log("check me", payload);
-    // API call for create event in DB
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/events`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Berear ${localStorage.getItem("authToken")}`,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+      if (response.ok) {
+        closeModal();
+        notifications.show({
+          color: "indigo",
+          title: "Event created successfully",
+        });
+        fetchMemberEvents();
+      } else {
+        const errorResponse = await response.json();
+        throw new Error(errorResponse.message);
+      }
+    } catch (error) {
+      console.error("Error while adding event: ", error);
+      notifications.show({
+        color: "red",
+        title:
+          error.toString() ||
+          "Oops! Something went wrong. Please try after sometime.",
+      });
+    }
   };
 
   return (
@@ -126,8 +165,8 @@ const CreateEventModal = ({ userDetails }) => {
       <MultiSelect
         variant="filled"
         radius="xl"
-        label="Skill"
-        placeholder="Select Skill"
+        label="Skills"
+        placeholder="Select Skills"
         data={skills}
         value={selectedSkills}
         onChange={setSelectedSkills}

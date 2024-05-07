@@ -1,3 +1,4 @@
+// Import modules
 import {
   Button,
   Image,
@@ -7,10 +8,14 @@ import {
   Textarea,
 } from "@mantine/core";
 import { useState } from "react";
-import no_photo from "../assets/images/no_photo.png";
-import { isValidEmail, isValidLink } from "../helper/utils";
 import { DateInput } from "@mantine/dates";
 import dayjs from "dayjs";
+
+// Import image
+import no_photo from "../assets/images/no_photo.png";
+
+// Import helper
+import { isValidEmail, isValidLink } from "../helper/utils";
 
 const EditMemberModal = ({ userDetails, updateMemberInfo }) => {
   const [firstName, setFirstName] = useState(userDetails.firstName);
@@ -24,11 +29,10 @@ const EditMemberModal = ({ userDetails, updateMemberInfo }) => {
       dayjs(userDetails.dateOfBirth).startOf("day").toDate()
   );
   const [photo, setPhoto] = useState(userDetails.photo);
-
   const [errors, setErrors] = useState({
     firstName: "",
     email: "",
-    password: "",
+    photo: "",
   });
 
   // Function to handle form submission
@@ -78,7 +82,6 @@ const EditMemberModal = ({ userDetails, updateMemberInfo }) => {
         radius="xl"
         label="Last Name"
         placeholder="Last name"
-        required
         value={lastName}
         onChange={(event) => setLastName(event.currentTarget.value)}
       />

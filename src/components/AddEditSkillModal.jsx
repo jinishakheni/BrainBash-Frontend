@@ -1,5 +1,8 @@
+// Module imports
 import { Button, Select, Stack } from "@mantine/core";
 import { useContext, useEffect, useState } from "react";
+
+// Context import
 import { CategoryContext } from "../contexts/CategoryContext";
 
 const AddEditSkillModal = ({ skillDetail, AddEditSkillHandler }) => {
@@ -17,6 +20,7 @@ const AddEditSkillModal = ({ skillDetail, AddEditSkillHandler }) => {
   const { categories } = useContext(CategoryContext);
 
   useEffect(() => {
+    // selecte category based on skill
     if (selectedSkill) {
       setSelectedCategory(
         categories.filter((currentCategory) => {
@@ -29,12 +33,14 @@ const AddEditSkillModal = ({ skillDetail, AddEditSkillHandler }) => {
         })[0]?.categoryName
       );
     }
+    // set category to array of all category names
     setCategory(
       categories.map((currentCategory) => currentCategory.categoryName)
     );
   }, []);
 
   useEffect(() => {
+    // update skills option based on category selection
     setSkills(
       categories
         .find((category) => category.categoryName === selectedCategory)
