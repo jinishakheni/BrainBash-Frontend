@@ -1,0 +1,150 @@
+.root {
+  margin: 0;
+  padding: 0;
+  background-color: #7ad5f7;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  margin: 4rem 8rem 4rem 8rem;
+  gap: 4rem;
+  display: flex;
+  align-items: center;
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+
+.headerText h1 {
+  font-size: 2.4rem;
+  color: #0c356a;
+  margin-bottom: 2rem;
+  font-weight: 900;
+}
+
+.headerText h2 {
+  font-size: 1.1rem;
+  color: #0c356a;
+  margin-bottom: 3rem;
+  font-weight: 400;
+}
+
+.headerText Button {
+  width: fit-content;
+  font-size: 1rem;
+}
+
+.headerImage {
+  max-width: 50%;
+}
+.header img {
+  width: 100%;
+  max-width: 600px;
+}
+
+.upcomingEvents {
+  margin: 0rem 8rem 0rem 8rem;
+  gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: flex-start;
+}
+
+.upcomingEvents h3 {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0c356a;
+}
+
+.listEvents {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.upcomingEvents Button {
+  width: fit-content;
+  font-size: 1rem;
+}
+
+/* Media Queries */
+@media screen and (max-width: 1100px) {
+  .header {
+    margin: 2rem 8rem 2rem 8rem;
+    gap: 2rem;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+  .headerText {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  .listEvents {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 3rem;
+  }
+  .headerImage {
+    max-width: 80%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .header {
+    margin: 1rem 3rem 1rem 3rem;
+    gap: 2rem;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .upcomingEvents {
+    margin: 0rem 3rem 0rem 3rem;
+    gap: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: flex-start;
+  }
+
+  .headerText {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .headerText h1 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .headerText h2 {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .headerImage {
+    max-width: 80%;
+  }
+
+  .listEvents {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 3rem;
+  }
+}
