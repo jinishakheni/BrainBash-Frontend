@@ -261,7 +261,7 @@ const MemberPage = () => {
         opened={createEventModal.opened}
         onClose={createEventModal.close}
         size="lg"
-        title="Personal Information"
+        title="Event"
         overlayProps={{
           backgroundOpacity: 0.55,
           blur: 3,
