@@ -218,7 +218,7 @@ const EventDetailPage = () => {
                 className={classes.link}
               >
                 <Text size="md" fw={700}>
-                  {event.hostId.firstName} {event.hostId.lastName}
+                  {event.hostId.fullName}
                 </Text>
               </Link>
             </div>
