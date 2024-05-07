@@ -12,6 +12,7 @@ import LoginPage from "./pages/LoginPage";
 import { AuthFormsProvider } from "./contexts/AuthFormsContext";
 import IsAnon from "./components/IsAnon";
 import EventDetailPage from "./pages/EventDetailPage";
+import MemberPage from "./pages/MemberPage";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path="/events" element={<AllEventsPage />} />
           <Route path="/experts" element={<AllExpertsPage />} />
           <Route path="/events/:id" element={<EventDetailPage />} />
+          <Route path="/members/:memberId" element={<MemberPage />} />
           <Route path="*" element={<h1>404 Page Not Found</h1>} />
         </Routes>
       </Layout>
