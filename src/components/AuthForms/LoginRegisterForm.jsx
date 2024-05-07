@@ -1,5 +1,4 @@
 import { upperFirst } from "@mantine/hooks";
-import { useParams } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import {
@@ -91,7 +90,7 @@ const LoginRegisterForm = ({ email, setEmail }) => {
       email: (value) =>
         /^\S+@\S+$/.test(value) ? null : "Invalid email address",
       password: (value) =>
-        isValidPassword(value)
+        formType !== "register" || isValidPassword(value)
           ? null
           : "Password should contain at least one letter, one digit and one special character, and be at least 6 characters long.",
       confirmPassword: (value, values) =>
