@@ -5,8 +5,6 @@ import { Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout";
 import ForgotPasswordPage from "./pages/passwordPages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/passwordPages/ResetPasswordPage";
-import ForgotPasswordPage from "./pages/passwordPages/ForgotPasswordPage";
-import ResetPasswordPage from "./pages/passwordPages/ResetPasswordPage";
 import AllEventsPage from "./pages/AllEventsPage";
 import AllExpertsPage from "./pages/AllExpertsPage";
 import HomePage from "./pages/HomePage";

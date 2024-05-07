@@ -28,7 +28,6 @@ const HomePage = () => {
       const response = await fetch(apiEndPoint);
       if (response.ok) {
         const responseData = await response.json();
-        console.log(responseData);
 
         setEvents(responseData);
         setIsLoading(false);
