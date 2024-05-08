@@ -5,6 +5,7 @@ import {
   MultiSelect,
   Select,
   Stack,
+  Text,
   TextInput,
   Textarea,
 } from "@mantine/core";
@@ -129,116 +130,125 @@ const CreateEventModal = ({ userDetails, closeModal, fetchMemberEvents }) => {
   };
 
   return (
-    <Stack gap={15}>
-      <TextInput
-        variant="filled"
-        radius="xl"
-        label="Title"
-        placeholder="Title"
-        required
-        value={title}
-        onChange={(event) => setTitle(event.currentTarget.value)}
-        error={errors.title}
-      />
-      <Textarea
-        variant="filled"
-        radius="xl"
-        label="Description"
-        placeholder="Description"
-        required
-        rows={4}
-        value={description}
-        onChange={(event) => setDescription(event.currentTarget.value)}
-        error={errors.description}
-      />
-      <Select
-        variant="filled"
-        radius="xl"
-        label="Category"
-        placeholder="Select Category"
-        data={userDetails.categories}
-        value={selectedCategory}
-        onChange={setSelectedCategory}
-        error={errors.category}
-        required
-      />
-      <MultiSelect
-        variant="filled"
-        radius="xl"
-        label="Skills"
-        placeholder="Select Skills"
-        data={skills}
-        value={selectedSkills}
-        onChange={setSelectedSkills}
-        error={errors.skill}
-        required
-      />
-      <DateTimePicker
-        variant="filled"
-        radius="xl"
-        valueFormat="DD MMM YYYY hh:mm A"
-        label="Pick date and time"
-        placeholder="Pick date and time"
-        value={startingTime}
-        onChange={setStartingTime}
-        error={errors.startingTime}
-        required
-      />
-      <TextInput
-        variant="filled"
-        radius="xl"
-        label="Duration"
-        placeholder="Duration in formate (12H30M)"
-        required
-        value={duration}
-        onChange={(event) => setDuration(event.currentTarget.value)}
-        error={errors.duration}
-      />
-      <Select
-        variant="filled"
-        radius="xl"
-        label="Mode"
-        placeholder="Mode"
-        data={["Online", "Offline"]}
-        value={mode}
-        onChange={setMode}
-        error={errors.mode}
-      />
-      <TextInput
-        variant="filled"
-        radius="xl"
-        label="Address"
-        placeholder="Address"
-        value={address}
-        onChange={(event) => setAddress(event.currentTarget.value)}
-        error={errors.address}
-      />
-      <TextInput
-        variant="filled"
-        radius="xl"
-        label="Photo"
-        placeholder="Your Image URL"
-        value={imageUrl}
-        onChange={(event) => setSetImagUrl(event.currentTarget.value)}
-      />
+    <>
+      {userDetails.skills.length ? (
+        <Stack gap={15}>
+          <TextInput
+            variant="filled"
+            radius="xl"
+            label="Title"
+            placeholder="Title"
+            required
+            value={title}
+            onChange={(event) => setTitle(event.currentTarget.value)}
+            error={errors.title}
+          />
+          <Textarea
+            variant="filled"
+            radius="xl"
+            label="Description"
+            placeholder="Description"
+            required
+            rows={4}
+            value={description}
+            onChange={(event) => setDescription(event.currentTarget.value)}
+            error={errors.description}
+          />
+          <Select
+            variant="filled"
+            radius="xl"
+            label="Category"
+            placeholder="Select Category"
+            data={userDetails.categories}
+            value={selectedCategory}
+            onChange={setSelectedCategory}
+            error={errors.category}
+            required
+          />
+          <MultiSelect
+            variant="filled"
+            radius="xl"
+            label="Skills"
+            placeholder="Select Skills"
+            data={skills}
+            value={selectedSkills}
+            onChange={setSelectedSkills}
+            error={errors.skill}
+            required
+          />
+          <DateTimePicker
+            variant="filled"
+            radius="xl"
+            valueFormat="DD MMM YYYY hh:mm A"
+            label="Pick date and time"
+            placeholder="Pick date and time"
+            // minDate={new Date()}  // TODO Uncomment after testing
+            value={startingTime}
+            onChange={setStartingTime}
+            error={errors.startingTime}
+            required
+          />
+          <TextInput
+            variant="filled"
+            radius="xl"
+            label="Duration"
+            placeholder="Duration in formate (12H30M)"
+            required
+            value={duration}
+            onChange={(event) => setDuration(event.currentTarget.value)}
+            error={errors.duration}
+          />
+          <Select
+            variant="filled"
+            radius="xl"
+            label="Mode"
+            placeholder="Mode"
+            data={["Online", "Offline"]}
+            value={mode}
+            onChange={setMode}
+            error={errors.mode}
+          />
+          <TextInput
+            variant="filled"
+            radius="xl"
+            label="Address"
+            placeholder="Address"
+            value={address}
+            onChange={(event) => setAddress(event.currentTarget.value)}
+            error={errors.address}
+          />
+          <TextInput
+            variant="filled"
+            radius="xl"
+            label="Photo"
+            placeholder="Your Image URL"
+            value={imageUrl}
+            onChange={(event) => setSetImagUrl(event.currentTarget.value)}
+          />
 
-      <Image
-        radius="xl"
-        src={imageUrl ? imageUrl : no_photo}
-        h="25rem"
-        mt="xl"
-      />
+          <Image
+            radius="xl"
+            src={imageUrl ? imageUrl : no_photo}
+            h="25rem"
+            mt="xl"
+          />
 
-      <Button
-        radius="xl"
-        fullWidth
-        mt="xl"
-        variant="filled"
-        onClick={handleSubmit}
-      >
-        Create Event
-      </Button>
-    </Stack>
+          <Button
+            radius="xl"
+            fullWidth
+            mt="xl"
+            variant="filled"
+            onClick={handleSubmit}
+          >
+            Create Event
+          </Button>
+        </Stack>
+      ) : (
+        <>
+          <Text>You should have at least one skill to create an event</Text>
+        </>
+      )}
+    </>
   );
 };
 
