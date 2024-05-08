@@ -1,44 +1,39 @@
 // Import modules
 import {
+  Button,
   Container,
   Group,
   Image,
   Modal,
   Paper,
-  Rating,
   Stack,
   Text,
   Title,
-  UnstyledButton,
   rem,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { notifications } from "@mantine/notifications";
-import { useContext, useEffect, useState } from "react";
-import { MdDelete } from "react-icons/md";
+// import { notifications } from "@mantine/notifications";
 import { useNavigate } from "react-router-dom";
-
-// Import components
-import DeleteEventModal from "./DeleteEventModal";
-
-// Import context
+import RateEventModal from "./RateEventModal";
+import { useContext, useEffect, useState } from "react";
+import { notifications } from "@mantine/notifications";
 import { AuthContext } from "../contexts/AuthContext";
 
-const MemberEvents = ({ memberId, refreshHostedEvents }) => {
+const MemberEvents = ({ memberId }) => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState();
   const navigate = useNavigate();
-  const { isLoggedIn, user } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
-  // Handle delete skill modal
+  // Handle rate event modal
   const [opened, { open, close }] = useDisclosure(false);
-  const deleteEventModal = { opened, open, close };
+  const rateEventModal = { opened, open, close };
 
-  // Fetch member`s hosted events
-  const fetchHostedEvents = async () => {
+  // Fetch member`s joined events
+  const fetchJoinedEvents = async () => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/events/?hostId=${memberId}`
+        `${import.meta.env.VITE_API_URL}/api/events/?attendees=${memberId}`
       );
       if (response.ok) {
         const responseData = await response.json();
@@ -57,32 +52,42 @@ const MemberEvents = ({ memberId, refreshHostedEvents }) => {
     }
   };
 
-  // Delete event handler
-  const deleteEventHandler = async (eventId) => {
-    deleteEventModal.close();
+  // Update event handler
+  const updateEventHandler = async (eventId, payload) => {
+    rateEventModal.close();
+    console.log({ payload });
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/events/${eventId}`,
         {
-          method: "DELETE",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Berear ${localStorage.getItem("authToken")}`,
           },
+          body: JSON.stringify(payload),
         }
       );
       if (response.ok) {
+        const responseData = await response.json();
         notifications.show({
           color: "indigo",
-          title: "Deleted successfully",
+          title: "Your rating submitted successfully",
         });
-        fetchHostedEvents();
+        setEvents(
+          events.map((currentEvent) => {
+            if (currentEvent._id === eventId) {
+              return responseData;
+            }
+            return currentEvent;
+          })
+        );
       } else {
         const errorResponse = await response.json();
         throw new Error(errorResponse.message);
       }
     } catch (error) {
-      console.error("Error while deleting event: ", error);
+      console.error("Error while submitting rating: ", error);
       notifications.show({
         color: "red",
         title:
@@ -93,8 +98,8 @@ const MemberEvents = ({ memberId, refreshHostedEvents }) => {
   };
 
   useEffect(() => {
-    fetchHostedEvents();
-  }, [refreshHostedEvents]);
+    fetchJoinedEvents();
+  }, []);
 
   return (
     <>
@@ -156,44 +161,28 @@ const MemberEvents = ({ memberId, refreshHostedEvents }) => {
                               <strong>Duration:</strong> {currentEvent.duration}
                             </Text>
                           </Group>
-                          <Group>
-                            <Text>
-                              <strong>Attendees:</strong>{" "}
-                              {currentEvent.attendees.length}
-                            </Text>
-                            {date < new Date() ? (
-                              <Group gap={3}>
-                                <Text>
-                                  <strong>Rating:</strong>{" "}
-                                </Text>
-                                <Rating
-                                  name="Rating"
-                                  value={currentEvent.rating}
-                                  readOnly
-                                />{" "}
-                                |{" "}
-                                <Text>
-                                  {currentEvent.ratingBy.length} Ratings
-                                </Text>
-                              </Group>
-                            ) : (
-                              <Text c="teal.4">Upcoming event...</Text>
-                            )}
-                          </Group>
+                          <Text>
+                            <strong>Attendees:</strong>{" "}
+                            {currentEvent.attendees.length}
+                          </Text>
                         </Stack>
                       </Stack>
                     </Container>
-                    {user?.userId === memberId && isLoggedIn && (
-                      <UnstyledButton
-                        onClick={() => {
-                          setSelectedEvent(currentEvent._id);
-                          deleteEventModal.open();
-                        }}
-                        style={{ position: "relative", top: "-40%" }}
-                      >
-                        <MdDelete size={20} />
-                      </UnstyledButton>
-                    )}
+                    {date < new Date() &&
+                      currentEvent.ratingBy.indexOf(user.userId) < 0 && (
+                        <Button
+                          onClick={() => {
+                            setSelectedEvent(currentEvent);
+                            rateEventModal.open();
+                          }}
+                        >
+                          Rate
+                        </Button>
+                      )}
+                    {date < new Date() &&
+                      currentEvent.ratingBy.indexOf(user.userId) >= 0 && (
+                        <Text>Rated</Text>
+                      )}
                   </Group>
                 </Paper>
               );
@@ -206,22 +195,22 @@ const MemberEvents = ({ memberId, refreshHostedEvents }) => {
         </Stack>
       </Container>
 
-      {/* Delete skill modal */}
+      {/* Rate event modal */}
       <Modal
         padding="xl"
         radius="xl"
         size="lg"
-        opened={deleteEventModal.opened}
-        onClose={deleteEventModal.close}
-        title="Confirm Deletion"
+        opened={rateEventModal.opened}
+        onClose={rateEventModal.close}
+        title="Rating"
         overlayProps={{
           backgroundOpacity: 0.55,
           blur: 3,
         }}
       >
-        <DeleteEventModal
-          eventId={selectedEvent}
-          deleteEventHandler={deleteEventHandler}
+        <RateEventModal
+          event={selectedEvent}
+          updateEvent={updateEventHandler}
         />
       </Modal>
     </>
