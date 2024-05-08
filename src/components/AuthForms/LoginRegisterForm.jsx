@@ -21,7 +21,7 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
-import { isValidPassword } from "../../helper/utils";
+import { isValidPassword } from "../../helper/utils.jsx";
 import ConditionalModal from "./ConditionalModel";
 import { useAuthFormsContext } from "../../contexts/AuthFormsContext";
 

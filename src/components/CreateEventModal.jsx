@@ -17,7 +17,7 @@ import { notifications } from "@mantine/notifications";
 import { CategoryContext } from "../contexts/CategoryContext";
 
 // Helper import
-import { isValidDuration } from "../helper/utils";
+import { isValidDuration } from "../helper/utils.jsx";
 
 // Image import
 import no_photo from "../assets/images/event_placeholder.jpg";

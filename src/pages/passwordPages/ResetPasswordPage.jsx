@@ -15,7 +15,7 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import { notifications } from "@mantine/notifications";
-import { isValidPassword } from "../../helper/utils";
+import { isValidPassword } from "../../helper/utils.jsx";
 
 const ResetPasswordPage = () => {
   const navigate = useNavigate();
