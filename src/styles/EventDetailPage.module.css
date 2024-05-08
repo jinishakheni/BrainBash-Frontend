@@ -27,6 +27,10 @@
   flex-direction: column;
 }
 
+.headerButtons {
+  gap: 1rem;
+}
+
 .title {
   padding-bottom: 1rem;
 }
@@ -35,10 +39,6 @@
   display: flex;
   align-items: center;
   margin-top: 0.5rem; /* Separate host section slightly */
-}
-
-.userPicture {
-  /* Styles for user picture */
 }
 
 .hostInfo {
@@ -90,15 +90,17 @@
   padding: 0.2rem;
 }
 
+.attendeeHighlighted {
+  background-color: pink;
+  width: 80px;
+}
+
 .attendeesInformation {
   padding: 1.5rem 8rem 1.5rem 8rem;
   margin-bottom: 0;
   flex-direction: column;
-  justify-content: flex-start;
-}
-
-.attendeeHighlighted {
-  background-color: pink;
+  justify-content: center;
+  align-items: start-flex;
 }
 
 /* Media query to switch to column layout on small screens */

@@ -40,7 +40,7 @@ export const createConversation = async (userId, participantId) => {
 
     if (response.ok) {
       const data = await response.json();
-      return data._id
+      return data._id;
     }
   } catch (error) {
     console.error(error, "on creating conversation");
