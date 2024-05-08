@@ -15,7 +15,7 @@ import dayjs from "dayjs";
 import no_photo from "../assets/images/no_photo.png";
 
 // Import helper
-import { isValidEmail, isValidLink } from "../helper/utils";
+import { isValidEmail, isValidLink } from "../helper/utils.jsx";
 
 const EditMemberModal = ({ userDetails, updateMemberInfo }) => {
   const [firstName, setFirstName] = useState(userDetails.firstName);
