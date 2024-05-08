@@ -20,7 +20,7 @@ const HomePage = () => {
 
   // Subscribe to the AuthContext to gain access to
   // the values from AuthContext.Provider `value` prop
-  const { isLoggedIn, user } = useContext(AuthContext);
+  const { isLoggedIn } = useContext(AuthContext);
 
   const { toggleAuthForms } = useAuthFormsContext();
   const navigate = useNavigate();
