@@ -33,6 +33,9 @@ const LoginRegisterForm = ({ email, setEmail }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
 
+  // this hook allows to disable buttons while system is connecting with backend
+  const [isLoading, setIsLoading] = useState(false);
+
   // Getting the route parameter (login or register) and storing in a hook
   const { formType, setFormType, showModal, toggleAuthForms } =
     useAuthFormsContext();
@@ -112,6 +115,9 @@ const LoginRegisterForm = ({ email, setEmail }) => {
 
       // If no errors, then proceed to communicate with server
       if (!errors.hasErrors) {
+        // Start loading state
+        setIsLoading(true);
+
         const requestBody = { email, password, firstName, lastName };
         // Make an axios request to the API
         // If the POST request is a successful redirect to the login page
@@ -122,7 +128,7 @@ const LoginRegisterForm = ({ email, setEmail }) => {
             if (response.status === 201) {
               // TODO Show registration success notification
               showNotification(formType, "success", "Signup is succesful");
-              setTimeout(navigateToLogin, 2000);
+              setTimeout(navigateToLogin, 1000);
             } else {
               throw new Error(response);
             }
@@ -130,7 +136,8 @@ const LoginRegisterForm = ({ email, setEmail }) => {
           .catch((error) => {
             console.error("Error: ", error);
             showNotification(formType, "error", error.response.data.message);
-          });
+          })
+          .finally(() => setIsLoading(false)); // Stop loading state ;
       }
     } else if (formType === "login") {
       event.preventDefault();
@@ -139,6 +146,8 @@ const LoginRegisterForm = ({ email, setEmail }) => {
       const errors = form.validate();
 
       if (!errors.hasErrors) {
+        // Start loading state
+        setIsLoading(true);
         const requestBody = { email, password };
 
         // If login is successfull, navigate to main page
@@ -158,7 +167,8 @@ const LoginRegisterForm = ({ email, setEmail }) => {
           .catch((error) => {
             console.error("Error: ", error);
             showNotification(formType, "error", error.response.data.message);
-          });
+          })
+          .finally(() => setIsLoading(false)); // Stop loading state;
       }
     }
   };
@@ -312,7 +322,7 @@ const LoginRegisterForm = ({ email, setEmail }) => {
                   {"Forgot your password?"}
                 </Anchor>
                 <Group justify="space-between">
-                  <Button type="submit" radius="xl">
+                  <Button type="submit" radius="xl" disabled={isLoading}>
                     {upperFirst(formType)}
                   </Button>
                 </Group>

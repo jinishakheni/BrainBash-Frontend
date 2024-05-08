@@ -135,7 +135,7 @@ const EventDetailPage = () => {
           return response.json(); // Convert the response to JSON
         })
         .then((data) => {
-          //console.log("Event updated successfully:", data);
+          console.log("Event updated successfully:", data);
           setAttendees(updatedAttendees);
           setIsAttending(true);
         })
