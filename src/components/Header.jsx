@@ -20,6 +20,7 @@ import { FaRegUser } from "react-icons/fa6";
 
 // Component inport
 import ColorScheme from "../components/ColorScheme";
+import MessageIcon from "./MessageIcon";
 
 // Logo import
 import logoImg from "../assets/images/logo.png";
@@ -114,26 +115,30 @@ const Header = () => {
           </Container>
 
           {/* User settings */}
-          <Group gap={{ sm: "md", lg: "xl" }} wrap="nowrap">
+          <Group gap={{ sm: "md", lg: "xl" }} wrap="nowrap" align="center">
             {isLoggedIn ? (
-              <Menu
-                width={200}
-                position="bottom"
-                withArrow
-                shadow="md"
-                opened={userMenuOpened}
-                onChange={setUserMenuOpened}
-                transitionProps={{ transition: "pop-top-right" }}
-                withinPortal
-                trigger="click-hover"
-              >
-                <Menu.Target>
-                  <UnstyledButton className={classes.userIcon}>
-                    <FaRegUser size={25} />
-                  </UnstyledButton>
-                </Menu.Target>
-                <Menu.Dropdown> {userDropDownItems} </Menu.Dropdown>
-              </Menu>
+              <>
+                <MessageIcon />
+
+                <Menu
+                  width={200}
+                  position="bottom"
+                  withArrow
+                  shadow="md"
+                  opened={userMenuOpened}
+                  onChange={setUserMenuOpened}
+                  transitionProps={{ transition: "pop-top-right" }}
+                  withinPortal
+                  trigger="click-hover"
+                >
+                  <Menu.Target>
+                    <UnstyledButton className={classes.userIcon}>
+                      <FaRegUser size={25} />
+                    </UnstyledButton>
+                  </Menu.Target>
+                  <Menu.Dropdown> {userDropDownItems} </Menu.Dropdown>
+                </Menu>
+              </>
             ) : (
               <>
                 <Button
