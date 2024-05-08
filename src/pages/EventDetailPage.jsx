@@ -95,11 +95,6 @@ const EventDetailPage = () => {
     if (!attendeesIds.includes(user.userId)) {
       // Ids
       const updatedAttendeesIds = [...attendeesIds, user.userId];
-      // Ids & fullname
-      const updatedAttendees = [
-        ...attendees,
-        { _id: user.userId, fullName: "You" },
-      ];
 
       // Get token from local storage
       const storedToken = localStorage.getItem("authToken");
@@ -135,8 +130,9 @@ const EventDetailPage = () => {
           return response.json(); // Convert the response to JSON
         })
         .then((data) => {
-          console.log("Event updated successfully:", data);
-          setAttendees(updatedAttendees);
+
+          //console.log("Event updated successsfully:", data.attendees);
+          setAttendees(data.attendees);
           setIsAttending(true);
         })
         .catch((error) => {
@@ -198,7 +194,7 @@ const EventDetailPage = () => {
       })
       .then((data) => {
         //console.log("Event updated successfully:", data);
-        setAttendees(updatedAttendees);
+        setAttendees(data.attendees);
         setIsAttending(false);
       })
       .catch((error) => {
@@ -211,7 +207,9 @@ const EventDetailPage = () => {
       // If user is not logged in, button should navigate to Login
       toggleAuthForms("login", "true");
     } else {
-      isAttending ? leaveEvent() : updateAttendees();
+      isAttending || attendees.map((a) => a._id).includes(user.userId)
+        ? leaveEvent()
+        : updateAttendees();
     }
   }
 
@@ -294,9 +292,16 @@ const EventDetailPage = () => {
           <Button
             onClick={handleJoinButton}
             disabled={user && user.userId === host._id}
-            variant={isLoggedIn && isAttending ? "outline" : "filled"}
+            variant={
+              isLoggedIn &&
+              (isAttending || attendees.map((a) => a._id).includes(user.userId))
+                ? "outline"
+                : "filled"
+            }
           >
-            {isAttending ? "Leave" : "Join"}
+            {isAttending || attendees.map((a) => a._id).includes(user.userId)
+              ? "Leave"
+              : "Join"}
           </Button>
         </Flex>
       </Flex>
@@ -346,7 +351,7 @@ const EventDetailPage = () => {
                     }
                   >
                     <Text ta="center" truncate="end" size="xs" fw={600}>
-                      {user && at._id === user.userId ? "You" : at.fullName}
+                      {user && at.fullName}
                     </Text>
                   </Box>
                 </Link>
