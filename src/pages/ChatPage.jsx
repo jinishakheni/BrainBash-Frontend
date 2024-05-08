@@ -1,6 +1,6 @@
 import { createRef, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import io from "socket.io-client";
 import { createConversationAndNavigate } from "../helper/utils.jsx";
 
@@ -10,7 +10,6 @@ const ChatPage = () => {
   const [messageList, setMessageList] = useState([]);
   const [currentMessage, setCurrentMessage] = useState("");
 
-  const navigate = useNavigate();
 
   let messagesEnd = createRef();
   const scrollToBottom = () => {
