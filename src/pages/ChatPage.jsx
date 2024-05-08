@@ -1,8 +1,8 @@
 import { createRef, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import io from "socket.io-client";
-import { createConversationAndNavigate } from "../helper/utils.jsx";
+import { createConversation } from "../helper/utils.jsx";
 
 const ChatPage = () => {
   const { user, isLoggedIn } = useContext(AuthContext);
@@ -10,6 +10,7 @@ const ChatPage = () => {
   const [messageList, setMessageList] = useState([]);
   const [currentMessage, setCurrentMessage] = useState("");
 
+  const navigate = useNavigate();
 
   let messagesEnd = createRef();
   const scrollToBottom = () => {
@@ -17,9 +18,8 @@ const ChatPage = () => {
       messagesEnd.current.scrollTop = messagesEnd.current.scrollHeight;
     }
   };
-
-  const params = useParams();
-  const { chatId } = params;
+  
+  const { chatId } = useParams();
 
   const socket = io(`${import.meta.env.VITE_API_URL}`);
 
@@ -89,6 +89,20 @@ const ChatPage = () => {
     setCurrentMessage(e.target.value);
   };
 
+  const handleMessageClick = async (participantId) => {
+    try {
+      const conversationId = await createConversation(
+        user.userId,
+        participantId
+      );
+
+      navigate(`/direct/t/${conversationId}`);
+
+    } catch (error) {
+      console.log(error, "on creating and navigating to the conversation");
+    }
+  };
+
   if (!isLoggedIn && conversationList.length === 0) {
     return <p>Loading all messages . . .</p>;
   }
@@ -133,11 +147,7 @@ const ChatPage = () => {
                 return (
                   <button
                     class="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2"
-                    onClick={() =>
-                      createConversationAndNavigate(
-                        conversation.participants[0]._id
-                      )
-                    }
+                    onClick={() => handleMessageClick(conversation.participants[0]._id)}
                     key={index}
                   >
                     <div class="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
