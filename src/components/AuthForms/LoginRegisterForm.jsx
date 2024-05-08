@@ -5,14 +5,12 @@ import {
   TextInput,
   PasswordInput,
   Text,
-  Paper,
   Group,
   Button,
   Divider,
   Checkbox,
   Anchor,
   Stack,
-  Container,
 } from "@mantine/core";
 import { GoogleButton } from "../GoogleButton";
 import { GithubButton } from "../GithubIcon";
@@ -24,7 +22,6 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { isValidPassword } from "../../helper/utils.jsx";
 import ConditionalModal from "./ConditionalModel";
 import { useAuthFormsContext } from "../../contexts/AuthFormsContext";
-import classes from "../../styles/LoginRegisterForm.module.css";
 
 const LoginRegisterForm = ({ email, setEmail }) => {
   // Setting up hooks for form data
