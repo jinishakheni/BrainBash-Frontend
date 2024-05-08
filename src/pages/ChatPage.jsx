@@ -2,6 +2,7 @@ import { createRef, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
 import io from "socket.io-client";
+import { createConversationAndNavigate } from "../helper/utils.jsx";
 
 const ChatPage = () => {
   const { user, isLoggedIn } = useContext(AuthContext);
@@ -58,30 +59,6 @@ const ChatPage = () => {
       }
     } catch (error) {
       console.log(error, "on fetching messages");
-    }
-  };
-
-  const createConversation = async (participantId) => {
-    const participants = [user.userId, participantId];
-
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/conversation`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ participants }),
-        }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        navigate(`/direct/t/${data._id}`);
-      }
-    } catch (error) {
-      console.error(error, "on creating conversation");
     }
   };
 
@@ -158,7 +135,9 @@ const ChatPage = () => {
                   <button
                     class="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2"
                     onClick={() =>
-                      createConversation(conversation.participants[0]._id)
+                      createConversationAndNavigate(
+                        conversation.participants[0]._id
+                      )
                     }
                     key={index}
                   >
