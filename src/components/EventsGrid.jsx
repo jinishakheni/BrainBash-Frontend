@@ -8,6 +8,7 @@ import {
   Text,
   Title,
   Tooltip,
+  rem,
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 
@@ -30,11 +31,11 @@ const EventsGrid = ({ list }) => {
             key={currentItem._id}
             span={{ base: 12, xs: 6, md: 4, lg: 3 }}
           >
-            <Card shadow="sm" padding="lg" radius="md" withBorder>
+            <Card shadow="sm" padding="lg" radius="md" h={rem(290)} withBorder>
               <Card.Section>
                 <Image
                   src={currentItem.imageUrl}
-                  height={160}
+                  h={180}
                   fallbackSrc="https://placehold.co/600x400?text=Placeholder"
                   onClick={() => navigate(`/events/${currentItem._id}`)}
                 />
