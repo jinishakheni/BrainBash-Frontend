@@ -191,139 +191,127 @@ const LoginRegisterForm = ({ email, setEmail }) => {
   };
 
   return (
-    <div className={classes.formCtn}>
+    <div>
       <ConditionalModal>
-        <Container style={{ fluid: "true" }}>
-          <Paper
-            radius="md"
-            p="xl"
-            withBorder
-            shadow="md"
-            style={{ margin: "auto", maxWidth: "500px" }}
-          >
-            <Text size="lg" fw={500}>
-              Welcome to BrainBash, {formType} with
-            </Text>
+        <Text size="lg" fw={500} style={{ marginTop: "-1rem" }}>
+          Welcome to BrainBash, {formType} with
+        </Text>
 
-            <Group grow mb="md" mt="md">
-              <GoogleButton radius="xl">Google</GoogleButton>
-              <GithubButton radius="xl">Github</GithubButton>
-            </Group>
+        <Group grow mb="md" mt="md">
+          <GoogleButton radius="xl">Google</GoogleButton>
+          <GithubButton radius="xl">Github</GithubButton>
+        </Group>
 
-            <Divider
-              label="Or continue with email"
-              labelPosition="center"
-              my="lg"
-            />
+        <Divider
+          label="Or continue with email"
+          labelPosition="center"
+          my="lg"
+        />
 
-            <form onSubmit={handleSubmit}>
-              <Stack>
-                {formType === "register" && (
-                  <>
-                    <TextInput
-                      label="First Name"
-                      placeholder="Your first name"
-                      value={firstName}
-                      onChange={handleFirstName}
-                      radius="md"
-                    />
-
-                    <TextInput
-                      label="Last Name"
-                      placeholder="Your last name"
-                      value={lastName}
-                      onChange={handleLastName}
-                      radius="md"
-                    />
-                  </>
-                )}
+        <form onSubmit={handleSubmit}>
+          <Stack>
+            {formType === "register" && (
+              <>
+                <TextInput
+                  label="First Name"
+                  placeholder="Your first name"
+                  value={firstName}
+                  onChange={handleFirstName}
+                  radius="md"
+                />
 
                 <TextInput
-                  required
-                  label="Email"
-                  placeholder="hello@brainbash.com"
-                  value={email}
-                  onChange={handleEmail}
-                  error={form.errors.email}
+                  label="Last Name"
+                  placeholder="Your last name"
+                  value={lastName}
+                  onChange={handleLastName}
                   radius="md"
                 />
+              </>
+            )}
 
+            <TextInput
+              required
+              label="Email"
+              placeholder="hello@brainbash.com"
+              value={email}
+              onChange={handleEmail}
+              error={form.errors.email}
+              radius="md"
+            />
+
+            <PasswordInput
+              required
+              label="Password"
+              placeholder="Your password"
+              value={password}
+              onChange={handlePassword}
+              error={form.errors.password}
+              radius="md"
+            />
+
+            {formType === "register" && (
+              <>
                 <PasswordInput
                   required
-                  label="Password"
-                  placeholder="Your password"
-                  value={password}
-                  onChange={handlePassword}
-                  error={form.errors.password}
+                  label="Confirm Password"
+                  placeholder="Confirm Your password"
+                  value={confirmPassword}
+                  onChange={handleConfirmPassword}
+                  error={
+                    form.errors.confirmPassword && "Both passwords should match"
+                  }
                   radius="md"
                 />
 
-                {formType === "register" && (
-                  <>
-                    <PasswordInput
-                      required
-                      label="Confirm Password"
-                      placeholder="Confirm Your password"
-                      value={confirmPassword}
-                      onChange={handleConfirmPassword}
-                      error={
-                        form.errors.confirmPassword &&
-                        "Both passwords should match"
-                      }
-                      radius="md"
-                    />
+                <Checkbox
+                  label="I accept terms and conditions"
+                  checked={form.values.terms}
+                  onChange={(event) =>
+                    form.setFieldValue("terms", event.currentTarget.checked)
+                  }
+                  error={
+                    form.errors.terms && "Terms and conditions must be accepted"
+                  }
+                />
+              </>
+            )}
+          </Stack>
 
-                    <Checkbox
-                      label="I accept terms and conditions"
-                      checked={form.values.terms}
-                      onChange={(event) =>
-                        form.setFieldValue("terms", event.currentTarget.checked)
-                      }
-                      error={
-                        form.errors.terms &&
-                        "Terms and conditions must be accepted"
-                      }
-                    />
-                  </>
-                )}
-              </Stack>
-
-              <Group justify="space-between" mt="xl">
-                <Anchor
-                  component="button"
-                  type="button"
-                  c="dimmed"
-                  onClick={() => {
-                    formType === "register"
-                      ? navigateToLogin()
-                      : navigateToRegister();
-                  }}
-                  size="xs"
-                >
-                  {formType === "register"
-                    ? "Already have an account? Login"
-                    : "Don't have an account? Register"}
-                </Anchor>
-                <Anchor
-                  component="button"
-                  type="button"
-                  c="dimmed"
-                  onClick={() => {
-                    setFormType("forgotpassword");
-                  }}
-                  size="xs"
-                >
-                  {"Forgot your password?"}
-                </Anchor>
-                <Group justify="space-between">
-                  <Button type="submit" radius="xl" disabled={isLoading}>
-                    {upperFirst(formType)}
-                  </Button>
-                </Group>
-              </Group>
-            </form>
-          </Paper>
-        </Container>
+          <Group justify="space-between" mt="xl">
+            <Anchor
+              component="button"
+              type="button"
+              c="dimmed"
+              onClick={() => {
+                formType === "register"
+                  ? navigateToLogin()
+                  : navigateToRegister();
+              }}
+              size="xs"
+            >
+              {formType === "register"
+                ? "Already have an account? Login"
+                : "Don't have an account? Register"}
+            </Anchor>
+            <Anchor
+              component="button"
+              type="button"
+              c="dimmed"
+              onClick={() => {
+                setFormType("forgotpassword");
+              }}
+              size="xs"
+            >
+              {"Forgot your password?"}
+            </Anchor>
+            <Group justify="space-between">
+              <Button type="submit" radius="xl" disabled={isLoading}>
+                {upperFirst(formType)}
+              </Button>
+            </Group>
+          </Group>
+        </form>
       </ConditionalModal>
     </div>
   );
