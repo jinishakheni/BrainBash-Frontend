@@ -15,7 +15,7 @@ import {
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
 
 // Components import
@@ -34,12 +34,17 @@ import classes from "../styles/MemberPage.module.css";
 //Image imports
 const no_gender_photo = "../assets/images/no_photo.png";
 
+// Helper import
+import { createConversation } from "../helper/utils";
+
 const MemberPage = () => {
   const { memberId } = useParams();
   const [memberDetails, setMemberDetails] = useState({});
   const [activeTab, setActiveTab] = useState("PersonalInfo");
   const [refreshHostedEvents, setRefreshHostedEvents] = useState(false);
   const { isLoggedIn, user } = useContext(AuthContext);
+
+  const navigate = useNavigate();
 
   // Handle member's personal info update modal
   let [opened, { open, close }] = useDisclosure(false);
@@ -117,6 +122,19 @@ const MemberPage = () => {
     }
   };
 
+  const handleStartChatClick = async () => {
+    try {
+      const conversationId = await createConversation(user.userId, memberId);
+      navigate(`/direct/t/${conversationId}`);
+    } catch (error) {
+      console.error("Error while starting conversation with user:", memberId);
+      notifications.show({
+        color: "red",
+        title: "Oops! Something went wrong. Please try after sometime.",
+      });
+    }
+  };
+
   useEffect(() => {
     fetchMemberDetails();
   }, [memberId]);
@@ -173,6 +191,11 @@ const MemberPage = () => {
                         Create Event
                       </Button>
                     </>
+                  )}
+                  {isLoggedIn && user?.userId !== memberId && (
+                    <Button
+                      onClick={handleStartChatClick}
+                    >{`Chat with ${memberDetails.fullName}`}</Button>
                   )}
                 </Stack>
               </Paper>
