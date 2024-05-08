@@ -193,9 +193,9 @@ const ChatPage = () => {
                       {fullName.charAt(0)}
                     </div>
                     <div class="ml-2 text-sm font-semibold">{fullName}</div>
-                    <div class="flex items-center justify-center ml-auto text-xs text-white bg-red-500 h-4 w-4 rounded leading-none">
+                    {conversation.count!==0 && <div class="flex items-center justify-center ml-auto text-xs text-white bg-red-500 h-4 w-4 rounded leading-none">
                       {conversation.count}
-                    </div>
+                    </div>}
                   </button>
                 );
               })}
