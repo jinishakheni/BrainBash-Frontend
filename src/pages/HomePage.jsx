@@ -1,12 +1,13 @@
 // Module imports
 import { notifications } from "@mantine/notifications";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader, Title, Button, Flex, Image, em } from "@mantine/core";
+import { Loader, Title, Button, Flex, Image, em, Text } from "@mantine/core";
 import classes from "../styles/HomePage.module.css";
 import homepic from "../assets/images/homepic.png";
 import { useAuthFormsContext } from "../contexts/AuthFormsContext";
 import { useMediaQuery } from "@mantine/hooks";
+import { AuthContext } from "../contexts/AuthContext.jsx";
 
 // Components import
 import EventsGrid from "../components/EventsGrid";
@@ -16,6 +17,10 @@ const HomePage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const isMobile = useMediaQuery(`(max-width: ${em(500)})`);
+
+  // Subscribe to the AuthContext to gain access to
+  // the values from AuthContext.Provider `value` prop
+  const { isLoggedIn, user } = useContext(AuthContext);
 
   const { toggleAuthForms } = useAuthFormsContext();
   const navigate = useNavigate();
@@ -66,10 +71,12 @@ const HomePage = () => {
           <Button
             size={isMobile ? "xs" : "sm"}
             onClick={() => {
-              toggleAuthForms("login", "true");
+              !isLoggedIn
+                ? toggleAuthForms("login", "true")
+                : navigate("/experts");
             }}
           >
-            Join BrainBash
+            {!isLoggedIn ? "Join BrainBash" : "See all experts"}
           </Button>
         </Flex>
         <div className={classes.headerImage}>
@@ -89,7 +96,9 @@ const HomePage = () => {
                 </Button>
               </div>
             ) : (
-              <Title order={3}>No Data Found</Title>
+              <>
+                <Text size="sm">There are events at this moment...</Text>
+              </>
             )
           ) : (
             <Loader color="blue" size="xl" type="bars" />
