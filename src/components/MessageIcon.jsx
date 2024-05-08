@@ -67,6 +67,7 @@ const MessageIcon = () => {
       inline
       color="red"
       label={count}
+      disabled={count ?  false : true}
       size={25}
       onClick={() => navigate("/direct/inbox")}
     >
