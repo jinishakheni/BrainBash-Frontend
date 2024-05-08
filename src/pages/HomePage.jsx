@@ -97,7 +97,7 @@ const HomePage = () => {
               </div>
             ) : (
               <>
-                <Text size="sm">There are events at this moment...</Text>
+                <Text size="sm">There are no events at this moment...</Text>
               </>
             )
           ) : (
