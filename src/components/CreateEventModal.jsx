@@ -22,7 +22,11 @@ import { isValidDuration } from "../helper/utils.jsx";
 // Image import
 import no_photo from "../assets/images/event_placeholder.jpg";
 
-const CreateEventModal = ({ userDetails, closeModal, fetchMemberEvents }) => {
+const CreateEventModal = ({
+  userDetails,
+  closeModal,
+  handleRefreshHostedEvent,
+}) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -112,7 +116,7 @@ const CreateEventModal = ({ userDetails, closeModal, fetchMemberEvents }) => {
           color: "indigo",
           title: "Event created successfully",
         });
-        fetchMemberEvents();
+        handleRefreshHostedEvent();
       } else {
         const errorResponse = await response.json();
         throw new Error(errorResponse.message);
@@ -179,6 +183,7 @@ const CreateEventModal = ({ userDetails, closeModal, fetchMemberEvents }) => {
         valueFormat="DD MMM YYYY hh:mm A"
         label="Pick date and time"
         placeholder="Pick date and time"
+        // minDate={new Date()}  // TODO Uncomment after testing
         value={startingTime}
         onChange={setStartingTime}
         error={errors.startingTime}
