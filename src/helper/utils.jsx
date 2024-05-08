@@ -23,8 +23,8 @@ export const isValidDuration = (duration) => {
   return durationRegex.test(duration);
 };
 
-export const createConversationAndNavigate = async (participantId) => {
-  const participants = [user.userId, participantId];
+export const createConversation = async (userId, participantId) => {
+  const participants = [userId, participantId];
 
   try {
     const response = await fetch(
@@ -40,7 +40,7 @@ export const createConversationAndNavigate = async (participantId) => {
 
     if (response.ok) {
       const data = await response.json();
-      navigate(`/direct/t/${data._id}`);
+      return data._id
     }
   } catch (error) {
     console.error(error, "on creating conversation");
