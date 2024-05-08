@@ -5,7 +5,7 @@ import io from "socket.io-client";
 import { createConversation } from "../helper/utils.jsx";
 
 const ChatPage = () => {
-  const { user, isLoggedIn } = useContext(AuthContext);
+  const { user, isLoggedIn, socket } = useContext(AuthContext);
   const [conversationList, setConversationList] = useState([]);
   const [messageList, setMessageList] = useState([]);
   const [currentMessage, setCurrentMessage] = useState("");
@@ -18,10 +18,8 @@ const ChatPage = () => {
       messagesEnd.current.scrollTop = messagesEnd.current.scrollHeight;
     }
   };
-  
-  const { chatId } = useParams();
 
-  const socket = io(`${import.meta.env.VITE_API_URL}`);
+  const { chatId } = useParams();
 
   const fetchConversations = async () => {
     try {
@@ -37,10 +35,35 @@ const ChatPage = () => {
     }
   };
 
-  const fetchMessages = async () => {
-    if (!chatId) {
-      return;
+  const removeUnreadMessages = async () => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/unread-conversations/${chatId}/${
+          user.userId
+        }`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Request failed");
+      }
+
+      const responseData = await response.json();
+
+      if (responseData.hadUnreadMessages) {
+        fetchConversations();
+      }
+    } catch (error) {
+      console.log(error, "on removing unread messages from db");
     }
+  };
+
+  const fetchMessages = async () => {
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/messages/${chatId}`
@@ -53,6 +76,7 @@ const ChatPage = () => {
         console.log("join_chat");
 
         socket.on("receive_message", (data) => {
+          console.log("got data", data);
           setMessageList((prevList) => [...prevList, data]);
         });
       }
@@ -68,8 +92,22 @@ const ChatPage = () => {
   useEffect(() => {
     if (isLoggedIn) {
       fetchConversations();
-      fetchMessages();
+      socket.on("unread_conversations2", (conversationId) => {
+        if (conversationId === chatId) {
+          removeUnreadMessages();
+          return;
+        }
+        fetchConversations();
+      });
+      if (chatId) {
+        fetchMessages();
+        removeUnreadMessages();
+      }
     }
+    return () => {
+      socket.off("receive_message");
+      socket.off("unread_conversations2");
+    };
   }, [chatId]);
 
   const sendMessage = async () => {
@@ -97,7 +135,6 @@ const ChatPage = () => {
       );
 
       navigate(`/direct/t/${conversationId}`);
-
     } catch (error) {
       console.log(error, "on creating and navigating to the conversation");
     }
@@ -147,13 +184,18 @@ const ChatPage = () => {
                 return (
                   <button
                     class="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2"
-                    onClick={() => handleMessageClick(conversation.participants[0]._id)}
+                    onClick={() =>
+                      handleMessageClick(conversation.participants[0]._id)
+                    }
                     key={index}
                   >
                     <div class="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
                       {fullName.charAt(0)}
                     </div>
                     <div class="ml-2 text-sm font-semibold">{fullName}</div>
+                    <div class="flex items-center justify-center ml-auto text-xs text-white bg-red-500 h-4 w-4 rounded leading-none">
+                      {conversation.count}
+                    </div>
                   </button>
                 );
               })}
