@@ -35,7 +35,7 @@ const EventsGrid = ({ list }) => {
               <Card.Section>
                 <Image
                   src={currentItem.imageUrl}
-                  mih={180}
+                  h={180}
                   fallbackSrc="https://placehold.co/600x400?text=Placeholder"
                   onClick={() => navigate(`/events/${currentItem._id}`)}
                 />
