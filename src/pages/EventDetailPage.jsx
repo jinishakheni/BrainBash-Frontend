@@ -16,6 +16,7 @@ import {
   Flex,
   Modal,
   ScrollArea,
+  Badge,
 } from "@mantine/core";
 import UpdateEventModal from "../components/UpdateEventModal.jsx";
 import no_user_icon from "../assets/images/no_user_icon.png";
@@ -29,6 +30,7 @@ const EventDetailPage = () => {
   const [event, setEvent] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [date, setDate] = useState("no date available");
+  const [currentDate, setCurrentDate] = useState();
   const [attendees, setAttendees] = useState([]);
   const [host, setHost] = useState("");
   // Subscribe to the AuthContext to gain access to
@@ -44,6 +46,8 @@ const EventDetailPage = () => {
 
   // Fetch the event from from DB
   const fetchEvent = async () => {
+    const nowDate = new Date();
+    setCurrentDate(nowDate);
     let apiEndPoint = `${import.meta.env.VITE_API_URL}/api/events/${id}`;
     try {
       const response = await fetch(apiEndPoint);
@@ -85,34 +89,110 @@ const EventDetailPage = () => {
   };
 
   // Function add current user to the list of attendees, and to update attendees list in the front-end and in the database
-  const updateAttendees = () => {
+  const joinEvent = () => {
     // Add current user to the list of attendees (Attendess hook), and update isAttending as true
 
-    // Get list of attendees ids from the hook containing all attendee information
-    let attendeesIds = attendees.map((a) => a._id);
+    const nowDate = new Date();
+    setCurrentDate(nowDate);
 
-    // Make sure user is not already attending even
-    if (!attendeesIds.includes(user.userId)) {
-      // Ids
-      const updatedAttendeesIds = [...attendeesIds, user.userId];
+    // Event can only be modified before the starting time
+    if (currentDate < date) {
+      // Get list of attendees ids from the hook containing all attendee information
+      let attendeesIds = attendees.map((a) => a._id);
 
+      // Make sure user is not already attending even
+      if (!attendeesIds.includes(user.userId)) {
+        // Ids
+        const updatedAttendeesIds = [...attendeesIds, user.userId];
+
+        // Get token from local storage
+        const storedToken = localStorage.getItem("authToken");
+        // If token is not available
+        if (!storedToken) {
+          notifications.show({
+            color: "red",
+            title: "Authorization Error",
+            message: "Authentication token is missing.",
+          });
+          return;
+        }
+        // Put to event
+        let apiEndPoint = `${import.meta.env.VITE_API_URL}/api/events/${id}`;
+        // Updating only attendee array information
+        const updatedData = { attendees: updatedAttendeesIds };
+
+        // PUT request to update
+        const requestOptions = {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${storedToken}`,
+          },
+          body: JSON.stringify(updatedData),
+        };
+
+        fetch(apiEndPoint, requestOptions)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to update the event");
+            }
+            return response.json(); // Convert the response to JSON
+          })
+          .then((data) => {
+            console.log("Event updated successsfully:", data.attendees);
+            setAttendees(data.attendees);
+            setIsAttending(true);
+          })
+          .catch((error) => {
+            console.error("Error updating the event:", error);
+          });
+      } else {
+        // Make sure isAttending is true
+        setIsAttending(true);
+      }
+    } else {
+      fetchEvent();
+    }
+  };
+
+  // Function removing the current user from the list of attendees, in front and back (database)
+  const leaveEvent = () => {
+    // Update current time
+    const nowDate = new Date();
+    setCurrentDate(nowDate);
+
+    // Event can only be modified before the starting time
+    if (currentDate < date) {
       // Get token from local storage
       const storedToken = localStorage.getItem("authToken");
-      // If token is not available
-      if (!storedToken) {
+
+      // Make sure that token and even are available
+      if (!storedToken || !event) {
         notifications.show({
           color: "red",
-          title: "Authorization Error",
-          message: "Authentication token is missing.",
+          title: "Authorization or Event Error",
+          message: "Authentication token or event data is missing.",
         });
         return;
       }
-      // Put to event
-      let apiEndPoint = `${import.meta.env.VITE_API_URL}/api/events/${id}`;
-      // Updating only attendee array information
+
+      // API endpoint
+      const apiEndPoint = `${import.meta.env.VITE_API_URL}/api/events/${
+        event._id
+      }`;
+
+      // Filter out the current user's userId
+      const attendeesIds = attendees.map((a) => a._id);
+      const updatedAttendeesIds = attendeesIds.filter(
+        (userId) => userId !== user.userId
+      );
+
+      let updatedAttendees = [...attendees];
+      updatedAttendees.pop();
+
+      // Prepare information to be updated
       const updatedData = { attendees: updatedAttendeesIds };
 
-      // PUT request to update
       const requestOptions = {
         method: "PUT",
         headers: {
@@ -127,79 +207,18 @@ const EventDetailPage = () => {
           if (!response.ok) {
             throw new Error("Failed to update the event");
           }
-          return response.json(); // Convert the response to JSON
+          return response.json();
         })
         .then((data) => {
-
-          //console.log("Event updated successsfully:", data.attendees);
           setAttendees(data.attendees);
-          setIsAttending(true);
+          setIsAttending(false);
         })
         .catch((error) => {
           console.error("Error updating the event:", error);
         });
     } else {
-      // Make sure isAttending is true
-      setIsAttending(true);
+      fetchEvent();
     }
-  };
-
-  // Function removing the current user from the list of attendees, in front and back (database)
-  const leaveEvent = () => {
-    // Get token from local storage
-    const storedToken = localStorage.getItem("authToken");
-
-    // Make sure that token and even are available
-    if (!storedToken || !event) {
-      notifications.show({
-        color: "red",
-        title: "Authorization or Event Error",
-        message: "Authentication token or event data is missing.",
-      });
-      return;
-    }
-
-    // API endpoint
-    const apiEndPoint = `${import.meta.env.VITE_API_URL}/api/events/${
-      event._id
-    }`;
-
-    // Filter out the current user's userId
-    const attendeesIds = attendees.map((a) => a._id);
-    const updatedAttendeesIds = attendeesIds.filter(
-      (userId) => userId !== user.userId
-    );
-
-    let updatedAttendees = [...attendees];
-    updatedAttendees.pop();
-
-    // Prepare information to be updated
-    const updatedData = { attendees: updatedAttendeesIds };
-
-    const requestOptions = {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${storedToken}`,
-      },
-      body: JSON.stringify(updatedData),
-    };
-
-    fetch(apiEndPoint, requestOptions)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to update the event");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        //console.log("Event updated successfully:", data);
-        setAttendees(data.attendees);
-        setIsAttending(false);
-      })
-      .catch((error) => {
-        console.error("Error updating the event:", error);
-      });
   };
 
   function handleJoinButton() {
@@ -209,7 +228,7 @@ const EventDetailPage = () => {
     } else {
       isAttending || attendees.map((a) => a._id).includes(user.userId)
         ? leaveEvent()
-        : updateAttendees();
+        : joinEvent();
     }
   }
 
@@ -246,6 +265,8 @@ const EventDetailPage = () => {
           error.toString() ||
           "Oops! Something went wrong. Please try after sometime.",
       });
+    } finally {
+      fetchEvent();
     }
   };
 
@@ -266,7 +287,14 @@ const EventDetailPage = () => {
     <Container fluid className={classes.mainContainer}>
       <Flex className={classes.header}>
         <Flex className={classes.textHeader}>
-          <Title className={classes.title}>{event.title}</Title>
+          <div className={classes.titleSection}>
+            <Title className={classes.title}>{event.title}</Title>
+            {date < currentDate && (
+              <Badge size="lg" variant="filled" color="red">
+                Finished!
+              </Badge>
+            )}
+          </div>
           <Flex className={classes.hostSection}>
             <Image
               radius="md"
@@ -286,12 +314,12 @@ const EventDetailPage = () => {
           </Flex>
         </Flex>
         <Flex className={classes.headerButtons}>
-          {event && user && user.userId === host._id && (
+          {event && user && user.userId === host._id && date > new Date() && (
             <Button onClick={updateEventModal.open}>Edit Event</Button>
           )}
           <Button
             onClick={handleJoinButton}
-            disabled={user && user.userId === host._id}
+            disabled={(user && user.userId === host._id) || date < currentDate}
             variant={
               isLoggedIn &&
               (isAttending || attendees.map((a) => a._id).includes(user.userId))
@@ -299,7 +327,8 @@ const EventDetailPage = () => {
                 : "filled"
             }
           >
-            {isAttending || attendees.map((a) => a._id).includes(user.userId)
+            {isAttending ||
+            (user && attendees.map((a) => a._id).includes(user.userId))
               ? "Leave"
               : "Join"}
           </Button>

@@ -31,6 +31,14 @@
   gap: 1rem;
 }
 
+.titleSection {
+  display: flex;
+  flex-direction: row;
+  justify-content: start-flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
 .title {
   padding-bottom: 1rem;
 }
@@ -63,6 +71,7 @@
 
 .eventImage {
   border-radius: 0 !important;
+  max-height: 20rem;
 }
 
 .eventDetails {
