@@ -14,8 +14,8 @@ import {
   UnstyledButton,
   em,
 } from "@mantine/core";
-import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 import { FaRegUser } from "react-icons/fa6";
 
 // Component inport
@@ -47,6 +47,18 @@ const Header = () => {
       {tab}
     </Tabs.Tab>
   ));
+
+
+  const location = useLocation();
+
+  const pathNames = ["/","/events","/experts"]
+
+  useEffect(()=>{
+    if(!pathNames.includes(location.pathname)){
+      setOpenedTab("");
+    }
+  },[location.pathname])
+
 
   let userList = [
     {
@@ -97,7 +109,7 @@ const Header = () => {
           {/* Tabs */}
           <Container size="sm" ml={20} mr={20} visibleFrom="sm">
             <Tabs
-              defaultValue={openedTab}
+              value={openedTab}
               onChange={(value) => {
                 value === "Home"
                   ? navigate(`/`)
