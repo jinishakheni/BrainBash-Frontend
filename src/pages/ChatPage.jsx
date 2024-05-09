@@ -9,6 +9,8 @@ const ChatPage = () => {
   const [messageList, setMessageList] = useState([]);
   const [currentMessage, setCurrentMessage] = useState("");
 
+  const userNotFoundPhoto = "https://img.wattpad.com/8f19b412f2223afe4288ed0904120a48b7a38ce1/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f776174747061642d6d656469612d736572766963652f53746f7279496d6167652f5650722d38464e2d744a515349673d3d2d3234323931353831302e313434336539633161633764383437652e6a7067?s=fit&w=720&h=720"
+
   const navigate = useNavigate();
 
   let messagesEnd = createRef();
@@ -196,8 +198,8 @@ const ChatPage = () => {
                   >
                     <div className="relative h-12 w-12 rounded-full overflow-hidden">
                       <img
-                        src={conversation.participants[0].photo}
-                        alt={conversation.participants[0].fullName}
+                        src={conversation.participants[0].photo || userNotFoundPhoto}
+                        alt={fullName}
                         className="absolute inset-0 h-full w-full object-cover rounded-full"
                       />
                     </div>
@@ -235,7 +237,7 @@ const ChatPage = () => {
                               <div
                                 className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0"
                                 style={{
-                                  backgroundImage: `url(${ message.sender.photo})`,
+                                  backgroundImage: `url(${ message.sender.photo || userNotFoundPhoto})`,
                                   backgroundSize: "cover",
                                   backgroundPosition: "center",
                                 }}
@@ -256,7 +258,7 @@ const ChatPage = () => {
                             <div
                                 className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0"
                                 style={{
-                                  backgroundImage: `url(${ message.sender.photo})`,
+                                  backgroundImage: `url(${ message.sender.photo || userNotFoundPhoto})`,
                                   backgroundSize: "cover",
                                   backgroundPosition: "center",
                                 }}
