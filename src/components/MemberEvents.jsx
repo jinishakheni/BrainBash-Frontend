@@ -167,6 +167,7 @@ const MemberEvents = ({ memberId, refreshHostedEvents }) => {
                                   <strong>Rating:</strong>{" "}
                                 </Text>
                                 <Rating
+                                  fractions={2}
                                   name="Rating"
                                   value={currentEvent.rating}
                                   readOnly

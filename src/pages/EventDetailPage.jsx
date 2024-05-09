@@ -17,6 +17,8 @@ import {
   Modal,
   ScrollArea,
   Badge,
+  Rating,
+  Group,
 } from "@mantine/core";
 import UpdateEventModal from "../components/UpdateEventModal.jsx";
 import no_user_icon from "../assets/images/no_user_icon.png";
@@ -313,9 +315,20 @@ const EventDetailPage = () => {
             </div>
           </Flex>
         </Flex>
-        <Flex className={classes.headerButtons}>
-          {event && user && user.userId === host._id && date > new Date() && (
+        <Flex className={classes.headerButtons} align="center">
+          {event && user && user.userId === host._id && date > new Date() ? (
             <Button onClick={updateEventModal.open}>Edit Event</Button>
+          ) : (
+            <Group gap={4} align="center">
+              <Rating
+                name="Rating"
+                value={event.rating}
+                readOnly
+                fractions={2}
+                style={{ zIndex: 0 }}
+              />{" "}
+              |<Text size="sm">{`${event.ratingBy.length} Ratings`}</Text>
+            </Group>
           )}
           <Button
             onClick={handleJoinButton}
