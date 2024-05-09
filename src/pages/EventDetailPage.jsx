@@ -358,14 +358,6 @@ const EventDetailPage = () => {
               })}
             </strong>
           </Text>
-          <Text>
-            Current Date:{" "}
-            {currentDate.toLocaleDateString("en-US", {
-              month: "long",
-              day: "numeric",
-              year: "numeric",
-            })}
-          </Text>
           <Space h="md" />
           <Text size="sm">
             Duration: <strong>{event.duration}</strong>
