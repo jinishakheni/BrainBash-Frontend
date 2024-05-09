@@ -61,6 +61,7 @@ function AuthProviderWrapper(props) {
   };
 
   useEffect(() => {
+    console.log(socket);
     const handleDisconnect = (reason) => {
       console.log("Socket disconnected:", reason);
       // Attempt to reconnect manually or let Socket.io handle it automatically
@@ -86,7 +87,7 @@ function AuthProviderWrapper(props) {
         socket.off("connect_error", handleError);
       }
     };
-  }, [isLoggedIn, socket]);
+  }, [socket]);
 
   const onMount = async () => {
     await verifyToken();
