@@ -3,12 +3,12 @@ import { io } from "socket.io-client";
 
 const AuthContext = createContext();
 
+let socket="";
+
 function AuthProviderWrapper(props) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
-
-  const socket = isLoggedIn && io(`${import.meta.env.VITE_API_URL}`);
 
   const storeToken = (token) => {
     localStorage.setItem("authToken", token);
@@ -84,8 +84,14 @@ function AuthProviderWrapper(props) {
     };
   }, [isLoggedIn, socket]);
 
+
+  const onMount = async()=>{
+    await verifyToken();
+    socket = isLoggedIn && io(`${import.meta.env.VITE_API_URL}`);
+  }
+
   useEffect(() => {
-    verifyToken();
+    onMount();
   }, []);
 
   return (
