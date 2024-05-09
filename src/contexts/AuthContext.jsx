@@ -41,6 +41,7 @@ function AuthProviderWrapper(props) {
         );
         if (response.ok) {
           const user = await response.json();
+          socket = io(`${import.meta.env.VITE_API_URL}`);
           setIsLoggedIn(true);
           setUser(user);
         } else {
@@ -49,7 +50,6 @@ function AuthProviderWrapper(props) {
       } catch (error) {
         console.error("Error verifying token:", error);
         removeToken();
-        socket = io(`${import.meta.env.VITE_API_URL}`);
         setIsLoggedIn(false);
         setUser(null);
       } finally {
