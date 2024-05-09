@@ -77,16 +77,6 @@ function AuthProviderWrapper(props) {
         socket.on("connect_error", handleError);
       }
 
-      socket.on("receive_message", (data) => {
-        console.log("Auth Context got data", data);
-      });
-
-      // socket.on("ping", function (data) {
-      //   console.log("recieve ping")
-      //   socket.emit("pong", { beat: 1 });
-      //   console.log("sent po")
-      // });
-
       return () => {
         if (isLoggedIn) {
           socket.off("disconnect", handleDisconnect);
