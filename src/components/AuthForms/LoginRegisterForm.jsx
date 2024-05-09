@@ -11,7 +11,6 @@ import {
   Checkbox,
   Anchor,
   Stack,
-  Flex,
 } from "@mantine/core";
 import { GoogleButton } from "../GoogleButton";
 import { GithubButton } from "../GithubIcon";
@@ -189,13 +188,14 @@ const LoginRegisterForm = ({ email, setEmail }) => {
   };
 
   return (
-    <Flex
-      w="100%"
-      gap="md"
-      justify="center"
-      align="center"
-      direction="column"
-      wrap="wrap"
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "calc(100vh - 4rem)",
+      }}
     >
       <ConditionalModal>
         <Text size="lg" fw={500} style={{ marginTop: "0rem" }}>
@@ -318,7 +318,7 @@ const LoginRegisterForm = ({ email, setEmail }) => {
           </Group>
         </form>
       </ConditionalModal>
-    </Flex>
+    </div>
   );
 };
 

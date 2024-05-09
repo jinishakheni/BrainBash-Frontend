@@ -23,7 +23,7 @@ const Layout = ({ children }) => {
         </>
       )}
       {children}
-      {shouldDisplayNavbar && <Footer />}
+      <Footer />
     </>
   );
 };

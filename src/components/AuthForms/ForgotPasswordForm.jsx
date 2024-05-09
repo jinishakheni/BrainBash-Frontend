@@ -1,17 +1,14 @@
 import {
-  Paper,
   Title,
   Text,
   TextInput,
   Button,
-  Container,
   Center,
   Box,
   rem,
   Flex,
   Space,
 } from "@mantine/core";
-import classes from "../../styles/ForgotPasswordPage.module.css";
 import { FaArrowLeft } from "react-icons/fa6";
 import { useState } from "react";
 import { notifications } from "@mantine/notifications";
@@ -75,13 +72,14 @@ const ForgotPasswordForm = ({ email, setEmail }) => {
   };
 
   return (
-    <Flex
-      w="100%"
-      gap="md"
-      justify="center"
-      align="center"
-      direction="column"
-      wrap="wrap"
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "calc(100vh - 4rem)",
+      }}
     >
       <ConditionalModal>
         <Title order={3} mb="xs">
@@ -131,7 +129,7 @@ const ForgotPasswordForm = ({ email, setEmail }) => {
           }
         </Flex>
       </ConditionalModal>
-    </Flex>
+    </div>
   );
 };
 
