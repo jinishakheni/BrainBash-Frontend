@@ -79,7 +79,9 @@ function AuthProviderWrapper(props) {
       }
 
       socket.on("ping", function (data) {
+        console.log("ping recieved");
         socket.emit("pong", { beat: 1 });
+        console.log("pong sent");
       });
 
       return () => {
