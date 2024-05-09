@@ -127,7 +127,11 @@ const MemberPage = () => {
       const conversationId = await createConversation(user.userId, memberId);
       navigate(`/direct/t/${conversationId}`);
     } catch (error) {
-      console.error(error, " | Error while starting conversation with user:", memberId);
+      console.error(
+        error,
+        " | Error while starting conversation with user:",
+        memberId
+      );
       notifications.show({
         color: "red",
         title: "Oops! Something went wrong. Please try after sometime.",
@@ -143,13 +147,17 @@ const MemberPage = () => {
     <>
       <Container fluid className={classes.ctn} pl={0} pr={0}>
         <Stack justify="space-between" gap={0}>
-          <Paper h={rem(150)} radius={0} bg="#4A5167"></Paper>
-          <Paper h={rem(450)} radius={0}>
+          <Paper
+            h={rem(150)}
+            radius={0}
+            bg="light-dark(#c3ebfa, black)"
+          ></Paper>
+          <Paper h={rem(450)} radius={0} bg="light-dark(#c3ebfa, black)">
             <Group justify="center" align="flex-start">
               <Paper
+                bg="light-dark(white, rgb(30,30,30))"
                 h={450}
                 w={250}
-                bg="#AE5A00"
                 style={{
                   position: "relative",
                   top: "-4rem",
@@ -164,7 +172,7 @@ const MemberPage = () => {
                   radius={100}
                   fallbacksrc="https://placehold.co/600x400?text=Placeholder"
                   style={{
-                    border: "10px solid black",
+                    border: "10px solid light-dark(#7ad5f7,#7ad5f7)",
                     position: "absolute",
                     top: "30%",
                     left: "50%",
@@ -179,8 +187,12 @@ const MemberPage = () => {
                   style={{ width: "100%", position: "absolute", top: "52%" }}
                 >
                   <Stack gap={2} align="center">
-                    <Title order={3}>{memberDetails.fullName}</Title>
-                    <Text>{memberDetails.email}</Text>
+                    <Title order={3} ta="center" c="light-dark(black,white)">
+                      {memberDetails.fullName}
+                    </Title>
+                    <Text c="light-dark(black,white)">
+                      {memberDetails.email}
+                    </Text>
                   </Stack>
                   {user?.userId === memberId && isLoggedIn && (
                     <>
@@ -200,6 +212,7 @@ const MemberPage = () => {
                 </Stack>
               </Paper>
               <Paper
+                bg="light-dark(white, rgb(30,30,30))"
                 h="100%"
                 w="70%"
                 mt={10}
@@ -209,6 +222,7 @@ const MemberPage = () => {
                 }}
               >
                 <Tabs
+                  color="light-dark(#279eff,#279eff)"
                   value={activeTab}
                   onChange={setActiveTab}
                   classNames={{

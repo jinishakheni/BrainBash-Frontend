@@ -139,7 +139,11 @@ const SearchAndFilter = ({ page, fetchData }) => {
             position="bottom-end"
           >
             <Menu.Target>
-              <Button variant="outline" radius="lg">
+              <Button
+                variant="outline"
+                radius="lg"
+                color="light-dark(#0C356A,#7ad5f7)"
+              >
                 {selectedCategory
                   ? selectedCategory.categoryName
                   : "All Category"}
@@ -159,7 +163,11 @@ const SearchAndFilter = ({ page, fetchData }) => {
               position="bottom-start"
             >
               <Menu.Target>
-                <Button variant="outline" radius="lg">
+                <Button
+                  variant="outline"
+                  radius="lg"
+                  color="light-dark(#0C356A,#7ad5f7)"
+                >
                   {selectedSkill ? selectedSkill.skillName : "All Skills"}
                 </Button>
               </Menu.Target>
@@ -178,7 +186,11 @@ const SearchAndFilter = ({ page, fetchData }) => {
               position="bottom-start"
             >
               <Menu.Target>
-                <Button variant="outline" radius="lg">
+                <Button
+                  variant="outline"
+                  radius="lg"
+                  color="light-dark(#0C356A,#7ad5f7)"
+                >
                   {selectedType ? selectedType : "All Type"}
                 </Button>
               </Menu.Target>

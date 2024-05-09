@@ -1,7 +1,7 @@
 .ctn {
   height: 4rem;
   margin: 0;
-  background-color: aliceblue;
+  background-color: light-dark(#0c356a, #0c356a);
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
@@ -16,6 +16,10 @@
     display: none;
   }
 }
+.tabsList {
+  color: white;
+  font-weight: bold;
+}
 
 .tab {
   font-weight: 500;
@@ -25,16 +29,10 @@
   bottom: -11px;
   &::before,
   &::after {
-    background-color: light-dark(
-      var(--mantine-color-gray-2),
-      var(--mantine-color-dark-7)
-    );
+    background-color: light-dark(#40f8ff, #40f8ff);
   }
 
   &:hover {
-    background-color: light-dark(
-      var(--mantine-color-gray-2),
-      var(--mantine-color-dark-7)
-    );
+    background-color: light-dark(#279eff, #279eff);
   }
 }

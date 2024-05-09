@@ -14,7 +14,7 @@ import {
   UnstyledButton,
   em,
 } from "@mantine/core";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { FaRegUser } from "react-icons/fa6";
 
@@ -92,7 +92,9 @@ const Header = () => {
             />
 
             {/* App logo */}
-            <Avatar src={logoImg} alt={"App Logo"} radius="xs" size={60} />
+            <Link to="/">
+              <Avatar src={logoImg} alt={"App Logo"} radius="xs" size={60} />
+            </Link>
           </Group>
           {/* Tabs */}
           <Container size="sm" ml={20} mr={20} visibleFrom="sm">

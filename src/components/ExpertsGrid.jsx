@@ -34,10 +34,10 @@ const ExpertsGrid = ({ list }) => {
           <Grid.Col
             key={currentMember._id}
             span={{ base: 12, xs: 6, md: 4, lg: 3 }}
-            style={{ height: rem(360) }}
+            style={{ height: rem(460) }}
           >
-            <Paper shadow="xs" m="sm" p="sm">
-              <Container fluid h={rem(140)} bg="#4A5167">
+            <Paper radius="md" shadow="xs" m="sm" p="sm" h={rem(300)}>
+              <Container fluid h={rem(110)} bg="#c3ebfa">
                 <Avatar
                   src={
                     currentMember.photo ? currentMember.photo : no_gender_photo
@@ -67,7 +67,9 @@ const ExpertsGrid = ({ list }) => {
                   }}
                   gap={5}
                 >
-                  <Title order={3}>{currentMember.fullName}</Title>
+                  <Title order={3} ta="center">
+                    {currentMember.fullName}
+                  </Title>
                   <Group justify="space-evenly" gap={5}>
                     {currentMember?.categories
                       ?.slice(0, 3)

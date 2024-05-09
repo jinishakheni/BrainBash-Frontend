@@ -4,7 +4,7 @@ import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Loader, Title, Button, Flex, Image, em, Text } from "@mantine/core";
 import classes from "../styles/HomePage.module.css";
-import homepic from "../assets/images/homepic.png";
+import homepic from "../assets/images/homepic-removebg.png";
 import { useAuthFormsContext } from "../contexts/AuthFormsContext";
 import { useMediaQuery } from "@mantine/hooks";
 import { AuthContext } from "../contexts/AuthContext.jsx";

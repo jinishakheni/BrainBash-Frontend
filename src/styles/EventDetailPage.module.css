@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0 !important;
   min-height: calc(100vh - 130px);
+  background-color: light-dark(#7ad5f7, black);
 }
 
 .loader,
@@ -13,7 +14,7 @@
 }
 
 .header {
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid light-dark(#7ad5f7, black);
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
   padding: 1.5rem 8rem 1.5rem 8rem;
   margin-bottom: 0;
@@ -61,12 +62,12 @@
 .eventInformation {
   display: flex;
   align-items: flex-start;
-  background-color: #f7f7f7;
   border-radius: 5px;
   padding: 3rem 8rem 3rem 8rem;
   flex-direction: row;
   justify-content: flex-start;
   gap: 16px; /* Adjust as needed */
+  background-color: light-dark(#c3ebfa, rgb(30, 30, 30));
 }
 
 .eventImage {
@@ -100,12 +101,12 @@
 }
 
 .attendeeHighlighted {
-  background-color: pink;
+  background-color: #279eff;
   width: 80px;
 }
 
 .attendeesInformation {
-  padding: 1.5rem 8rem 1.5rem 8rem;
+  padding: 1rem 8rem 0.5rem 8rem;
   margin-bottom: 0;
   flex-direction: column;
   justify-content: center;

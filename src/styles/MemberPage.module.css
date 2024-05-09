@@ -1,6 +1,7 @@
 .ctn {
   height: calc(100vh - 8rem);
   overflow-y: auto;
+  background-color: light-dark(#c3ebfa, black);
 }
 
 .section {
