@@ -127,7 +127,11 @@ const MemberPage = () => {
       const conversationId = await createConversation(user.userId, memberId);
       navigate(`/direct/t/${conversationId}`);
     } catch (error) {
-      console.error(error, " | Error while starting conversation with user:", memberId);
+      console.error(
+        error,
+        " | Error while starting conversation with user:",
+        memberId
+      );
       notifications.show({
         color: "red",
         title: "Oops! Something went wrong. Please try after sometime.",
@@ -172,14 +176,15 @@ const MemberPage = () => {
                   }}
                 />
                 <Stack
-                  h={rem(150)}
-                  justify="space-between"
+                  h={rem(200)}
+                  justify="flex-start"
                   align="center"
-                  gap={3}
                   style={{ width: "100%", position: "absolute", top: "52%" }}
                 >
                   <Stack gap={2} align="center">
-                    <Title order={3}>{memberDetails.fullName}</Title>
+                    <Title order={3} ta="center" pr={8} pl={8}>
+                      {memberDetails.fullName}
+                    </Title>
                     <Text>{memberDetails.email}</Text>
                   </Stack>
                   {user?.userId === memberId && isLoggedIn && (
