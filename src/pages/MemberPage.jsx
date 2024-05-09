@@ -180,19 +180,20 @@ const MemberPage = () => {
                   }}
                 />
                 <Stack
-                  h={rem(150)}
-                  justify="space-between"
+                  h={rem(200)}
+                  justify="flex-start"
                   align="center"
-                  gap={3}
                   style={{ width: "100%", position: "absolute", top: "52%" }}
                 >
                   <Stack gap={2} align="center">
+
                     <Title order={3} ta="center" c="light-dark(black,white)">
                       {memberDetails.fullName}
                     </Title>
                     <Text c="light-dark(black,white)">
                       {memberDetails.email}
                     </Text>
+
                   </Stack>
                   {user?.userId === memberId && isLoggedIn && (
                     <>
