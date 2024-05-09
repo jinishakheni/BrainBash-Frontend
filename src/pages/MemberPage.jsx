@@ -15,12 +15,13 @@ import {
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
 
 // Components import
 import MemberPersonalInfo from "../components/MemberPersonalInfo";
 import MemberEvents from "../components/MemberEvents";
+import MemberJoinedEvents from "../components/MemberJoinedEvents";
 import EditMemberModal from "../components/EditMemberModal";
 import CreateEventModal from "../components/CreateEventModal";
 
@@ -33,12 +34,17 @@ import classes from "../styles/MemberPage.module.css";
 //Image imports
 const no_gender_photo = "../assets/images/no_photo.png";
 
+// Helper import
+import { createConversation } from "../helper/utils";
+
 const MemberPage = () => {
   const { memberId } = useParams();
   const [memberDetails, setMemberDetails] = useState({});
-  const [events, setEvents] = useState([]);
   const [activeTab, setActiveTab] = useState("PersonalInfo");
+  const [refreshHostedEvents, setRefreshHostedEvents] = useState(false);
   const { isLoggedIn, user } = useContext(AuthContext);
+
+  const navigate = useNavigate();
 
   // Handle member's personal info update modal
   let [opened, { open, close }] = useDisclosure(false);
@@ -47,6 +53,11 @@ const MemberPage = () => {
   // Handle event modal
   [opened, { open, close }] = useDisclosure(false);
   const createEventModal = { opened, open, close };
+
+  // Handle refresh hosted events
+  const handleRefreshHostedEvent = () => {
+    setRefreshHostedEvents(!refreshHostedEvents);
+  };
 
   // Fetch member detaiils
   const fetchMemberDetails = async () => {
@@ -111,32 +122,21 @@ const MemberPage = () => {
     }
   };
 
-  // Fetch member`s hosted events
-  const fetchMemberEvents = async () => {
+  const handleStartChatClick = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/events/?hostId=${memberId}`
-      );
-      if (response.ok) {
-        const responseData = await response.json();
-        setEvents(responseData);
-      } else {
-        const errorResponse = await response.json();
-        throw new Error(errorResponse.message);
-      }
+      const conversationId = await createConversation(user.userId, memberId);
+      navigate(`/direct/t/${conversationId}`);
     } catch (error) {
-      console.error("Error while fetching event details: ", error);
+      console.error(error, " | Error while starting conversation with user:", memberId);
       notifications.show({
         color: "red",
-        title:
-          error.toString() || "Oops! Something went wrong. Please try again.",
+        title: "Oops! Something went wrong. Please try after sometime.",
       });
     }
   };
 
   useEffect(() => {
     fetchMemberDetails();
-    fetchMemberEvents();
   }, [memberId]);
 
   return (
@@ -178,7 +178,7 @@ const MemberPage = () => {
                   gap={3}
                   style={{ width: "100%", position: "absolute", top: "52%" }}
                 >
-                  <Stack gap={2}>
+                  <Stack gap={2} align="center">
                     <Title order={3}>{memberDetails.fullName}</Title>
                     <Text>{memberDetails.email}</Text>
                   </Stack>
@@ -191,6 +191,11 @@ const MemberPage = () => {
                         Create Event
                       </Button>
                     </>
+                  )}
+                  {isLoggedIn && user?.userId !== memberId && (
+                    <Button
+                      onClick={handleStartChatClick}
+                    >{`Chat with ${memberDetails.fullName}`}</Button>
                   )}
                 </Stack>
               </Paper>
@@ -212,7 +217,10 @@ const MemberPage = () => {
                 >
                   <Tabs.List>
                     <Tabs.Tab value="PersonalInfo">Personal Info</Tabs.Tab>
-                    <Tabs.Tab value="Events">Events</Tabs.Tab>
+                    <Tabs.Tab value="Hosted Events">Hosted Events</Tabs.Tab>
+                    {user?.userId === memberId && isLoggedIn && (
+                      <Tabs.Tab value="Joined Events">Joined Events</Tabs.Tab>
+                    )}
                   </Tabs.List>
                   <Tabs.Panel value="PersonalInfo">
                     <MemberPersonalInfo
@@ -220,13 +228,17 @@ const MemberPage = () => {
                       updateMemberInfo={updateMemberInfo}
                     />
                   </Tabs.Panel>
-                  <Tabs.Panel value="Events">
+                  <Tabs.Panel value="Hosted Events">
                     <MemberEvents
                       memberId={memberId}
-                      events={events}
-                      fetchMemberEvents={fetchMemberEvents}
+                      refreshHostedEvents={refreshHostedEvents}
                     />
                   </Tabs.Panel>
+                  {user?.userId === memberId && isLoggedIn && (
+                    <Tabs.Panel value="Joined Events">
+                      <MemberJoinedEvents memberId={memberId} />
+                    </Tabs.Panel>
+                  )}
                 </Tabs>
               </Paper>
             </Group>
@@ -271,7 +283,7 @@ const MemberPage = () => {
         <CreateEventModal
           userDetails={memberDetails}
           closeModal={createEventModal.close}
-          fetchMemberEvents={fetchMemberEvents}
+          handleRefreshHostedEvent={handleRefreshHostedEvent}
         />
       </Modal>
     </>
