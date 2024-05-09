@@ -91,7 +91,7 @@ const ChatPage = () => {
   const handleDisconnect = () => {
     socket.emit("join_chat", chatId);
     console.log("Joined the chat again");
-  }
+  };
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -107,13 +107,12 @@ const ChatPage = () => {
         fetchMessages();
         removeUnreadMessages();
         socket.on("disconnect", handleDisconnect);
-
       }
     }
     return () => {
       socket.off("receive_message");
       socket.off("unread_conversations2");
-      socket.off("disconnect",handleDisconnect);
+      socket.off("disconnect", handleDisconnect);
     };
   }, [chatId]);
 
@@ -152,8 +151,11 @@ const ChatPage = () => {
   }
 
   return (
-    <div className="flex h-screen antialiased text-gray-800">
-      <div className="flex flex-row h-full w-full overflow-x-hidden">
+    <div
+      style={{ height: "85.5vh" }}
+      className="flex antialiased text-gray-800"
+    >
+      <div className="flex flex-row h-full w-full ">
         <div className="flex flex-col py-8 pl-6 pr-2 w-64 bg-white flex-shrink-0">
           <div className="flex flex-row items-center justify-center h-12 w-full">
             <div className="flex items-center justify-center rounded-2xl text-indigo-700 bg-indigo-100 h-10 w-10">
@@ -183,7 +185,7 @@ const ChatPage = () => {
               </span>
             </div>
             <div
-              style={{ height: "45rem" }}
+              style={{ height: "36rem" }}
               className="flex flex-col space-y-1 mt-4 -mx-2 overflow-y-auto"
             >
               {conversationList.map((conversation, index) => {
@@ -196,8 +198,12 @@ const ChatPage = () => {
                     }
                     key={index}
                   >
-                    <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
-                      {fullName.charAt(0)}
+                    <div className="relative h-12 w-12 rounded-full overflow-hidden">
+                      <img
+                        src={conversation.participants[0].photo}
+                        alt={conversation.participants[0].fullName}
+                        className="absolute inset-0 h-full w-full object-cover rounded-full"
+                      />
                     </div>
                     <div className="ml-2 text-sm font-semibold">{fullName}</div>
                     {conversation.count !== 0 && (
@@ -230,8 +236,15 @@ const ChatPage = () => {
                             key={index}
                           >
                             <div className="flex items-center justify-start flex-row-reverse">
-                              <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                                {initialLetter}
+                              <div
+                                className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0"
+                                style={{
+                                  backgroundImage: `url(${ message.sender.photo})`,
+                                  backgroundSize: "cover",
+                                  backgroundPosition: "center",
+                                }}
+                              >
+                            
                               </div>
                               <div className="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
                                 <div>{message.message}</div>
@@ -244,8 +257,15 @@ const ChatPage = () => {
                             key={index}
                           >
                             <div className="flex flex-row items-center">
-                              <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                                {initialLetter}
+                            <div
+                                className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0"
+                                style={{
+                                  backgroundImage: `url(${ message.sender.photo})`,
+                                  backgroundSize: "cover",
+                                  backgroundPosition: "center",
+                                }}
+                              >
+                            
                               </div>
                               <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
                                 <div>{message.message}</div>
