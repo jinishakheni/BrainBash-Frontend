@@ -2,6 +2,7 @@ import { createRef, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { createConversation } from "../helper/utils.jsx";
+import '../styles/ChatPage.css';
 
 const ChatPage = () => {
   const { user, isLoggedIn, socket } = useContext(AuthContext);
