@@ -315,7 +315,7 @@ const EventDetailPage = () => {
           </Flex>
         </Flex>
         <Flex className={classes.headerButtons}>
-          {event && user && user.userId === host._id && (
+          {event && user && user.userId === host._id && date > new Date() && (
             <Button onClick={updateEventModal.open}>Edit Event</Button>
           )}
           <Button
