@@ -81,11 +81,11 @@ function AuthProviderWrapper(props) {
         console.log("Auth Context got data", data);
       });
 
-      socket.on("ping", function (data) {
-        console.log("recieve ping")
-        socket.emit("pong", { beat: 1 });
-        console.log("sent pong")
-      });
+      // socket.on("ping", function (data) {
+      //   console.log("recieve ping")
+      //   socket.emit("pong", { beat: 1 });
+      //   console.log("sent po")
+      // });
 
       return () => {
         if (isLoggedIn) {
