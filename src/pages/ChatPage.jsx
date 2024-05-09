@@ -76,7 +76,6 @@ const ChatPage = () => {
         console.log("join_chat");
 
         socket.on("receive_message", (data) => {
-          console.log("got data", data);
           setMessageList((prevList) => [...prevList, data]);
         });
       }
@@ -120,6 +119,7 @@ const ChatPage = () => {
     };
 
     await socket.emit("send_message", messageContent);
+    console.log("Message has sent");
     setCurrentMessage("");
   };
 
@@ -192,9 +192,11 @@ const ChatPage = () => {
                       {fullName.charAt(0)}
                     </div>
                     <div className="ml-2 text-sm font-semibold">{fullName}</div>
-                    {conversation.count!==0 && <div class="flex items-center justify-center ml-auto text-xs text-white bg-red-500 h-4 w-4 rounded leading-none">
-                      {conversation.count}
-                    </div>}
+                    {conversation.count !== 0 && (
+                      <div class="flex items-center justify-center ml-auto text-xs text-white bg-red-500 h-4 w-4 rounded leading-none">
+                        {conversation.count}
+                      </div>
+                    )}
                   </button>
                 );
               })}
