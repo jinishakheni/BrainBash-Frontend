@@ -127,7 +127,7 @@ const MemberPage = () => {
       const conversationId = await createConversation(user.userId, memberId);
       navigate(`/direct/t/${conversationId}`);
     } catch (error) {
-      console.error("Error while starting conversation with user:", memberId);
+      console.error(error, " | Error while starting conversation with user:", memberId);
       notifications.show({
         color: "red",
         title: "Oops! Something went wrong. Please try after sometime.",
