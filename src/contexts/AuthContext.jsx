@@ -64,7 +64,6 @@ function AuthProviderWrapper(props) {
     const handleDisconnect = (reason) => {
       console.log("Socket disconnected:", reason);
       // Attempt to reconnect manually or let Socket.io handle it automatically
-      socket.connect();
     };
 
     const handleError = (error) => {
@@ -76,6 +75,10 @@ function AuthProviderWrapper(props) {
       socket.on("disconnect", handleDisconnect);
       socket.on("connect_error", handleError);
     }
+
+    socket.on("ping", function (data) {
+      socket.emit("pong", { beat: 1 });
+    });
 
     return () => {
       if (isLoggedIn) {
