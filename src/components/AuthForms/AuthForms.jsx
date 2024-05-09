@@ -9,7 +9,7 @@ const AuthForms = () => {
   const { formType } = useAuthFormsContext();
 
   return (
-    <>
+    <div>
       {(formType === "login" || formType === "register") && (
         <LoginRegisterForm
           email={email}
@@ -22,7 +22,7 @@ const AuthForms = () => {
           setEmail={setEmail}
         ></ForgotPasswordForm>
       )}
-    </>
+    </div>
   );
 };
 

@@ -7,7 +7,7 @@ const ConditionalModal = ({ children }) => {
   return (
     <>
       {showModal ? (
-        <Modal opened={showModal} onClose={toggleAuthForms}>
+        <Modal size="auto" opened={showModal} onClose={toggleAuthForms}>
           <Modal.Body>{children}</Modal.Body>
         </Modal>
       ) : (

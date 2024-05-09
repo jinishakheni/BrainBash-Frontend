@@ -210,7 +210,6 @@ const EventDetailPage = () => {
           return response.json();
         })
         .then((data) => {
-          //console.log("Event updated successfully:", data);
           setAttendees(data.attendees);
           setIsAttending(false);
         })

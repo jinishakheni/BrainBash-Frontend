@@ -18,7 +18,7 @@ const Layout = ({ children }) => {
     <>
       {shouldDisplayNavbar && (
         <>
-          <Header /> 
+          <Header />
           <AuthForms></AuthForms>
         </>
       )}
