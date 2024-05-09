@@ -1,7 +1,6 @@
 import { createRef, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
-import io from "socket.io-client";
 import { createConversation } from "../helper/utils.jsx";
 
 const ChatPage = () => {
@@ -73,7 +72,6 @@ const ChatPage = () => {
         setMessageList(responseData);
 
         socket.emit("join_chat", chatId);
-        console.log("join_chat");
 
         socket.on("receive_message", (data) => {
           setMessageList((prevList) => [...prevList, data]);
@@ -90,7 +88,6 @@ const ChatPage = () => {
 
   const handleDisconnect = () => {
     socket.emit("join_chat", chatId);
-    console.log("Joined the chat again");
   };
 
   useEffect(() => {
@@ -126,7 +123,6 @@ const ChatPage = () => {
     };
 
     await socket.emit("send_message", messageContent);
-    console.log("Message has sent");
     setCurrentMessage("");
   };
 
@@ -319,42 +315,6 @@ const ChatPage = () => {
         </div>
       </div>
     </div>
-
-    // <div>
-    //   <h3>You're in the Chat Page </h3>
-    //   <div className="chatContainer">
-    //     <div className="messages">
-    //       {messageList.map((val) => {
-    //         return (
-    //           <div
-    //             key={val._id}
-    //             className="messageContainer"
-    //             id={val.sender.name == user.name ? "You" : "Other"}
-    //           >
-    //             <div className="messageIndividual">
-    //               {val.sender.name}: {val.message}
-    //             </div>
-    //           </div>
-    //         );
-    //       })}
-    //       <div
-    //         style={{ float: "left", clear: "both" }}
-    //         ref={(el) => {
-    //           messagesEnd = el;
-    //         }}
-    //       ></div>
-    //     </div>
-    //     <div className="messageInputs">
-    //       <input
-    //         value={currentMessage}
-    //         type="text"
-    //         placeholder="Message..."
-    //         onChange={handleMessageInput}
-    //       />
-    //       <button onClick={sendMessage}>Send</button>
-    //     </div>
-    //   </div>
-    // </div>
   );
 };
 
