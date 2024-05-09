@@ -42,7 +42,7 @@ const MessageIcon = () => {
   },[location.pathname])
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isLoggedIn && socket) {
       socket.emit("join_messages", user.userId);
 
       socket.on("unread_conversations", (conversationId) => {

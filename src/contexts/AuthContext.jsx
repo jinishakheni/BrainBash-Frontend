@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 
 const AuthContext = createContext();
 
-let socket="";
+let socket = "";
 
 function AuthProviderWrapper(props) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -49,6 +49,7 @@ function AuthProviderWrapper(props) {
       } catch (error) {
         console.error("Error verifying token:", error);
         removeToken();
+        socket = io(`${import.meta.env.VITE_API_URL}`);
         setIsLoggedIn(false);
         setUser(null);
       } finally {
@@ -84,11 +85,9 @@ function AuthProviderWrapper(props) {
     };
   }, [isLoggedIn, socket]);
 
-
-  const onMount = async()=>{
+  const onMount = async () => {
     await verifyToken();
-    socket = isLoggedIn && io(`${import.meta.env.VITE_API_URL}`);
-  }
+  };
 
   useEffect(() => {
     onMount();
