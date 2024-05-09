@@ -60,6 +60,31 @@ function AuthProviderWrapper(props) {
   };
 
   useEffect(() => {
+    const handleDisconnect = (reason) => {
+      console.log("Socket disconnected:", reason);
+      // Attempt to reconnect manually or let Socket.io handle it automatically
+      socket.connect();
+    };
+
+    const handleError = (error) => {
+      console.error("Socket connection error:", error);
+      // Handle connection error, if needed
+    };
+
+    if (isLoggedIn) {
+      socket.on("disconnect", handleDisconnect);
+      socket.on("connect_error", handleError);
+    }
+
+    return () => {
+      if (isLoggedIn) {
+        socket.off("disconnect", handleDisconnect);
+        socket.off("connect_error", handleError);
+      }
+    };
+  }, [isLoggedIn, socket]);
+
+  useEffect(() => {
     verifyToken();
   }, []);
 
