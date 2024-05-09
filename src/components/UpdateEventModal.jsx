@@ -10,15 +10,12 @@ import {
 import { useContext, useEffect, useState } from "react";
 import no_photo from "../assets/images/no_photo.png";
 import { DateTimePicker } from "@mantine/dates";
-import { CategoryContext } from "../contexts/CategoryContext";
 import { isValidDuration } from "../helper/utils";
+import { CategoryContext } from "../contexts/CategoryContext";
 
 const UpdateEventModal = ({ eventDetails, updateEventInfo }) => {
   const [title, setTitle] = useState(eventDetails.title);
   const [description, setDescription] = useState(eventDetails.description);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [skills, setSkills] = useState("");
-  const [selectedSkills, setSelectedSkills] = useState([]);
   const [startingTime, setStartingTime] = useState(
     new Date(eventDetails.startingTime)
   );
@@ -26,43 +23,26 @@ const UpdateEventModal = ({ eventDetails, updateEventInfo }) => {
   const [mode, setMode] = useState(eventDetails.mode);
   const [address, setAddress] = useState(eventDetails.address);
   const [imageUrl, setSetImagUrl] = useState(eventDetails.imageUrl);
+  const [categoryList, setCategoryList] = useState([]);
+  const { categories } = useContext(CategoryContext);
 
   const [errors, setErrors] = useState({
     title: "",
     description: "",
     startingTime: "",
-    category: "",
-    skills: "",
     duration: "",
     mode: "",
     address: "",
   });
 
-  const { categories } = useContext(CategoryContext);
-
-  useEffect(() => {
-    const userSkills = eventDetails.skills.map((skill) => skill.skillName);
-    const categorySkills = categories
-      .find((category) => category.categoryName === selectedCategory)
-      ?.skills.map((skill) => skill.skillName);
-    if (categorySkills) {
-      setSkills(userSkills.filter((skill) => categorySkills.includes(skill)));
-    }
-  }, [selectedCategory]);
-
   // Function to handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    //console.log("submitting...");
 
     // Validate inputs
     let validationErrors = {};
     if (!title) validationErrors.title = "Title is required";
     if (!description) validationErrors.description = "Description is required";
-    // if (!selectedCategory) validationErrors.category = "Category is required";
-    //  if (selectedSkills.length === 0)
-    //    validationErrors.skill = "Skill is required";
     if (!startingTime) validationErrors.startingTime = "Time is required";
     if (!duration) validationErrors.duration = "Duration is required";
     else if (!isValidDuration(duration))
@@ -79,17 +59,19 @@ const UpdateEventModal = ({ eventDetails, updateEventInfo }) => {
       title,
       description,
       startingTime,
-      selectedCategory,
-      selectedSkills,
       duration,
       mode,
       address,
       imageUrl,
     };
-    console.log("check me", payload);
-    // API call for create event in DB
     updateEventInfo(payload);
   };
+
+  useEffect(() => {
+    setCategoryList(
+      categories.map((currentCategory) => currentCategory.categoryName)
+    );
+  }, []);
 
   return (
     <Stack gap={15}>
@@ -119,22 +101,17 @@ const UpdateEventModal = ({ eventDetails, updateEventInfo }) => {
         radius="xl"
         label="Category"
         placeholder="Select Category"
-        data={eventDetails.categories}
-        value={selectedCategory}
-        onChange={setSelectedCategory}
-        error={errors.category}
-        required
+        data={categoryList}
+        value={eventDetails.category}
+        disabled
       />
       <MultiSelect
         variant="filled"
         radius="xl"
         label="Skill"
         placeholder="Select Skill"
-        data={skills}
-        value={selectedSkills}
-        onChange={setSelectedSkills}
-        error={errors.skill}
-        required
+        value={eventDetails.skills}
+        disabled
       />
       <DateTimePicker
         variant="filled"
