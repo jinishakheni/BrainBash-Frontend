@@ -88,6 +88,10 @@ const ChatPage = () => {
     scrollToBottom();
   }, [messageList]);
 
+  const handleDisconnect = () => {
+    socket.emit("join_chat", chatId);
+  }
+
   useEffect(() => {
     if (isLoggedIn) {
       fetchConversations();
@@ -101,11 +105,14 @@ const ChatPage = () => {
       if (chatId) {
         fetchMessages();
         removeUnreadMessages();
+        socket.on("disconnect", handleDisconnect);
+
       }
     }
     return () => {
       socket.off("receive_message");
       socket.off("unread_conversations2");
+      socket.off("disconnect");
     };
   }, [chatId]);
 
