@@ -2,7 +2,7 @@ import { createRef, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { createConversation } from "../helper/utils.jsx";
-import '../styles/ChatPage.css';
+import "../styles/ChatPage.css";
 
 const ChatPage = () => {
   const { user, isLoggedIn, socket } = useContext(AuthContext);
@@ -10,7 +10,8 @@ const ChatPage = () => {
   const [messageList, setMessageList] = useState([]);
   const [currentMessage, setCurrentMessage] = useState("");
 
-  const userNotFoundPhoto = "https://img.wattpad.com/8f19b412f2223afe4288ed0904120a48b7a38ce1/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f776174747061642d6d656469612d736572766963652f53746f7279496d6167652f5650722d38464e2d744a515349673d3d2d3234323931353831302e313434336539633161633764383437652e6a7067?s=fit&w=720&h=720"
+  const userNotFoundPhoto =
+    "https://img.wattpad.com/8f19b412f2223afe4288ed0904120a48b7a38ce1/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f776174747061642d6d656469612d736572766963652f53746f7279496d6167652f5650722d38464e2d744a515349673d3d2d3234323931353831302e313434336539633161633764383437652e6a7067?s=fit&w=720&h=720";
 
   const navigate = useNavigate();
 
@@ -176,7 +177,10 @@ const ChatPage = () => {
             <div className="ml-2 font-bold text-2xl">QuickChat</div>
           </div>
 
-          <div className="flex flex-col mt-8">
+          <div
+            className="flex flex-col mt-8"
+            style={{ height: "calc(100% - 4rem)" }}
+          >
             <div className="flex flex-row items-center justify-between text-xs">
               <span className="font-bold">Active Conversations</span>
               <span className="flex items-center justify-center bg-gray-300 h-4 w-4 rounded-full">
@@ -184,7 +188,7 @@ const ChatPage = () => {
               </span>
             </div>
             <div
-              style={{ height: "36rem" }}
+              // style={{ height: "36rem" }}
               className="flex flex-col space-y-1 mt-4 -mx-2 overflow-y-auto"
             >
               {conversationList.map((conversation, index) => {
@@ -199,14 +203,17 @@ const ChatPage = () => {
                   >
                     <div className="relative h-12 w-12 rounded-full overflow-hidden">
                       <img
-                        src={conversation.participants[0].photo || userNotFoundPhoto}
+                        src={
+                          conversation.participants[0].photo ||
+                          userNotFoundPhoto
+                        }
                         alt={fullName}
                         className="absolute inset-0 h-full w-full object-cover rounded-full"
                       />
                     </div>
                     <div className="ml-2 text-sm font-semibold">{fullName}</div>
                     {conversation.count !== 0 && (
-                      <div class="flex items-center justify-center ml-auto text-xs text-white bg-red-500 h-4 w-4 rounded leading-none">
+                      <div className="flex items-center justify-center ml-auto text-xs text-white bg-red-500 h-4 w-4 rounded leading-none">
                         {conversation.count}
                       </div>
                     )}
@@ -227,8 +234,6 @@ const ChatPage = () => {
                   <div className="flex flex-col h-full">
                     <div className="grid grid-cols-12 gap-y-2">
                       {messageList.map((message, index) => {
-                        const initialLetter =
-                          message.sender.firstName.charAt(0);
                         return message.sender._id === user.userId ? (
                           <div
                             className="col-start-6 col-end-13 p-3 rounded-lg"
@@ -238,13 +243,13 @@ const ChatPage = () => {
                               <div
                                 className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0"
                                 style={{
-                                  backgroundImage: `url(${ message.sender.photo || userNotFoundPhoto})`,
+                                  backgroundImage: `url(${
+                                    message.sender.photo || userNotFoundPhoto
+                                  })`,
                                   backgroundSize: "cover",
                                   backgroundPosition: "center",
                                 }}
-                              >
-                            
-                              </div>
+                              ></div>
                               <div className="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
                                 <div>{message.message}</div>
                               </div>
@@ -256,16 +261,16 @@ const ChatPage = () => {
                             key={index}
                           >
                             <div className="flex flex-row items-center">
-                            <div
+                              <div
                                 className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0"
                                 style={{
-                                  backgroundImage: `url(${ message.sender.photo || userNotFoundPhoto})`,
+                                  backgroundImage: `url(${
+                                    message.sender.photo || userNotFoundPhoto
+                                  })`,
                                   backgroundSize: "cover",
                                   backgroundPosition: "center",
                                 }}
-                              >
-                            
-                              </div>
+                              ></div>
                               <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
                                 <div>{message.message}</div>
                               </div>
