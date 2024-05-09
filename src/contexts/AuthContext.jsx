@@ -62,7 +62,6 @@ function AuthProviderWrapper(props) {
 
   useEffect(() => {
     if (isLoggedIn) {
-      console.log(socket);
       const handleDisconnect = (reason) => {
         console.log("Socket disconnected:", reason);
         // Attempt to reconnect manually or let Socket.io handle it automatically
@@ -83,9 +82,9 @@ function AuthProviderWrapper(props) {
       });
 
       socket.on("ping", function (data) {
-        console.log("ping recieved");
+        console.log("Socket", socket);
+
         socket.emit("pong", { beat: 1 });
-        console.log("pong sent");
       });
 
       return () => {
