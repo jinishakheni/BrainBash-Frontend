@@ -83,8 +83,8 @@ const MemberEvents = ({ memberId }) => {
           })
         );
       } else if (response.status === 401) {
-        navigate("/account/login");
         logOutUser();
+        navigate("/account/login");
       } else {
         const errorResponse = await response.json();
         throw new Error(errorResponse.message);

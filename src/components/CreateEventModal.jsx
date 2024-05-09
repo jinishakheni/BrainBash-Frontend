@@ -124,8 +124,8 @@ const CreateEventModal = ({
         handleRefreshHostedEvent();
       } else if (response.status === 401) {
         closeModal();
-        navigate("/account/login");
         logOutUser();
+        navigate("/account/login");
       } else {
         const errorResponse = await response.json();
         throw new Error(errorResponse.message);
