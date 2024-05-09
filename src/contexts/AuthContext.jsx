@@ -3,12 +3,12 @@ import { io } from "socket.io-client";
 
 const AuthContext = createContext();
 
+let socket = "";
+
 function AuthProviderWrapper(props) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
-
-  const socket = isLoggedIn && io(`${import.meta.env.VITE_API_URL}`);
 
   const storeToken = (token) => {
     localStorage.setItem("authToken", token);
@@ -41,6 +41,7 @@ function AuthProviderWrapper(props) {
         );
         if (response.ok) {
           const user = await response.json();
+          socket = io(`${import.meta.env.VITE_API_URL}`);
           setIsLoggedIn(true);
           setUser(user);
         } else {
@@ -60,7 +61,47 @@ function AuthProviderWrapper(props) {
   };
 
   useEffect(() => {
-    verifyToken();
+    if (isLoggedIn) {
+      const handleDisconnect = (reason) => {
+        console.log("Socket disconnected:", reason);
+        // Attempt to reconnect manually or let Socket.io handle it automatically
+      };
+
+      const handleError = (error) => {
+        console.error("Socket connection error:", error);
+        // Handle connection error, if needed
+      };
+
+      if (isLoggedIn) {
+        socket.on("disconnect", handleDisconnect);
+        socket.on("connect_error", handleError);
+      }
+
+      socket.on("receive_message", (data) => {
+        console.log("Auth Context got data", data);
+      });
+
+      // socket.on("ping", function (data) {
+      //   console.log("recieve ping")
+      //   socket.emit("pong", { beat: 1 });
+      //   console.log("sent po")
+      // });
+
+      return () => {
+        if (isLoggedIn) {
+          socket.off("disconnect", handleDisconnect);
+          socket.off("connect_error", handleError);
+        }
+      };
+    }
+  }, [isLoggedIn, socket]);
+
+  const onMount = async () => {
+    await verifyToken();
+  };
+
+  useEffect(() => {
+    onMount();
   }, []);
 
   return (
