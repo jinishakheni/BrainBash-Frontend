@@ -28,7 +28,7 @@ const MemberEvents = ({ memberId, refreshHostedEvents }) => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState();
   const navigate = useNavigate();
-  const { isLoggedIn, user } = useContext(AuthContext);
+  const { isLoggedIn, user, logOutUser } = useContext(AuthContext);
 
   // Handle delete skill modal
   const [opened, { open, close }] = useDisclosure(false);
@@ -77,6 +77,9 @@ const MemberEvents = ({ memberId, refreshHostedEvents }) => {
           title: "Deleted successfully",
         });
         fetchHostedEvents();
+      } else if (response.status === 401) {
+        navigate("/account/login");
+        logOutUser();
       } else {
         const errorResponse = await response.json();
         throw new Error(errorResponse.message);

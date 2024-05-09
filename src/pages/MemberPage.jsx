@@ -42,7 +42,7 @@ const MemberPage = () => {
   const [memberDetails, setMemberDetails] = useState({});
   const [activeTab, setActiveTab] = useState("PersonalInfo");
   const [refreshHostedEvents, setRefreshHostedEvents] = useState(false);
-  const { isLoggedIn, user } = useContext(AuthContext);
+  const { isLoggedIn, user, logOutUser } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -107,6 +107,9 @@ const MemberPage = () => {
           color: "indigo",
           title: "Updated successfully",
         });
+      } else if (response.status === 401) {
+        navigate("/account/login");
+        logOutUser();
       } else {
         const errorResponse = await response.json();
         throw new Error(errorResponse.message);
