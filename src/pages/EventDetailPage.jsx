@@ -319,16 +319,18 @@ const EventDetailPage = () => {
           {event && user && user.userId === host._id && date > new Date() ? (
             <Button onClick={updateEventModal.open}>Edit Event</Button>
           ) : (
-            <Group gap={4} align="center">
-              <Rating
-                name="Rating"
-                value={event.rating}
-                readOnly
-                fractions={2}
-                style={{ zIndex: 0 }}
-              />{" "}
-              |<Text size="sm">{`${event.ratingBy.length} Ratings`}</Text>
-            </Group>
+            date < new Date() && (
+              <Group gap={4} align="center">
+                <Rating
+                  name="Rating"
+                  value={event.rating}
+                  readOnly
+                  fractions={2}
+                  style={{ zIndex: 0 }}
+                />{" "}
+                |<Text size="sm">{`${event.ratingBy.length} Ratings`}</Text>
+              </Group>
+            )
           )}
           <Button
             onClick={handleJoinButton}
