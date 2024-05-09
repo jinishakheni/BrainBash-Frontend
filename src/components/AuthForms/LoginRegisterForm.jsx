@@ -11,6 +11,7 @@ import {
   Checkbox,
   Anchor,
   Stack,
+  Flex,
 } from "@mantine/core";
 import { GoogleButton } from "../GoogleButton";
 import { GithubButton } from "../GithubIcon";
@@ -188,9 +189,16 @@ const LoginRegisterForm = ({ email, setEmail }) => {
   };
 
   return (
-    <div>
+    <Flex
+      w="100%"
+      gap="md"
+      justify="center"
+      align="center"
+      direction="column"
+      wrap="wrap"
+    >
       <ConditionalModal>
-        <Text size="lg" fw={500} style={{ marginTop: "-1rem" }}>
+        <Text size="lg" fw={500} style={{ marginTop: "0rem" }}>
           Welcome to BrainBash, {formType} with
         </Text>
 
@@ -310,7 +318,7 @@ const LoginRegisterForm = ({ email, setEmail }) => {
           </Group>
         </form>
       </ConditionalModal>
-    </div>
+    </Flex>
   );
 };
 
