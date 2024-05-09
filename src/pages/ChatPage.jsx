@@ -1,14 +1,17 @@
 import { createRef, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
-import io from "socket.io-client";
 import { createConversation } from "../helper/utils.jsx";
+import "../styles/ChatPage.css";
 
 const ChatPage = () => {
-  const { user, isLoggedIn } = useContext(AuthContext);
+  const { user, isLoggedIn, socket } = useContext(AuthContext);
   const [conversationList, setConversationList] = useState([]);
   const [messageList, setMessageList] = useState([]);
   const [currentMessage, setCurrentMessage] = useState("");
+
+  const userNotFoundPhoto =
+    "https://img.wattpad.com/8f19b412f2223afe4288ed0904120a48b7a38ce1/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f776174747061642d6d656469612d736572766963652f53746f7279496d6167652f5650722d38464e2d744a515349673d3d2d3234323931353831302e313434336539633161633764383437652e6a7067?s=fit&w=720&h=720";
 
   const navigate = useNavigate();
 
@@ -20,8 +23,6 @@ const ChatPage = () => {
   };
 
   const { chatId } = useParams();
-
-  const socket = io(`${import.meta.env.VITE_API_URL}`);
 
   const fetchConversations = async () => {
     try {
@@ -37,10 +38,35 @@ const ChatPage = () => {
     }
   };
 
-  const fetchMessages = async () => {
-    if (!chatId) {
-      return;
+  const removeUnreadMessages = async () => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/unread-conversations/${chatId}/${
+          user.userId
+        }`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Request failed");
+      }
+
+      const responseData = await response.json();
+
+      if (responseData.hadUnreadMessages) {
+        fetchConversations();
+      }
+    } catch (error) {
+      console.log(error, "on removing unread messages from db");
     }
+  };
+
+  const fetchMessages = async () => {
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/messages/${chatId}`
@@ -50,7 +76,6 @@ const ChatPage = () => {
         setMessageList(responseData);
 
         socket.emit("join_chat", chatId);
-        console.log("join_chat");
 
         socket.on("receive_message", (data) => {
           setMessageList((prevList) => [...prevList, data]);
@@ -65,11 +90,31 @@ const ChatPage = () => {
     scrollToBottom();
   }, [messageList]);
 
+  const handleDisconnect = () => {
+    socket.emit("join_chat", chatId);
+  };
+
   useEffect(() => {
     if (isLoggedIn) {
       fetchConversations();
-      fetchMessages();
+      socket.on("unread_conversations2", (conversationId) => {
+        if (conversationId === chatId) {
+          removeUnreadMessages();
+          return;
+        }
+        fetchConversations();
+      });
+      if (chatId) {
+        fetchMessages();
+        removeUnreadMessages();
+        socket.on("disconnect", handleDisconnect);
+      }
     }
+    return () => {
+      socket.off("receive_message");
+      socket.off("unread_conversations2");
+      socket.off("disconnect", handleDisconnect);
+    };
   }, [chatId]);
 
   const sendMessage = async () => {
@@ -95,7 +140,6 @@ const ChatPage = () => {
         user.userId,
         participantId
       );
-
       navigate(`/direct/t/${conversationId}`);
     } catch (error) {
       console.log(error, "on creating and navigating to the conversation");
@@ -107,8 +151,11 @@ const ChatPage = () => {
   }
 
   return (
-    <div className="flex h-screen antialiased text-gray-800">
-      <div className="flex flex-row h-full w-full overflow-x-hidden">
+    <div
+      style={{ height: "85.5vh" }}
+      className="flex antialiased text-gray-800"
+    >
+      <div className="flex flex-row h-full w-full ">
         <div className="flex flex-col py-8 pl-6 pr-2 w-64 bg-white flex-shrink-0">
           <div className="flex flex-row items-center justify-center h-12 w-full">
             <div className="flex items-center justify-center rounded-2xl text-indigo-700 bg-indigo-100 h-10 w-10">
@@ -130,7 +177,10 @@ const ChatPage = () => {
             <div className="ml-2 font-bold text-2xl">QuickChat</div>
           </div>
 
-          <div className="flex flex-col mt-8">
+          <div
+            className="flex flex-col mt-8"
+            style={{ height: "calc(100% - 4rem)" }}
+          >
             <div className="flex flex-row items-center justify-between text-xs">
               <span className="font-bold">Active Conversations</span>
               <span className="flex items-center justify-center bg-gray-300 h-4 w-4 rounded-full">
@@ -138,7 +188,7 @@ const ChatPage = () => {
               </span>
             </div>
             <div
-              style={{ height: "45rem" }}
+              // style={{ height: "36rem" }}
               className="flex flex-col space-y-1 mt-4 -mx-2 overflow-y-auto"
             >
               {conversationList.map((conversation, index) => {
@@ -151,10 +201,22 @@ const ChatPage = () => {
                     }
                     key={index}
                   >
-                    <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
-                      {fullName.charAt(0)}
+                    <div className="relative h-12 w-12 rounded-full overflow-hidden">
+                      <img
+                        src={
+                          conversation.participants[0].photo ||
+                          userNotFoundPhoto
+                        }
+                        alt={fullName}
+                        className="absolute inset-0 h-full w-full object-cover rounded-full"
+                      />
                     </div>
                     <div className="ml-2 text-sm font-semibold">{fullName}</div>
+                    {conversation.count !== 0 && (
+                      <div className="flex items-center justify-center ml-auto text-xs text-white bg-red-500 h-4 w-4 rounded leading-none">
+                        {conversation.count}
+                      </div>
+                    )}
                   </button>
                 );
               })}
@@ -172,17 +234,22 @@ const ChatPage = () => {
                   <div className="flex flex-col h-full">
                     <div className="grid grid-cols-12 gap-y-2">
                       {messageList.map((message, index) => {
-                        const initialLetter =
-                          message.sender.firstName.charAt(0);
                         return message.sender._id === user.userId ? (
                           <div
                             className="col-start-6 col-end-13 p-3 rounded-lg"
                             key={index}
                           >
                             <div className="flex items-center justify-start flex-row-reverse">
-                              <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                                {initialLetter}
-                              </div>
+                              <div
+                                className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0"
+                                style={{
+                                  backgroundImage: `url(${
+                                    message.sender.photo || userNotFoundPhoto
+                                  })`,
+                                  backgroundSize: "cover",
+                                  backgroundPosition: "center",
+                                }}
+                              ></div>
                               <div className="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
                                 <div>{message.message}</div>
                               </div>
@@ -194,9 +261,16 @@ const ChatPage = () => {
                             key={index}
                           >
                             <div className="flex flex-row items-center">
-                              <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                                {initialLetter}
-                              </div>
+                              <div
+                                className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0"
+                                style={{
+                                  backgroundImage: `url(${
+                                    message.sender.photo || userNotFoundPhoto
+                                  })`,
+                                  backgroundSize: "cover",
+                                  backgroundPosition: "center",
+                                }}
+                              ></div>
                               <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
                                 <div>{message.message}</div>
                               </div>
@@ -249,42 +323,6 @@ const ChatPage = () => {
         </div>
       </div>
     </div>
-
-    // <div>
-    //   <h3>You're in the Chat Page </h3>
-    //   <div className="chatContainer">
-    //     <div className="messages">
-    //       {messageList.map((val) => {
-    //         return (
-    //           <div
-    //             key={val._id}
-    //             className="messageContainer"
-    //             id={val.sender.name == user.name ? "You" : "Other"}
-    //           >
-    //             <div className="messageIndividual">
-    //               {val.sender.name}: {val.message}
-    //             </div>
-    //           </div>
-    //         );
-    //       })}
-    //       <div
-    //         style={{ float: "left", clear: "both" }}
-    //         ref={(el) => {
-    //           messagesEnd = el;
-    //         }}
-    //       ></div>
-    //     </div>
-    //     <div className="messageInputs">
-    //       <input
-    //         value={currentMessage}
-    //         type="text"
-    //         placeholder="Message..."
-    //         onChange={handleMessageInput}
-    //       />
-    //       <button onClick={sendMessage}>Send</button>
-    //     </div>
-    //   </div>
-    // </div>
   );
 };
 
