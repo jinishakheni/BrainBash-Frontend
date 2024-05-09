@@ -41,6 +41,11 @@ const MessageIcon = () => {
     }
   },[location.pathname])
 
+   const handleDisconnect = () => {
+    socket.emit("join_messages", user.userId);
+    console.log("Joined to all conversations again");
+  }
+
   useEffect(() => {
     if (isLoggedIn && socket) {
       socket.emit("join_messages", user.userId);
@@ -52,11 +57,14 @@ const MessageIcon = () => {
             getUnreadConversationsCount();
         }, 500);
       });
+      socket.on("disconnect", handleDisconnect);
+
       getUnreadConversationsCount();
     }
     return () => {
-        socket.off("receive_message");
         socket.off("unread_conversations");
+        socket.off("disconnect",handleDisconnect);
+
       };
   }, [isLoggedIn]);
 

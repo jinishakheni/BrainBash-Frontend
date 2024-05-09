@@ -113,7 +113,7 @@ const ChatPage = () => {
     return () => {
       socket.off("receive_message");
       socket.off("unread_conversations2");
-      socket.off("disconnect");
+      socket.off("disconnect",handleDisconnect);
     };
   }, [chatId]);
 
