@@ -90,6 +90,7 @@ const ChatPage = () => {
 
   const handleDisconnect = () => {
     socket.emit("join_chat", chatId);
+    console.log("Joined the chat again");
   }
 
   useEffect(() => {
