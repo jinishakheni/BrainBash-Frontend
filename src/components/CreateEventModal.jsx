@@ -22,6 +22,8 @@ import { isValidDuration } from "../helper/utils.jsx";
 
 // Image import
 import no_photo from "../assets/images/event_placeholder.jpg";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext.jsx";
 
 const CreateEventModal = ({
   userDetails,
@@ -52,6 +54,8 @@ const CreateEventModal = ({
   });
 
   const { categories } = useContext(CategoryContext);
+  const { logOutUser } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   // Set skills options based on category selection, that are added to host/user skills
   useEffect(() => {
@@ -118,6 +122,10 @@ const CreateEventModal = ({
           title: "Event created successfully",
         });
         handleRefreshHostedEvent();
+      } else if (response.status === 401) {
+        closeModal();
+        logOutUser();
+        navigate("/account/login");
       } else {
         const errorResponse = await response.json();
         throw new Error(errorResponse.message);
@@ -186,7 +194,7 @@ const CreateEventModal = ({
             valueFormat="DD MMM YYYY hh:mm A"
             label="Pick date and time"
             placeholder="Pick date and time"
-            // minDate={new Date()}  // TODO Uncomment after testing
+            minDate={new Date()}
             value={startingTime}
             onChange={setStartingTime}
             error={errors.startingTime}
