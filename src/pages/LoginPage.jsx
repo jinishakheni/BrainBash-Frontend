@@ -13,7 +13,18 @@ const LoginPage = () => {
     }
   }, [typeParam]);
 
-  return <AuthForms></AuthForms>;
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "calc(100vh - 4rem)",
+      }}
+    >
+      <AuthForms></AuthForms>
+    </div>
+  );
 };
 
 export default LoginPage;

@@ -188,15 +188,7 @@ const LoginRegisterForm = ({ email, setEmail }) => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "calc(100vh - 4rem)",
-      }}
-    >
+    <div>
       <ConditionalModal>
         <Text size="lg" fw={500} style={{ marginTop: "0rem" }}>
           Welcome to BrainBash, {formType} with
