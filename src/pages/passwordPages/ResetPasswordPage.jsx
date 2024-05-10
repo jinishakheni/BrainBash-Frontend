@@ -125,7 +125,14 @@ const ResetPasswordPage = () => {
               <Box ml={5}>Back to the login page</Box>
             </Center>
           </Button>
-          <Button onClick={handleSendResetLink}>Reset Password</Button>
+          <Button
+            variant="outline"
+            radius="xl"
+            color="light-dark(#2F4858, #CCD6D5)"
+            onClick={handleSendResetLink}
+          >
+            Reset Password
+          </Button>
         </Flex>
       </Paper>
     </Container>

@@ -23,7 +23,7 @@ const MemberEvents = ({ memberId }) => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState();
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
+  const { user, logOutUser } = useContext(AuthContext);
 
   // Handle rate event modal
   const [opened, { open, close }] = useDisclosure(false);
@@ -82,6 +82,9 @@ const MemberEvents = ({ memberId }) => {
             return currentEvent;
           })
         );
+      } else if (response.status === 401) {
+        logOutUser();
+        navigate("/account/login");
       } else {
         const errorResponse = await response.json();
         throw new Error(errorResponse.message);

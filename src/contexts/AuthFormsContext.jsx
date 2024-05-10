@@ -1,5 +1,4 @@
-import { createContext, useState, useContext, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { createContext, useState, useContext } from "react";
 
 const AuthFormsContext = createContext();
 

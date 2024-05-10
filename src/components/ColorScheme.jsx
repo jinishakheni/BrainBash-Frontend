@@ -19,9 +19,9 @@ const ColorScheme = () => {
       style={{ display: "flex", alignItems: "center" }}
     >
       {computedColorScheme === "light" ? (
-        <MdOutlineDarkMode size={30} />
+        <MdOutlineDarkMode size={20} />
       ) : (
-        <MdOutlineLightMode size={30} />
+        <MdOutlineLightMode size={20} />
       )}
     </UnstyledButton>
   );

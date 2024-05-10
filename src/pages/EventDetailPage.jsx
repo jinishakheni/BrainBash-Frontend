@@ -290,7 +290,9 @@ const EventDetailPage = () => {
       <Flex className={classes.header}>
         <Flex className={classes.textHeader}>
           <div className={classes.titleSection}>
-            <Title className={classes.title}>{event.title}</Title>
+            <Title className={classes.title} c="light-dark(#2f4858, #ccd6d5)">
+              {event.title}
+            </Title>
             {date < currentDate && (
               <Badge size="lg" variant="filled" color="red">
                 Finished!
@@ -299,6 +301,7 @@ const EventDetailPage = () => {
           </div>
           <Flex className={classes.hostSection}>
             <Image
+              fit="contain"
               radius="md"
               w="50px"
               src={host.photo || no_user_icon}
@@ -317,7 +320,14 @@ const EventDetailPage = () => {
         </Flex>
         <Flex className={classes.headerButtons} align="center">
           {event && user && user.userId === host._id && date > new Date() ? (
-            <Button onClick={updateEventModal.open}>Edit Event</Button>
+            <Button
+              variant="outline"
+              radius="xl"
+              color="light-dark(#2F4858, #CCD6D5)"
+              onClick={updateEventModal.open}
+            >
+              Edit Event
+            </Button>
           ) : (
             date < new Date() && (
               <Group gap={4} align="center">
@@ -333,6 +343,8 @@ const EventDetailPage = () => {
             )
           )}
           <Button
+            radius="xl"
+            color="light-dark(#2F4858, #CCD6D5)"
             onClick={handleJoinButton}
             disabled={(user && user.userId === host._id) || date < currentDate}
             variant={
@@ -390,11 +402,21 @@ const EventDetailPage = () => {
                     className={classes.attendeeBox}
                     style={
                       user && at._id === user.userId
-                        ? { backgroundColor: "pink" }
+                        ? { backgroundColor: "#2F4858" }
                         : {}
                     }
                   >
-                    <Text ta="center" truncate="end" size="xs" fw={600}>
+                    <Text
+                      ta="center"
+                      truncate="end"
+                      size="xs"
+                      fw={600}
+                      c={
+                        user && at._id === user.userId
+                          ? "light-dark(#CCD6D5, #A0B1B2)"
+                          : "light-dark(#2F4858, #A0B1B2)"
+                      }
+                    >
                       {user && at.fullName}
                     </Text>
                   </Box>
@@ -402,12 +424,6 @@ const EventDetailPage = () => {
               </div>
             ))}
         </Flex>
-        {/*       <Text>
-        Host: {event && host._id} {host.fullName} User: {user && user.userId}{" "}
-          {"Me"}. Logged? {isLoggedIn ? "yes" : "no"} User Attending?{" "}
-          {isAttending ? "yes" : "no"}
-        </Text>
-          */}
       </Flex>
 
       {/* Update member modal */}

@@ -1,7 +1,6 @@
 .ctn {
   min-height: calc(100vh - 8rem);
   padding-top: 3rem;
-  background-color: light-dark(#7ad5f7, black);
 }
 
 .gridCtn {

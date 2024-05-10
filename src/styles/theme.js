@@ -12,7 +12,9 @@ const CONTAINER_SIZES = {
 
 const theme = createTheme({
   fontFamily: "Montserrat, sans-serif",
-  headings: { fontFamily: "Verdana, sans-serif" },
+  headings: {
+    fontFamily: "Verdana, sans-serif"
+  },
   components: {
     Container: Container.extend({
       vars: (_, { size, fluid }) => ({
@@ -20,8 +22,8 @@ const theme = createTheme({
           "--container-size": fluid
             ? "100%"
             : size !== undefined && size in CONTAINER_SIZES
-            ? CONTAINER_SIZES[size]
-            : rem(size),
+              ? CONTAINER_SIZES[size]
+              : rem(size),
         },
       }),
     }),

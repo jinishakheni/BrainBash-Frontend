@@ -14,12 +14,13 @@ import {
   UnstyledButton,
   em,
 } from "@mantine/core";
-import { Link, useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 import { FaRegUser } from "react-icons/fa6";
 
 // Component inport
 import ColorScheme from "../components/ColorScheme";
+import MessageIcon from "./MessageIcon";
 
 // Logo import
 import logoImg from "../assets/images/logo.png";
@@ -47,6 +48,20 @@ const Header = () => {
       {tab}
     </Tabs.Tab>
   ));
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/") {
+      setOpenedTab("Home");
+    } else if (location.pathname === "/events") {
+      setOpenedTab("Events");
+    } else if (location.pathname === "/experts") {
+      setOpenedTab("Experts");
+    } else {
+      setOpenedTab("");
+    }
+  }, [location.pathname]);
 
   let userList = [
     {
@@ -99,7 +114,8 @@ const Header = () => {
           {/* Tabs */}
           <Container size="sm" ml={20} mr={20} visibleFrom="sm">
             <Tabs
-              defaultValue={openedTab}
+              value={openedTab}
+              color="light-dark(#2f4858, #ccd6d5)"
               onChange={(value) => {
                 value === "Home"
                   ? navigate(`/`)
@@ -116,29 +132,36 @@ const Header = () => {
           </Container>
 
           {/* User settings */}
-          <Group gap={{ sm: "md", lg: "xl" }} wrap="nowrap">
+          <Group gap={{ sm: "md", lg: "xl" }} wrap="nowrap" align="center">
             {isLoggedIn ? (
-              <Menu
-                width={200}
-                position="bottom"
-                withArrow
-                shadow="md"
-                opened={userMenuOpened}
-                onChange={setUserMenuOpened}
-                transitionProps={{ transition: "pop-top-right" }}
-                withinPortal
-                trigger="click-hover"
-              >
-                <Menu.Target>
-                  <UnstyledButton className={classes.userIcon}>
-                    <FaRegUser size={25} />
-                  </UnstyledButton>
-                </Menu.Target>
-                <Menu.Dropdown> {userDropDownItems} </Menu.Dropdown>
-              </Menu>
+              <>
+                <MessageIcon />
+
+                <Menu
+                  width={200}
+                  position="bottom"
+                  withArrow
+                  shadow="md"
+                  opened={userMenuOpened}
+                  onChange={setUserMenuOpened}
+                  transitionProps={{ transition: "pop-top-right" }}
+                  withinPortal
+                  trigger="click-hover"
+                >
+                  <Menu.Target>
+                    <UnstyledButton className={classes.userIcon}>
+                      <FaRegUser size={25} />
+                    </UnstyledButton>
+                  </Menu.Target>
+                  <Menu.Dropdown> {userDropDownItems} </Menu.Dropdown>
+                </Menu>
+              </>
             ) : (
               <>
                 <Button
+                  variant="outline"
+                  radius="xl"
+                  color="light-dark(#2F4858, #CCD6D5)"
                   size={isMobile ? "xs" : "sm"}
                   onClick={() => {
                     toggleAuthForms("login", "true");
@@ -147,6 +170,9 @@ const Header = () => {
                   Log in
                 </Button>
                 <Button
+                  variant="outline"
+                  radius="xl"
+                  color="light-dark(#2F4858, #CCD6D5)"
                   size={isMobile ? "xs" : "sm"}
                   onClick={() => {
                     toggleAuthForms("register", "true");
@@ -187,6 +213,10 @@ const Header = () => {
               variant="pills"
               defaultValue={openedTab}
               orientation="vertical"
+              color="light-dark(#2F4858, #A0B1B2)"
+              styles={{
+                list: { width: "100%" },
+              }}
               onChange={(value) => {
                 value === "Home"
                   ? navigate(`/`)
