@@ -16,6 +16,7 @@ import ChatPage from "./pages/ChatPage";
 import IsPrivate from "./components/IsPrivate";
 import MemberPage from "./pages/MemberPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import ContactUsPage from "./pages/ContactUsPage";
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function App() {
           />
 
           <Route path="/members/:memberId" element={<MemberPage />} />
+          <Route path="/contact-us" element={<ContactUsPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Layout>
