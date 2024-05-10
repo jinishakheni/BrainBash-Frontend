@@ -72,15 +72,7 @@ const ForgotPasswordForm = ({ email, setEmail }) => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "calc(100vh - 4rem)",
-      }}
-    >
+ 
       <ConditionalModal>
         <Title order={3} mb="xs">
           Forgot your password?
@@ -136,7 +128,6 @@ const ForgotPasswordForm = ({ email, setEmail }) => {
           }
         </Flex>
       </ConditionalModal>
-    </div>
   );
 };
 
