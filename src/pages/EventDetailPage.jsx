@@ -374,16 +374,27 @@ const EventDetailPage = () => {
             {event.description}
           </Text>
           <Space h="md" />
-          <Text size="sm">
-            Date:{" "}
-            <strong>
-              {date.toLocaleDateString("en-US", {
-                month: "long",
-                day: "numeric",
-                year: "numeric",
-              })}
-            </strong>
-          </Text>
+          <Group gap={20}>
+            <Text size="sm">
+              Date:{" "}
+              <strong>
+                {date.toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </strong>
+            </Text>
+            <Text size="sm">
+              Time:{" "}
+              <strong>
+                {`${date.getHours().toString().padStart(2, "0")}:${date
+                  .getMinutes()
+                  .toString()
+                  .padStart(2, "0")}`}
+              </strong>
+            </Text>
+          </Group>
           <Space h="md" />
           <Text size="sm">
             Duration: <strong>{event.duration}</strong>
