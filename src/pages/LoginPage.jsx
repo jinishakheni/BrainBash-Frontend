@@ -9,7 +9,7 @@ const LoginPage = () => {
   const { typeParam } = useParams();
 
   useEffect(() => {
-    if (typeParam && typeParam!=="forgotpassword") {
+    if (typeParam && typeParam !== "forgotpassword") {
       setFormType(typeParam);
     }
   }, [typeParam]);
@@ -17,7 +17,16 @@ const LoginPage = () => {
   return (
     <>
       {typeParam === "login" || typeParam === "register" ? (
-        <AuthForms />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "calc(100vh - 4rem)",
+          }}
+        >
+          <AuthForms />
+        </div>
       ) : (
         <Navigate to={"/404-page"} />
       )}
