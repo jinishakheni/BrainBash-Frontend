@@ -1,7 +1,6 @@
 .root {
   margin: 0;
   padding: 0;
-  background-color: #7ad5f7;
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - 8rem);
@@ -22,14 +21,14 @@
 
 .headerText h1 {
   font-size: 2.4rem;
-  color: #0c356a;
+  color: light-dark(#2f4858, #ccd6d5);
   margin-bottom: 2rem;
   font-weight: 900;
 }
 
 .headerText h2 {
   font-size: 1.1rem;
-  color: #0c356a;
+  color: light-dark(#516a74, #a0b1b2);
   margin-bottom: 3rem;
   font-weight: 400;
 }
@@ -48,7 +47,8 @@
 }
 
 .upcomingEvents {
-  margin: 0rem 8rem 0rem 8rem;
+  margin-left: 8rem;
+  margin-bottom: 4rem;
   gap: 0.5rem;
   display: flex;
   flex-direction: column;
@@ -59,7 +59,7 @@
 .upcomingEvents h3 {
   font-size: 1rem;
   font-weight: 800;
-  color: #0c356a;
+  color: light-dark(#516a74, #f9fcfb);
 }
 
 .listEvents {
@@ -67,7 +67,7 @@
   flex-wrap: nowrap;
   justify-content: flex-start;
   align-items: center;
-  margin-bottom: 3rem;
+  margin-bottom: 1.5rem;
 }
 
 .upcomingEvents Button {
@@ -80,9 +80,6 @@
   .header {
     margin: 2rem 8rem 2rem 8rem;
     gap: 2rem;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
   }
   .headerText {
     display: flex;

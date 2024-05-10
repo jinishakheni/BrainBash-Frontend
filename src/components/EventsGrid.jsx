@@ -22,6 +22,7 @@ const EventsGrid = ({ list }) => {
     <Grid
       overflow="hidden"
       justify="center"
+      w="75%"
       gutter={{ base: 20, md: 25, xl: 30 }}
       className={classes.gridContainer}
     >
@@ -31,7 +32,14 @@ const EventsGrid = ({ list }) => {
             key={currentItem._id}
             span={{ base: 12, xs: 6, md: 4, lg: 3 }}
           >
-            <Card shadow="sm" padding="lg" radius="md" h={rem(290)} withBorder>
+            <Card
+              shadow="lg"
+              padding="lg"
+              radius="md"
+              h={rem(290)}
+              withBorder
+              bg="light-dark(#F9FCFB, #778D92)"
+            >
               <Card.Section>
                 <Image
                   src={currentItem.imageUrl}
@@ -50,6 +58,7 @@ const EventsGrid = ({ list }) => {
                   <Title
                     order={5}
                     mt="xs"
+                    c="#2F4858"
                     style={{
                       whiteSpace: "nowrap", // Prevent text from wrapping
                       overflow: "hidden", // Hide overflowed text
@@ -59,17 +68,20 @@ const EventsGrid = ({ list }) => {
                     {currentItem.title}
                   </Title>
                 </Tooltip>
-                <Stack gap={2} align="flex-start">
+                <Stack gap={2} align="flex-start" c="#4D635C">
                   <Group justify="space-between" className={classes.text}>
-                    <Text size="sm">
+                    <Text size="sm" c="light-dark(#516A74, #F9FCFB)">
                       <strong>Date:</strong>{" "}
                       {currentItem.startingTime.split("T")[0]}
                     </Text>
                     {currentItem.mode === "Online" && (
-                      <Text c="teal.4">Online</Text>
+                      <Text c="light-dark(#00A984, #354B45)">Online</Text>
                     )}
                   </Group>
-                  <Text size="sm">{`by ${currentItem.hostId.firstName}  ${currentItem.hostId.lastName}`}</Text>
+                  <Text
+                    size="sm"
+                    c="light-dark(#2F4858, #2F4858)"
+                  >{`by ${currentItem.hostId.firstName}  ${currentItem.hostId.lastName}`}</Text>
                 </Stack>
               </Stack>
             </Card>

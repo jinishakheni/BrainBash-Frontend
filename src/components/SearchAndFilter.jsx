@@ -115,11 +115,6 @@ const SearchAndFilter = ({ page, fetchData }) => {
       <Container fluid h={rem(50)} mb={rem(20)}>
         <Group justify="center" wrap="nowrap">
           <TextInput
-            styles={{
-              input: {
-                backgroundColor: "white", // TODO change color of search bar according to background
-              },
-            }}
             variant="filled"
             radius="xl"
             placeholder="Search..."
@@ -139,7 +134,11 @@ const SearchAndFilter = ({ page, fetchData }) => {
             position="bottom-end"
           >
             <Menu.Target>
-              <Button variant="outline" radius="lg">
+              <Button
+                variant="outline"
+                radius="lg"
+                color="light-dark(#2F4858, #CCD6D5)"
+              >
                 {selectedCategory
                   ? selectedCategory.categoryName
                   : "All Category"}
@@ -159,7 +158,11 @@ const SearchAndFilter = ({ page, fetchData }) => {
               position="bottom-start"
             >
               <Menu.Target>
-                <Button variant="outline" radius="lg">
+                <Button
+                  variant="outline"
+                  radius="lg"
+                  color="light-dark(#2F4858, #CCD6D5)"
+                >
                   {selectedSkill ? selectedSkill.skillName : "All Skills"}
                 </Button>
               </Menu.Target>
@@ -178,7 +181,11 @@ const SearchAndFilter = ({ page, fetchData }) => {
               position="bottom-start"
             >
               <Menu.Target>
-                <Button variant="outline" radius="lg">
+                <Button
+                  variant="outline"
+                  radius="lg"
+                  color="light-dark(#2F4858, #CCD6D5)"
+                >
                   {selectedType ? selectedType : "All Type"}
                 </Button>
               </Menu.Target>

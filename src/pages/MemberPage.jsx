@@ -27,6 +27,7 @@ import CreateEventModal from "../components/CreateEventModal";
 
 // Context import
 import { AuthContext } from "../contexts/AuthContext";
+import { useAuthFormsContext } from "../contexts/AuthFormsContext";
 
 // CSS import
 import classes from "../styles/MemberPage.module.css";
@@ -53,6 +54,8 @@ const MemberPage = () => {
   // Handle event modal
   [opened, { open, close }] = useDisclosure(false);
   const createEventModal = { opened, open, close };
+
+  const { toggleAuthForms } = useAuthFormsContext();
 
   // Handle refresh hosted events
   const handleRefreshHostedEvent = () => {
@@ -126,19 +129,24 @@ const MemberPage = () => {
   };
 
   const handleStartChatClick = async () => {
-    try {
-      const conversationId = await createConversation(user.userId, memberId);
-      navigate(`/direct/t/${conversationId}`);
-    } catch (error) {
-      console.error(
-        error,
-        " | Error while starting conversation with user:",
-        memberId
-      );
-      notifications.show({
-        color: "red",
-        title: "Oops! Something went wrong. Please try after sometime.",
-      });
+    if (!isLoggedIn) {
+      // If user is not logged in, button should navigate to Login
+      toggleAuthForms("login", "true");
+    } else {
+      try {
+        const conversationId = await createConversation(user.userId, memberId);
+        navigate(`/direct/t/${conversationId}`);
+      } catch (error) {
+        console.error(
+          error,
+          " | Error while starting conversation with user:",
+          memberId
+        );
+        notifications.show({
+          color: "red",
+          title: "Oops! Something went wrong. Please try after sometime.",
+        });
+      }
     }
   };
 
@@ -150,13 +158,17 @@ const MemberPage = () => {
     <>
       <Container fluid className={classes.ctn} pl={0} pr={0}>
         <Stack justify="space-between" gap={0}>
-          <Paper h={rem(150)} radius={0} bg="#4A5167"></Paper>
-          <Paper h={rem(450)} radius={0}>
+          <Paper
+            h={rem(150)}
+            radius={0}
+            bg="light-dark(#A0B1B2, #2F4858)"
+          ></Paper>
+          <Paper radius={0} bg="light-dark(#F9FCFB, #CCD6D5)">
             <Group justify="center" align="flex-start">
               <Paper
+                bg="light-dark(white, rgb(30,30,30))"
                 h={450}
                 w={250}
-                bg="#AE5A00"
                 style={{
                   position: "relative",
                   top: "-4rem",
@@ -171,7 +183,6 @@ const MemberPage = () => {
                   radius={100}
                   fallbacksrc="https://placehold.co/600x400?text=Placeholder"
                   style={{
-                    border: "10px solid black",
                     position: "absolute",
                     top: "30%",
                     left: "50%",
@@ -185,29 +196,49 @@ const MemberPage = () => {
                   style={{ width: "100%", position: "absolute", top: "52%" }}
                 >
                   <Stack gap={2} align="center">
-                    <Title order={3} ta="center" pr={8} pl={8}>
+                    <Title
+                      order={3}
+                      ta="center"
+                      c="light-dark(#2F4858,#A0B1B2)"
+                    >
                       {memberDetails.fullName}
                     </Title>
-                    <Text>{memberDetails.email}</Text>
+                    <Text c="light-dark(black,white)">
+                      {memberDetails.email}
+                    </Text>
                   </Stack>
                   {user?.userId === memberId && isLoggedIn && (
                     <>
-                      <Button onClick={editPersonalInfoModal.open}>
+                      <Button
+                        variant="outline"
+                        radius="xl"
+                        color="light-dark(#2F4858, #CCD6D5)"
+                        onClick={editPersonalInfoModal.open}
+                      >
                         Edit Profile
                       </Button>
-                      <Button onClick={createEventModal.open}>
+                      <Button
+                        variant="outline"
+                        radius="xl"
+                        color="light-dark(#2F4858, #CCD6D5)"
+                        onClick={createEventModal.open}
+                      >
                         Create Event
                       </Button>
                     </>
                   )}
-                  {isLoggedIn && user?.userId !== memberId && (
+                  {user?.userId !== memberId && (
                     <Button
+                      variant="outline"
+                      radius="xl"
+                      color="light-dark(#2F4858, #CCD6D5)"
                       onClick={handleStartChatClick}
-                    >{`Chat with ${memberDetails.fullName}`}</Button>
+                    >{`Chat with ${memberDetails.firstName}`}</Button>
                   )}
                 </Stack>
               </Paper>
               <Paper
+                bg="light-dark(white, rgb(30,30,30))"
                 h="100%"
                 w="70%"
                 mt={10}
@@ -217,8 +248,10 @@ const MemberPage = () => {
                 }}
               >
                 <Tabs
+                  color="light-dark(#2f4858, #ccd6d5)"
                   value={activeTab}
                   onChange={setActiveTab}
+                  pb={10}
                   classNames={{
                     tab: classes.tab,
                   }}

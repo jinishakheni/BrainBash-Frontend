@@ -14,7 +14,7 @@ import {
   UnstyledButton,
   em,
 } from "@mantine/core";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { FaRegUser } from "react-icons/fa6";
 
@@ -49,17 +49,19 @@ const Header = () => {
     </Tabs.Tab>
   ));
 
-
   const location = useLocation();
 
-  const pathNames = ["/","/events","/experts"]
-
-  useEffect(()=>{
-    if(!pathNames.includes(location.pathname)){
+  useEffect(() => {
+    if (location.pathname === "/") {
+      setOpenedTab("Home");
+    } else if (location.pathname === "/events") {
+      setOpenedTab("Events");
+    } else if (location.pathname === "/experts") {
+      setOpenedTab("Experts");
+    } else {
       setOpenedTab("");
     }
-  },[location.pathname])
-
+  }, [location.pathname]);
 
   let userList = [
     {
@@ -105,12 +107,15 @@ const Header = () => {
             />
 
             {/* App logo */}
-            <Avatar src={logoImg} alt={"App Logo"} radius="xs" size={60} />
+            <Link to="/">
+              <Avatar src={logoImg} alt={"App Logo"} radius="xs" size={60} />
+            </Link>
           </Group>
           {/* Tabs */}
           <Container size="sm" ml={20} mr={20} visibleFrom="sm">
             <Tabs
               value={openedTab}
+              color="light-dark(#2f4858, #ccd6d5)"
               onChange={(value) => {
                 value === "Home"
                   ? navigate(`/`)
@@ -154,6 +159,9 @@ const Header = () => {
             ) : (
               <>
                 <Button
+                  variant="outline"
+                  radius="xl"
+                  color="light-dark(#2F4858, #CCD6D5)"
                   size={isMobile ? "xs" : "sm"}
                   onClick={() => {
                     toggleAuthForms("login", "true");
@@ -162,6 +170,9 @@ const Header = () => {
                   Log in
                 </Button>
                 <Button
+                  variant="outline"
+                  radius="xl"
+                  color="light-dark(#2F4858, #CCD6D5)"
                   size={isMobile ? "xs" : "sm"}
                   onClick={() => {
                     toggleAuthForms("register", "true");
@@ -202,6 +213,10 @@ const Header = () => {
               variant="pills"
               defaultValue={openedTab}
               orientation="vertical"
+              color="light-dark(#2F4858, #A0B1B2)"
+              styles={{
+                list: { width: "100%" },
+              }}
               onChange={(value) => {
                 value === "Home"
                   ? navigate(`/`)

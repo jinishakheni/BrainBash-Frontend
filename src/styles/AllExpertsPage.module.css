@@ -1,6 +1,6 @@
 .ctn {
-  min-height: 100vh;
-  margin-top: 3rem;
+  min-height: calc(100vh - 8rem);
+  padding-top: 3rem;
 }
 
 .gridCtn {

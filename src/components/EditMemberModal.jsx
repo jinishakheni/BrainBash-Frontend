@@ -144,10 +144,11 @@ const EditMemberModal = ({ userDetails, updateMemberInfo }) => {
       <Image radius="xl" src={photo ? photo : no_photo} h="25rem" mt="xl" />
 
       <Button
+        variant="outline"
         radius="xl"
+        color="light-dark(#2F4858, #CCD6D5)"
         fullWidth
         mt="xl"
-        variant="filled"
         onClick={handleSubmit}
       >
         Update Information

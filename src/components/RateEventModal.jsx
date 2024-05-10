@@ -25,7 +25,14 @@ const RateEventModal = ({ event, updateEvent }) => {
         onChange={setRating}
         mb="md"
       />
-      <Button onClick={handleSubmit}>Submit</Button>
+      <Button
+        variant="outline"
+        radius="xl"
+        color="light-dark(#2F4858, #CCD6D5)"
+        onClick={handleSubmit}
+      >
+        Submit
+      </Button>
     </>
   );
 };

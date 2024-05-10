@@ -303,7 +303,13 @@ const LoginRegisterForm = ({ email, setEmail }) => {
               {"Forgot your password?"}
             </Anchor>
             <Group justify="space-between">
-              <Button type="submit" radius="xl" disabled={isLoading}>
+              <Button
+                variant="outline"
+                radius="xl"
+                color="light-dark(#2F4858, #CCD6D5)"
+                type="submit"
+                disabled={isLoading}
+              >
                 {upperFirst(formType)}
               </Button>
             </Group>

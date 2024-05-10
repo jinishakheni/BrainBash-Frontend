@@ -246,10 +246,11 @@ const CreateEventModal = ({
           />
 
           <Button
+            variant="outline"
             radius="xl"
+            color="light-dark(#2F4858, #CCD6D5)"
             fullWidth
             mt="xl"
-            variant="filled"
             onClick={handleSubmit}
           >
             Create Event

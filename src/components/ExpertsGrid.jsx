@@ -26,6 +26,7 @@ const ExpertsGrid = ({ list }) => {
     <Grid
       overflow="hidden"
       justify="center"
+      w="75%"
       gutter={{ base: 20, md: 25, xl: 30 }}
       className={classes.gridContainer}
     >
@@ -34,10 +35,17 @@ const ExpertsGrid = ({ list }) => {
           <Grid.Col
             key={currentMember._id}
             span={{ base: 12, xs: 6, md: 4, lg: 3 }}
-            style={{ height: rem(360) }}
+            style={{ height: "fit-content" }}
           >
-            <Paper shadow="xs" m="sm" p="sm">
-              <Container fluid h={rem(140)} bg="#4A5167">
+            <Paper
+              radius="md"
+              shadow="xs"
+              m={5}
+              p="sm"
+              h={rem(300)}
+              bg="light-dark(#F9FCFB, #CCD6D5)"
+            >
+              <Container fluid h={rem(110)} bg="#778D92">
                 <Avatar
                   src={
                     currentMember.photo ? currentMember.photo : no_gender_photo
@@ -49,7 +57,7 @@ const ExpertsGrid = ({ list }) => {
                   onClick={() => navigate(`/members/${currentMember._id}`)}
                   style={{
                     zIndex: 1,
-                    border: "10px solid white",
+                    border: "10px solid light-dark(#F9FCFB, #CCD6D5)",
                     position: "relative",
                     top: "90%",
                     left: "50%",
@@ -57,7 +65,7 @@ const ExpertsGrid = ({ list }) => {
                   }}
                 />
               </Container>
-              <Container fluid h={rem(150)}>
+              <Container fluid h={rem(150)} p={0}>
                 <Stack
                   align="center"
                   style={{
@@ -67,7 +75,9 @@ const ExpertsGrid = ({ list }) => {
                   }}
                   gap={5}
                 >
-                  <Title order={3}>{currentMember.fullName}</Title>
+                  <Title order={3} ta="center" c="#2F4858">
+                    {currentMember.fullName}
+                  </Title>
                   <Group justify="space-evenly" gap={5}>
                     {currentMember?.categories
                       ?.slice(0, 3)

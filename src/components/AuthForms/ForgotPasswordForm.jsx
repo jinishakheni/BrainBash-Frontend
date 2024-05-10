@@ -109,6 +109,7 @@ const ForgotPasswordForm = ({ email, setEmail }) => {
           {formType && (
             <Button
               variant="transparent"
+              color="light-dark(#2F4858, #CCD6D5)"
               size="sm"
               p={0}
               onClick={() => setFormType("login")}
@@ -123,7 +124,13 @@ const ForgotPasswordForm = ({ email, setEmail }) => {
             </Button>
           )}
           {
-            <Button onClick={handleSendResetLink} disabled={emailSent}>
+            <Button
+              variant="outline"
+              radius="xl"
+              color="light-dark(#2F4858, #CCD6D5)"
+              onClick={handleSendResetLink}
+              disabled={emailSent}
+            >
               Send reset link
             </Button>
           }

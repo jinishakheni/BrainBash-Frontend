@@ -2,9 +2,18 @@
 import { notifications } from "@mantine/notifications";
 import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader, Title, Button, Flex, Image, em, Text } from "@mantine/core";
+import {
+  Loader,
+  Title,
+  Button,
+  Flex,
+  Image,
+  em,
+  Text,
+  Group,
+} from "@mantine/core";
 import classes from "../styles/HomePage.module.css";
-import homepic from "../assets/images/homepic.png";
+import homepic from "../assets/images/homepic-removebg.png";
 import { useAuthFormsContext } from "../contexts/AuthFormsContext";
 import { useMediaQuery } from "@mantine/hooks";
 import { AuthContext } from "../contexts/AuthContext.jsx";
@@ -56,7 +65,10 @@ const HomePage = () => {
 
   return (
     <Flex className={classes.root}>
-      <Flex className={classes.header}>
+      <Flex
+        className={classes.header}
+        direction={{ base: "column-reverse", md: "row" }}
+      >
         <Flex className={classes.headerText}>
           <Title order={1}>
             Unleash Your Curiosity and Dive into a World of Expert-Led Insights
@@ -69,6 +81,9 @@ const HomePage = () => {
             opportunities for growth.
           </Title>
           <Button
+            variant="outline"
+            radius="xl"
+            color="light-dark(#2F4858, #CCD6D5)"
             size={isMobile ? "xs" : "sm"}
             onClick={() => {
               !isLoggedIn
@@ -89,12 +104,19 @@ const HomePage = () => {
         <>
           {!isLoading ? (
             events.length ? (
-              <div className={classes.listEvents}>
-                <EventsGrid list={events.slice(0, 4)}></EventsGrid>
-                <Button onClick={() => navigate("/events")}>
-                  See All Events!
-                </Button>
-              </div>
+              <>
+                <Group mb={10}>
+                  <EventsGrid list={events.slice(0, 4)}></EventsGrid>
+                  <Button
+                    variant="outline"
+                    radius="xl"
+                    color="light-dark(#2F4858, #CCD6D5)"
+                    onClick={() => navigate("/events")}
+                  >
+                    See All Events!
+                  </Button>
+                </Group>
+              </>
             ) : (
               <>
                 <Text size="sm">There are no events at this moment...</Text>
