@@ -156,6 +156,7 @@ const LoginRegisterForm = ({ email, setEmail }) => {
               storeToken(response.data.token);
               notifications.clean();
               toggleAuthForms("", false);
+              setEmail("");
               navigate("/");
               verifyToken();
             } else {
