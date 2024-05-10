@@ -9,7 +9,7 @@ const LoginPage = () => {
   const { typeParam } = useParams();
 
   useEffect(() => {
-    if (typeParam) {
+    if (typeParam && typeParam!=="forgotpassword") {
       setFormType(typeParam);
     }
   }, [typeParam]);
