@@ -14,7 +14,6 @@ const LoginPage = () => {
     }
   }, [typeParam]);
 
-  //return <AuthForms></AuthForms>;
   return (
     <>
       {typeParam === "login" || typeParam === "register" ? (
